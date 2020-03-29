@@ -1,13 +1,13 @@
 
 <div class="request-list">
     <div class="request" *ngFor="let request of requests">
-        {{ need.name }}<br />
-        {{ need.phone_number }}<br />
-        {{ need.medical_unit_name }}<br />
-        {{ need.medical_unit_id }}<br />
-        {{ need. }}
+        {{ request.name }}<br />
+        {{ request.phone_number }}<br />
+        {{ request.medical_unit_name }}<br />
+        {{ request.medical_unit_id }}<br />
+        {{ dataService.getMetadataLabel('medical_unit_type', request.medical_unit_type_id) }}
         <div *ngFor="let need of request.needs">
-            Need: {{ need.need_id }}, Quantity: {{ need.quantity }}
+            Need: {{ dataService.getMetadataLabel('need', need.need_id) }}, Quantity: {{ need.quantity }}
         </div>
     
         <div class="request-actions">

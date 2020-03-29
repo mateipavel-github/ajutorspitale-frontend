@@ -21,7 +21,6 @@ export class DataService {
 
     forkJoin([this.getMetadata()]).subscribe(serverResponses => {
       this.metadata = serverResponses[0];
-      console.log(this.metadata);
       done.next(true);
     });
 
@@ -37,6 +36,14 @@ export class DataService {
     return this.api.get(environment.apiUrl + '/requests');
   }
 
-  public 
+  public getMetadataLabel($type, $id) {
+    for (let i = 0; i < this.metadata[$type].length; i++) {
+      if (this.metadata[$type]['id'] === $id) {
+        return this.metadata[$type]['id'];
+      }
+    }
+      return '<metadata not found>';
+
+  }
 
 }
