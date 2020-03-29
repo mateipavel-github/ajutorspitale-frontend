@@ -1,0 +1,17 @@
+
+<div class="request-list">
+    <div class="request" *ngFor="let request of requests">
+        {{ need.name }}<br />
+        {{ need.phone_number }}<br />
+        {{ need.medical_unit_name }}<br />
+        {{ need.medical_unit_id }}<br />
+        {{ need. }}
+        <div *ngFor="let need of request.needs">
+            Need: {{ need.need_id }}, Quantity: {{ need.quantity }}
+        </div>
+    
+        <div class="request-actions">
+            <a [routerLink]="['request', request.id]">edit</a>
+        </div>
+    </div>
+</div>
