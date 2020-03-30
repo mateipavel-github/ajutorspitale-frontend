@@ -36,13 +36,19 @@ export class DataService {
     return this.api.get(environment.apiUrl + '/requests');
   }
 
-  public getMetadataLabel($type, $id) {
-    for (let i = 0; i < this.metadata[$type].length; i++) {
-      if (this.metadata[$type]['id'] === $id) {
-        return this.metadata[$type]['id'];
+  public getRequest(id) {
+    return this.api.get(environment.apiUrl + '/requests/' + id);
+  }
+
+  public getMetadataLabel(type, id) {
+
+    for (let i = 0; i < this.metadata[type].length; i++) {
+      if (this.metadata[type][i]['id'] === id) {
+        return this.metadata[type][i]['label'];
       }
     }
-      return '<metadata not found>';
+
+    return '<metadata not found>';
 
   }
 

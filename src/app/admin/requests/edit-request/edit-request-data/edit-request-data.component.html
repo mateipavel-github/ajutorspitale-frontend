@@ -1,0 +1,42 @@
+<form [formGroup]="editForm">
+
+  <h2>Date solicitant</h2>
+
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" type="text" class="form-control" aria-describedby="name" placeholder=""
+        class="form-control-plaintext">
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Funcție</mat-label>
+      <input matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
+        placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Phone number</mat-label>
+      <input matInput formControlName="phone_number" type="text" class="form-control" aria-describedby="phoneNumber"
+        placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Medical Unit Name</mat-label>
+      <input matInput formControlName="medical_unit_name" type="text" class="form-control"
+        aria-describedby="medicalUnitName" placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Medical Unit Type</mat-label>
+      <mat-select placeholder="Medical unit type" formControlName="medical_unit_type_id">
+        <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <button mat-flat-button color="primary">Salvează</button>
+
+</form>

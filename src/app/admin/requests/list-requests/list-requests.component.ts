@@ -1,12 +1,12 @@
-import { DataService } from './../../_services/data.service';
+import { DataService } from '../../../_services/data.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-requests',
-  templateUrl: './requests.component.html',
-  styleUrls: ['./requests.component.css']
+  templateUrl: './list-requests.component.html',
+  styleUrls: ['./list-requests.component.css']
 })
-export class RequestsComponent implements OnInit {
+export class ListRequestsComponent implements OnInit {
 
   requests;
 

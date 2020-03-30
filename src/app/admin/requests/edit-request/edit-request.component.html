@@ -1,0 +1,48 @@
+<div *ngIf="!dataLoaded">Se încarcă...</div>
+<div *ngIf="dataLoaded">
+    <h1>Cererea # {{ sessionData.currentRequestId }}</h1>
+    <div class="page-container">
+        <div class="edit-side">
+            <mat-tab-group>
+                <mat-tab label="Date cerere">
+                    <ng-template matTabContent>
+                    <div class="tab-content">
+                        <app-edit-request-data></app-edit-request-data>
+                    </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Nevoi">
+                    <ng-template matTabContent>
+                        <app-edit-request-needs></app-edit-request-needs>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+        <div class="preview-side">
+            <div class="item">
+                <div class="label">Unitate: </div>
+                <div class="value">{{ sessionData.currentRequest.medical_unit_name }}</div>
+                <div class="value">{{ dataService.getMetadataLabel('medical_unit_types', sessionData.currentRequest.medical_unit_type_id) }}</div>
+            </div>
+            <div class="item">
+              <div class="label">Persoană: </div>
+              <div class="value">{{ sessionData.currentRequest.name }}</div>
+              <div class="value">{{ sessionData.currentRequest.job_title }}</div>
+              <div class="value">{{ sessionData.currentRequest.phone_number }}</div>
+            </div>
+            <div class="item-list">
+              <div class="label">Nevoi: </div>
+              
+              <!-- <div class="preview-need" *ngFor="let n of sessionData.currentRequest.needs">
+                  <div class="need-name">{{ dataService.getMetadataLabel('needs', n.need_id) }}</div>
+                  <div class="dots"></div>
+                  <div class="need-quantity">{{ n.quantity }}</div>
+              </div> -->
+            </div>
+            <div class="item">
+              <div class="label">Preluată de: </div>
+              <div class="value" *ngIf="sessionData.currentRequest.assigned_user">{{ sessionData.currentRequest.assigned_user.name }}</div>
+            </div>
+        </div>
+    </div>
+</div>

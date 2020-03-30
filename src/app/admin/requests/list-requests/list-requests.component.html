@@ -1,0 +1,19 @@
+<div class="request-list list">
+  <div class="request list-item" *ngFor="let request of requests">
+    <div class="list-item-data" [title]="request">
+      {{ request.name }}<br />
+      {{ request.job_title }}<br />
+      {{ request.phone_number }}<br />
+      {{ request.medical_unit_name }}<br />
+      ({{ dataService.getMetadataLabel('medical_unit_types', request.medical_unit_type_id) }})<br />
+      
+      <strong>Needs:</strong>
+      
+      <strong>Extra information</strong>
+      {{ request.extra_info }}<br />
+    </div>
+    <div class="request-actions list-item-actions">
+      <a [routerLink]="['/', 'admin', 'request', request.id]">edit</a>
+    </div>
+  </div>
+</div>

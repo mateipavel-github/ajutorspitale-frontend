@@ -12,7 +12,7 @@ export class AdminComponent implements OnInit {
 
   constructor(private router: Router) {
 
-    console.log(router.routerState.root.pathFromRoot);
+    console.log('MATEI');
 
   }
 

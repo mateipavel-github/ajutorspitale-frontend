@@ -1,0 +1,12 @@
+.list-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.list-item-data {
+    flex-grow: 1;
+}
+
+.list-item-actions {
+    width: 200px;
+}
