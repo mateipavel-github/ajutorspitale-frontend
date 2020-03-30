@@ -1,12 +1,9 @@
-.list-item {
-    display: flex;
-    flex-direction: row;
+.actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border: 1px solid rgba(0, 0, 0, .12);
 }
 
-.list-item-data {
-    flex-grow: 1;
-}
-
-.list-item-actions {
-    width: 200px;
+h3 {
+    margin-bottom: 0px;
 }

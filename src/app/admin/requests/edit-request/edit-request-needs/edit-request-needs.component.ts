@@ -13,7 +13,7 @@ export class EditRequestNeedsComponent implements OnInit {
   changeForm: FormGroup;
   showChangeForm = false;
 
-  constructor(private dataService: DataService, private sessionData: SessionDataService) {}
+  constructor(public dataService: DataService, public sessionData: SessionDataService) {}
 
   ngOnInit(): void { }
 

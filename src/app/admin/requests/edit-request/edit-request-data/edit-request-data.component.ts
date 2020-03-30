@@ -12,8 +12,8 @@ export class EditRequestDataComponent implements OnInit {
 
   editForm: FormGroup;
 
-  constructor(private dataService: DataService, private sessionData: SessionDataService) {
-    
+  constructor(public dataService: DataService, public sessionData: SessionDataService) {
+
   }
 
   public initForm() {

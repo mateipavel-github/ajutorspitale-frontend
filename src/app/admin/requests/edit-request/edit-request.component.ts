@@ -14,7 +14,7 @@ export class EditRequestComponent implements OnInit {
 
   dataLoaded = false;
 
-  constructor(private dataService: DataService, private sessionData: SessionDataService, private route: ActivatedRoute) {
+  constructor(public dataService: DataService, public sessionData: SessionDataService, private route: ActivatedRoute) {
 
     this.route.paramMap.pipe(switchMap((params) => {
       this.sessionData.currentRequestId = params.get('id');
