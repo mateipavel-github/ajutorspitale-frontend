@@ -6,6 +6,25 @@
     border-bottom: 1px dashed black;
 }
 
+.needs-header {
+    text-align: center; 
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+}
+
 .change-need-row {
     margin-bottom: 5px;
+}
+
+.changeForm {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.deleteItem button {
+  position: relative;
+  top: -10px;
+}
+
+.history mat-card {
+    margin-bottom: 15px;
 }

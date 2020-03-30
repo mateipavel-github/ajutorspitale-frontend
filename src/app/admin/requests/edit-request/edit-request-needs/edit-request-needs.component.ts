@@ -19,8 +19,11 @@ export class EditRequestNeedsComponent implements OnInit {
 
   initForm() {
     this.changeForm = new FormGroup({
-      'needsToAdd': new FormArray([]),
-      'needsToSubstract': new FormArray([])
+      'help_request_id': new FormControl(this.sessionData.currentRequestId),
+      'change_type_id': new FormControl(),
+      'user_comment': new FormControl(),
+      'needs_to_add': new FormArray([]),
+      'needs_to_subtract': new FormArray([])
     });
   }
 
@@ -38,12 +41,33 @@ export class EditRequestNeedsComponent implements OnInit {
 
     switch (type) {
       case 'add':
-        this.getAsFormArray('needsToAdd').push(f);
+        this.getAsFormArray('needs_to_add').push(f);
         break;
       case 'substract':
-        this.getAsFormArray('needsToSubstract').push(f);
+        this.getAsFormArray('needs_to_subtract').push(f);
         break;
     }
+  }
+
+  onSubmit() {
+    // tslint:disable-next-line:prefer-const
+    let data = this.changeForm.value;
+    data.needs = [];
+    data.needs_to_add.forEach(need => {
+      need.quantity = parseInt(need.quantity, 10);
+      data.needs.push(need);
+    });
+    data.needs_to_subtract.forEach(need => {
+      need.quantity = -1 * need.quantity;
+      data.needs.push(need);
+    });
+    delete data.needs_to_add;
+    delete data.needs_to_subtract;
+    this.dataService.storeRequestChange(data).subscribe(serverResponse => {
+      if (serverResponse['success']) {
+        this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];
+      }
+    });
   }
 
   getAsFormArray(key: string) {

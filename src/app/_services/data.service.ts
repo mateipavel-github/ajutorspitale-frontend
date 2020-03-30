@@ -52,4 +52,8 @@ export class DataService {
 
   }
 
+  public storeRequestChange(data) {
+    console.log('Sending data to ', environment.apiUrl + '/changeRequests', data);
+    return this.api.post(environment.apiUrl + '/changeRequests', data);
+  }
 }
