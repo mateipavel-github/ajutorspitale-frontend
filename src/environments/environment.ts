@@ -4,7 +4,12 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://ajutorspitale.local/api'
+  api: {
+    url: 'http://ajutorspitale.local/api/v1',
+    auth_url: 'http://ajutorspitale.local/oauth/token',
+    client_id: 1,
+    client_secret: 'eFV7fPzFEEY8QtdQXiRuIycouZqFgKYmRS0yPPoe'
+  }
 };
 
 /*

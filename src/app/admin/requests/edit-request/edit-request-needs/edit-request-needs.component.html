@@ -17,9 +17,9 @@
         </mat-form-field>
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
-      <div fxFlex="50%" formArrayName="needs_to_add">
-        <h3 class="needs-header">De adăugat</h3>
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="15px">
+      <mat-card fxFlex="50%" formArrayName="needs_to_add">
+        <h3 class="needs-header">De adăugat (nevoi în plus)</h3>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
           *ngFor="let n of getAsFormArray('needs_to_add').controls; let i=index" [formGroupName]="i">
           <mat-form-field fxFlex appearance="outline">
@@ -33,16 +33,18 @@
             <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext">
           </mat-form-field>
           <div fxFlex="none" class="deleteItem">
-            <button mat-button type="button" (click)="onRemoveNeed('add',i)">X</button>
+            <button mat-icon-button type="button" (click)="onRemoveNeed('add',i)">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
           </div>
         </div>
         <div style="text-align: center">
             <button mat-button (click)="onAddNeed('add')">+</button>
         </div>
-      </div>
+      </mat-card>
 
-      <div fxFlex="50%" formArrayName="needs_to_subtract">
-        <h3 class="needs-header">De scos</h3>
+      <mat-card fxFlex="50%" formArrayName="needs_to_subtract">
+        <h3 class="needs-header">De scos (nevoi rezolvate)</h3>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
           *ngFor="let n of getAsFormArray('needs_to_subtract').controls; let i=index" [formGroupName]="i">
           <mat-form-field fxFlex appearance="outline">
@@ -57,16 +59,18 @@
             <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext">
           </mat-form-field>
           <div fxFlex="none" class="deleteItem">
-            <button mat-button type="button" (click)="onRemoveNeed('substract',i)">X</button>
+            <button mat-icon-button type="button" (click)="onRemoveNeed('substract',i)">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
           </div>
         </div>
         <div style="text-align: center;">
             <button mat-button (click)="onAddNeed('substract')">+</button>
         </div>
-      </div>
+      </mat-card>
     </div>
 
-    <button mat-flat-button color="primary" (click)="onSubmit()">Salvează</button>
+    <button style="margin-top: 20px;" mat-flat-button color="primary" (click)="onSubmit()">Salvează</button>
 
   </form>
 

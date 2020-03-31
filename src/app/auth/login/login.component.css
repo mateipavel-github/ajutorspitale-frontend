@@ -1,0 +1,10 @@
+mat-card {
+    width: 300px;
+    max-width: 100%;
+    margin: 20% auto;
+}
+
+.login-error {
+    color: red;
+    padding: 10px 0px;
+}

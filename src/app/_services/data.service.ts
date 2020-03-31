@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { switchMap } from 'rxjs/operators';
 import { forkJoin, Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { forkJoin, Subject } from 'rxjs';
 export class DataService {
 
   metadata;
+  authError = false;
 
   constructor(private api: HttpClient) {
   }
@@ -29,15 +30,29 @@ export class DataService {
   }
 
   public getMetadata() {
-    return this.api.get(environment.apiUrl + '/metadata');
+    return this.api.get(environment.api.url + '/metadata');
   }
 
-  public getRequests() {
-    return this.api.get(environment.apiUrl + '/requests');
+  public getDeliveries(params?) {
+    let queryParams = new HttpParams();
+    const paramKeys = Object.getOwnPropertyNames(params);
+    paramKeys.forEach(key => {
+      queryParams = queryParams.set(key, params[key]);
+    });
+    return this.api.get(environment.api.url + '/deliveries', { params: queryParams });
+  }
+
+  public getRequests(params?) {
+    let queryParams = new HttpParams();
+    const paramKeys = Object.getOwnPropertyNames(params);
+    paramKeys.forEach(key => {
+      queryParams = queryParams.set(key, params[key]);
+    });
+    return this.api.get(environment.api.url + '/requests', { params: queryParams });
   }
 
   public getRequest(id) {
-    return this.api.get(environment.apiUrl + '/requests/' + id);
+    return this.api.get(environment.api.url + '/requests/' + id);
   }
 
   public getMetadataLabel(type, id) {
@@ -53,7 +68,41 @@ export class DataService {
   }
 
   public storeRequestChange(data) {
-    console.log('Sending data to ', environment.apiUrl + '/changeRequests', data);
-    return this.api.post(environment.apiUrl + '/changeRequests', data);
+    console.log('Sending data to ', environment.api.url + '/changeRequests', data);
+    return this.api.post(environment.api.url + '/changeRequests', data);
+  }
+
+  public storeRequest(data) {
+    return this.api.post(environment.api.url + '/requests', data);
+  }
+
+  public unassignCurrentUserFromRequest(requestId) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.set('action', 'unassignCurrentUser');
+    return this.updateRequest(requestId, {}, { params: queryParams } );
+  }
+
+  public assignCurrentUserToRequest(requestId) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.set('action', 'assignCurrentUser');
+    return this.updateRequest(requestId, {}, { params: queryParams });
+  }
+
+  public assignCurrentUserToManyRequests(howMany) {
+    const data = { 'howMany': howMany };
+    return this.api.post(environment.api.url + '/requests/mass-assign-to-user', data);
+  }
+
+  public updateRequest(requestId, data, options) {
+    options.params = options.params.set('_method', 'PATCH');
+    return this.api.post(environment.api.url + '/requests/' + requestId, data, options);
+  }
+
+  public getAuthToken(data: any) {
+    return this.api.post(environment.api.auth_url, data);
+  }
+
+  public login(data: any) {
+    return this.api.post(environment.api.url + '/user/login', data);
   }
 }

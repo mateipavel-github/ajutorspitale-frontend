@@ -1,3 +1,4 @@
+import { LoadingStatusComponent } from './../loading-status/loading-status.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -16,6 +17,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule, MatMenu } from '@angular/material/menu';
 
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -42,6 +44,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatToolbarModule,
     MatSelectModule,
     MatCardModule,
+    MatMenuModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -66,6 +69,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatToolbarModule,
     MatSelectModule,
     MatCardModule,
+    MatMenuModule,
 
     ReactiveFormsModule,
     FormsModule

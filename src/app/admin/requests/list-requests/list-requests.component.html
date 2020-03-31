@@ -1,11 +1,35 @@
-<div class="page-content">
+<div class="page-content centered">
 
-  <h1>Listă cereri</h1>
+  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="gappx">
+    <h1 fxGrow>
+        <span *ngIf="filters.flag=='unassigned'">Cereri neasignate</span>
+        <span *ngIf="filters.flag=='mine'">Cererile mele</span>
+        <span *ngIf="filters.flag!='mine' && filters.flag!='unassigned'">Listă cereri</span>
+    </h1>
+    <div class="list-flags" style="width: 600px; text-align: right;">
 
+      <span *ngIf="filters.flag==='unassigned'">
+        <button mat-stroked-button (click)="onMassAssign(10)">Preia 10</button>&nbsp;
+        <button mat-stroked-button (click)="onMassAssign(25)">Preia 25</button>&nbsp;
+        <button mat-stroked-button (click)="onMassAssign(50)">Preia 50</button>&nbsp;
+      </span>
+      <a [ngClass]="{'active': filters.flag==='all'}" mat-button [routerLink]="['/admin/requests/all']"
+        queryParamsHandling="merge">Toate</a>
+      <a [ngClass]="{'active': filters.flag==='unassigned'}" mat-button [routerLink]="['/admin/requests/unassigned']"
+        queryParamsHandling="merge">Cereri neasignate</a>
+      <a [ngClass]="{'active': filters.flag==='mine'}" mat-button [routerLink]="['/admin/requests/mine']"
+        queryParamsHandling="merge">Cererile mele</a>
+    </div>
+  </div>
+  
+  
+  <app-loading-status [loaded]="requestsLoaded"></app-loading-status>
+  
   <div fxLayout="column" fxLayoutGap="20px">
     <mat-card *ngFor="let request of requests">
-      <mat-card-subtitle>{{ request.name }} / {{ request.job_title }} / {{ request.medical_unit_name }}
-      </mat-card-subtitle>
+      <mat-card-title fxLayout="row" fxLayoutAlign="start start">
+        <span>cererea #{{ request.id }}</span>
+      </mat-card-title>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0px">
           <div style="width: 300px;">
@@ -30,16 +54,21 @@
           </div>
           <div style="width: 200px;">
             <h3>Voluntar</h3>
-            <p *ngIf="request.assigned_user"><strong>Asignat: </strong>{{ request.assigned_user.name }}</p>
-            <button mat-button color="primary" (click)="onAssign(request.id)">Preia
+            <p class="assigned-user" *ngIf="request.assigned_user">
+              <strong>Asignat: </strong>{{ request.assigned_user.name }} 
+              <a class="unassign" (click)="onUnassign(request.id)"><mat-icon style="font-size: 12px">close</mat-icon></a>
+            </p>
+            <button *ngIf="!request.assigned_user" mat-stroked-button color="primary"
+              (click)="onAssign(request.id)">Preia
               cererea</button>
 
             <div class="actions">
-              <a mat-button color="primary" [routerLink]="['/', 'admin', 'request', request.id]">edit</a>
+              <a mat-stroked-button color="primary" [routerLink]="['/', 'admin', 'request', request.id]">edit</a>
             </div>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
+  
 </div>

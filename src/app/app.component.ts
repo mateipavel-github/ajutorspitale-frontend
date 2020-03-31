@@ -1,3 +1,4 @@
+import { AuthService } from './_services/auth.service';
 import { DataService } from './_services/data.service';
 import { Component } from '@angular/core';
 
@@ -11,7 +12,7 @@ export class AppComponent {
   title = 'frontend';
   appLoaded = false;
 
-  public constructor(private dataService: DataService) {
+  public constructor(public dataService: DataService, private authService: AuthService) {
     this.bootstrap();
   }
 

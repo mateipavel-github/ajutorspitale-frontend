@@ -1,9 +1,26 @@
 .actions {
     margin-top: 20px;
     padding-top: 20px;
-    border: 1px solid rgba(0, 0, 0, .12);
+    border-top: 1px solid rgba(0, 0, 0, .12);
 }
 
 h3 {
     margin-bottom: 0px;
+}
+
+a.active {
+    color: #673AB7;
+}
+
+.assigned-user a.unassign {cursor: pointer; display: none;}
+.assigned-user:hover a.unassign {
+  cursor: pointer;
+  display: inline;
+}
+
+.assigned-user a.unassign mat-icon {
+    font-size: 12px;
+    height: auto;
+    vertical-align: middle;
+    color: #673AB7;
 }

@@ -1,0 +1,24 @@
+<mat-card>
+  <form [formGroup]="loginForm" (submit)="onLogin()">
+    <h1>Login</h1>
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Număr de telefon</mat-label>
+      <input matInput formControlName="login_identifier" type="text" class="form-control" aria-describedby="phone_number"
+        placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Parolă</mat-label>
+      <input matInput formControlName="password" type="password" class="form-control" aria-describedby="password"
+        placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+
+    <span class="login-error" *ngIf="loginRequestError">Date invalide.</span>
+    <app-loading-status [loaded]="loginRequestDone"></app-loading-status>
+
+    <div>
+      <button type="submit" mat-flat-button color="primary">Login</button>
+    </div>
+
+  </form>
+</mat-card>

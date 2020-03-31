@@ -1,6 +1,19 @@
-<mat-toolbar>
-    <a routerLink="/admin/dashboard">Dashboard</a>
-    <a routerLink="/admin/requests">Requests</a>
-    <a routerLink="/admin/deliveries">Deliveries</a>
+<mat-toolbar color="primary" fxLayout="row">
+    <span class="title">AjutorSpitale</span>
+    <span fxFlex></span>
+    <span class="links">
+        <a mat-button routerLink="/admin/requests">Cereri</a>
+        <a mat-button routerLink="/admin/deliveries">Livrări</a>
+        <a mat-button routerLink="/new-request">Adaugă cerere</a>
+
+        <ng-container *ngIf="currentUser">
+            <button mat-icon-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>person</mat-icon>
+            </button>
+            <mat-menu #userMenu="matMenu">
+                <button mat-menu-item (click)="onLogout()">Logout</button>
+            </mat-menu>
+        </ng-container>
+    </span>
 </mat-toolbar>
 <router-outlet></router-outlet>

@@ -1,3 +1,5 @@
+import { ListDeliveriesComponent } from './deliveries/list-deliveries/list-deliveries.component';
+import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.component';
 import { EditRequestComponent } from './requests/edit-request/edit-request.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
@@ -13,7 +15,12 @@ const routes: Routes = [
     path: 'admin', component: AdminComponent,
     children: [
       { path: 'requests', component: ListRequestsComponent },
-      { path: 'request/:id', component: EditRequestComponent}
+      { path: 'requests/:filter', component: ListRequestsComponent },
+      { path: 'request/:id', component: EditRequestComponent },
+      { path: 'deliveries', component: ListDeliveriesComponent },
+      { path: 'deliveries/:filter', component: ListDeliveriesComponent },
+      { path: 'delivery/:id', component: EditDeliveryComponent },
+      { path: 'delivery/new', component: EditDeliveryComponent }
     ]
   }
 ];

@@ -1,0 +1,59 @@
+<div class="form-container">
+  <app-loading-status [loaded]="dataLoaded"></app-loading-status>
+  <form *ngIf="dataLoaded" [formGroup]="editForm">
+
+    <h1 *ngIf="mode==='newRequest'">Cerere nouă</h1>
+    <h1 *ngIf="mode==='updateRequest'">Modifică cerere</h1>
+
+    <ng-container *ngIf="mode==='newRequest'">
+
+      <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Nume complet</mat-label>
+        <input matInput formControlName="name" type="text" class="form-control" aria-describedby="name" placeholder=""
+          class="form-control-plaintext">
+      </mat-form-field>
+
+      <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Funcție</mat-label>
+        <input matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
+          placeholder="" class="form-control-plaintext">
+      </mat-form-field>
+
+      <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Număr de telefon</mat-label>
+        <input matInput formControlName="phone_number" type="text" class="form-control" aria-describedby="phoneNumber"
+          placeholder="07XX XXX XXX" class="form-control-plaintext">
+      </mat-form-field>
+
+      <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Nume unitate medicală</mat-label>
+        <input matInput formControlName="medical_unit_name" type="text" class="form-control"
+          aria-describedby="medicalUnitName" placeholder="" class="form-control-plaintext">
+      </mat-form-field>
+
+      <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Tip unitate</mat-label>
+        <mat-select placeholder="Alege" formControlName="medical_unit_type_id">
+          <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </ng-container>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Nevoile curente</mat-label>
+      <textarea style="height: 300px;" matInput formControlName="needs_text" type="text" class="form-control"
+        aria-describedby="needsText" placeholder="" class="form-control-plaintext"></textarea>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Alte informații</mat-label>
+      <textarea style="height: 300px;" matInput formControlName="extra_info" type="text" class="form-control"
+        aria-describedby="needsText" placeholder="" class="form-control-plaintext"></textarea>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="onSaveRequest()">Salvează</button>
+  </form>
+
+</div>

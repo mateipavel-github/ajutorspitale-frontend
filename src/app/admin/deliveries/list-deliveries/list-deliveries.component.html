@@ -1,0 +1,19 @@
+<div class="page-content">
+
+  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="gappx">
+    <h1 fxGrow>Listă livrări </h1>
+    <div class="list-flags" style="width: 400px; text-align: right;">
+      <a [ngClass]="{'active': filters.flag==='all'}" mat-button routerLink="/admin/deliveries/all"
+        queryParamsHandling="merge">Toate</a>
+      <a [ngClass]="{'active': filters.flag==='unassigned'}" mat-button routerLink="/admin/deliveries/inprogress"
+        queryParamsHandling="merge">În curs de livrare</a>
+      <a mat-stroked-button routerLink="/admin/delivery/new">Livrare nouă</a>
+    </div>
+  </div>
+
+  <app-loading-status [loaded]="deliveriesLoaded"></app-loading-status>
+  <div fxLayout="column" fxLayoutGap="20px">
+    <mat-card *ngFor="let delivery of deliveries">
+    </mat-card>
+  </div>  
+</div>

@@ -1,3 +1,10 @@
 ::ng-deep .page-content {
     padding: 20px;
+    max-width: 1280px;
+}
+
+::ng-deep .page-content.centered {
+  padding: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
 }
