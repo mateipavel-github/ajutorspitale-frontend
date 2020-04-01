@@ -93,14 +93,29 @@ export class DataService {
     return this.updateRequest(requestId, {}, { params: queryParams });
   }
 
+  public changeRequestStatus(requestId, status) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.set('action', 'changeStatus');
+    return this.updateRequest(requestId, {'status': status}, { params: queryParams });
+  }
+
   public assignCurrentUserToManyRequests(howMany) {
     const data = { 'howMany': howMany };
     return this.api.post(environment.api.url + '/requests/mass-assign-to-user', data);
   }
 
   public updateRequest(requestId, data, options) {
-    options.params = options.params.set('_method', 'PATCH');
+    data['_method'] = 'PATCH';
     return this.api.post(environment.api.url + '/requests/' + requestId, data, options);
+  }
+
+  public removeMetadataItem(type, id) {
+    return this.api.post(environment.api.url + '/metadata', { 'metadata_type': type, 'id': id, '_method': 'DELETE' });
+  }
+
+  public saveMetadataItem(data) {
+    data['_method'] = 'PUT';
+    return this.api.post(environment.api.url + '/metadata', data);
   }
 
   public getAuthToken(data: any) {

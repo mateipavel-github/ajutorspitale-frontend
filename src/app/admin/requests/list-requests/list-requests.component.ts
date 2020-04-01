@@ -59,6 +59,20 @@ export class ListRequestsComponent implements OnInit {
     });
   }
 
+  onChangeRequestStatus(requestId, status) {
+    this.dataService.changeRequestStatus(requestId, status).subscribe(serverResponse => {
+      if (serverResponse['success']) {
+        this.requests.forEach((request, index) => {
+          if (request.id === requestId) {
+            request.status = status;
+          }
+        });
+      } else {
+        alert(serverResponse['error']);
+      }
+    });
+  }
+
   ngOnInit(): void {
   }
 

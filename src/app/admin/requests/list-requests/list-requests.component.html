@@ -52,15 +52,27 @@
             <h3>Alte informații</h3>
             <p>{{ request.extra_info }}</p>
           </div>
-          <div style="width: 200px;">
-            <h3>Voluntar</h3>
-            <p class="assigned-user" *ngIf="request.assigned_user">
-              <strong>Asignat: </strong>{{ request.assigned_user.name }} 
-              <a class="unassign" (click)="onUnassign(request.id)"><mat-icon style="font-size: 12px">close</mat-icon></a>
-            </p>
-            <button *ngIf="!request.assigned_user" mat-stroked-button color="primary"
-              (click)="onAssign(request.id)">Preia
-              cererea</button>
+          <div class="side-options">
+            
+            <div>
+              <strong>Status: </strong>
+              <button mat-button [matMenuTriggerFor]="statusChange">
+                {{ dataService.getMetadataLabel('request_status_types', request.status) }}
+              </button>
+              <mat-menu #statusChange="matMenu" xPosition="before">
+                <button (click)="onChangeRequestStatus(request.id, k.id)" *ngFor="let k of dataService.metadata['request_status_types']" mat-menu-item>{{ k.label }}</button>
+              </mat-menu>
+            </div>
+            <div>
+              <ng-container *ngIf="request.assigned_user">
+                <strong>Asignat: </strong>
+                <button mat-button class="assigned-user" (click)="onUnassign(request.id)">
+                  {{ request.assigned_user.name }} 
+                  <mat-icon>close</mat-icon>
+                </button>
+              </ng-container>
+              <button *ngIf="!request.assigned_user" mat-stroked-button color="primary" (click)="onAssign(request.id)">Preia cererea</button>
+            </div>
 
             <div class="actions">
               <a mat-stroked-button color="primary" [routerLink]="['/', 'admin', 'request', request.id]">edit</a>

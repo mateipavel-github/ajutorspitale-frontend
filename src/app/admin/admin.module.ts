@@ -11,6 +11,7 @@ import { EditRequestNeedsComponent } from './requests/edit-request/edit-request-
 import { EditRequestDataComponent } from './requests/edit-request/edit-request-data/edit-request-data.component';
 import { ListDeliveriesComponent } from './deliveries/list-deliveries/list-deliveries.component';
 import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.component';
+import { MetadataEditorComponent } from './metadata/editor/metadata-editor.component';
 
 
 
@@ -24,7 +25,8 @@ import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.
     EditRequestNeedsComponent,
     EditRequestDataComponent,
     ListDeliveriesComponent,
-    EditDeliveryComponent
+    EditDeliveryComponent,
+    MetadataEditorComponent
   ],
   imports: [
     CommonModule,

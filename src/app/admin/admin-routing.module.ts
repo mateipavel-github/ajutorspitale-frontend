@@ -1,3 +1,4 @@
+import { MetadataEditorComponent } from './metadata/editor/metadata-editor.component';
 import { AuthGuardService } from './../_middleware/route-guards/auth-guard.service';
 import { ListDeliveriesComponent } from './deliveries/list-deliveries/list-deliveries.component';
 import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.component';
@@ -21,7 +22,8 @@ const routes: Routes = [
       { path: 'deliveries', component: ListDeliveriesComponent },
       { path: 'deliveries/:filter', component: ListDeliveriesComponent },
       { path: 'delivery/:id', component: EditDeliveryComponent },
-      { path: 'delivery/new', component: EditDeliveryComponent }
+      { path: 'delivery/new', component: EditDeliveryComponent },
+      { path: 'metadata', component: MetadataEditorComponent}
     ]
   }
 ];

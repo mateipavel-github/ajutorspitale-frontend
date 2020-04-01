@@ -12,15 +12,7 @@ a.active {
     color: #673AB7;
 }
 
-.assigned-user a.unassign {cursor: pointer; display: none;}
-.assigned-user:hover a.unassign {
-  cursor: pointer;
-  display: inline;
+.assigned-user mat-icon {
+    visibility: hidden;
 }
-
-.assigned-user a.unassign mat-icon {
-    font-size: 12px;
-    height: auto;
-    vertical-align: middle;
-    color: #673AB7;
-}
+.assigned-user:hover mat-icon {visibility: visible; }

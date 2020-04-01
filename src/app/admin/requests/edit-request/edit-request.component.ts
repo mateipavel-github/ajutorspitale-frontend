@@ -22,7 +22,6 @@ export class EditRequestComponent implements OnInit {
     })).subscribe(serverResponse => {
       this.dataLoaded = true;
       this.sessionData.currentRequest = serverResponse['data'];
-      console.log('Request data loaded');
     });
 
   }
