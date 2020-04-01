@@ -12,10 +12,14 @@ export class AdminComponent implements OnInit {
   protected currentPage;
   public currentUser;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, public authService: AuthService) {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
+  }
+
+  hasAccess(roles) {
+    return this.authService.hasAccess(roles);
   }
 
   ngOnInit(): void {

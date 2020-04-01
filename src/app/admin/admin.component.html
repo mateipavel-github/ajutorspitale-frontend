@@ -2,8 +2,10 @@
     <span class="title">AjutorSpitale</span>
     <span fxFlex></span>
     <span class="links">
-        <a mat-button routerLink="/admin/requests">Cereri</a>
-        <a mat-button routerLink="/admin/deliveries">Livrări</a>
+        <a mat-button routerLink="/admin/requests/all">Cereri</a>
+        <a mat-button routerLink="/admin/deliveries">Livrări</a> 
+        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/metadata">Metadata</a>
+        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/users">Utilizatori</a>
         <a mat-button routerLink="/new-request">Adaugă cerere</a>
 
         <ng-container *ngIf="currentUser">

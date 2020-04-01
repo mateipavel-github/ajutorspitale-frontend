@@ -24,18 +24,21 @@ export class MetadataEditorComponent implements OnInit {
     this.metadataTypes.forEach(metadataType => {
       items = [];
       this.metadata[metadataType].forEach(item => {
-        items.push(new FormGroup({ 'id': new FormControl(item.id), 'label': new FormControl(item.label) }));
+        // tslint:disable-next-line:max-line-length
+        items.push(new FormGroup({ 'id': new FormControl(item.id), 'label': new FormControl(item.label), 'slug': new FormControl(item.slug) }));
       });
       this.editForm.addControl(metadataType, new FormArray(items));
     });
   }
 
   onAddItem(metadataType) {
-    const f = new FormGroup({ 'id': new FormControl(), 'label': new FormControl() });
+    const f = new FormGroup({ 'id': new FormControl(), 'label': new FormControl(), 'slug': new FormControl() });
     this.getAsFormArray(metadataType).push(f);
   }
 
   onRemoveItem(metadataType, index) {
+    alert('Not implemented');
+    return;
     // remove from server
     const item = this.getAsFormArray(metadataType).controls[index].value;
     if (item.id) {

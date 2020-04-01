@@ -3,12 +3,12 @@ import { DataService } from 'src/app/_services/data.service';
 import { Injectable } from '@angular/core';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { of, BehaviorSubject, Observable } from 'rxjs';
-import { CanActivate, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements CanActivate {
+export class AuthService {
 
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser$: Observable<any>;
@@ -24,6 +24,14 @@ export class AuthService implements CanActivate {
 
   public isLoggedIn() {
     return this.currentUserSubject.value !== null;
+  }
+
+  public hasAccess(roles: String | Array<String>) {
+    if (typeof (roles) === 'string') {
+      return roles === this.currentUserValue.role.slug;
+    } else {
+      return roles.indexOf(this.currentUserValue.role.slug) !== -1;
+    }
   }
 
   public login(data: any) {
@@ -52,12 +60,4 @@ export class AuthService implements CanActivate {
     this.currentUserSubject.next(null);
   }
 
-  canActivate(): boolean {
-    if (!this.currentUserValue().id) {
-      this.router.navigate(['login']);
-      return false;
-    } else {
-      return true;
-    }
-  }
 }

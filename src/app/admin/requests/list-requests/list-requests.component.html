@@ -1,27 +1,42 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link [routerLink]="['/admin/requests/all']" queryParamsHandling="merge" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+    Toate
+  </a>
+  <a mat-tab-link [routerLink]="['/admin/requests/unassigned']" queryParamsHandling="merge" routerLinkActive
+    #rla="routerLinkActive" [active]="rla.isActive">
+    Cereri neasignate
+  </a>
+  <a mat-tab-link [routerLink]="['/admin/requests/mine']" queryParamsHandling="merge" routerLinkActive
+    #rla="routerLinkActive" [active]="rla.isActive">
+    Cererile mele
+  </a>
+</nav>
+
 <div class="page-content centered">
 
   <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="gappx">
-    <h1 fxGrow>
-        <span *ngIf="filters.flag=='unassigned'">Cereri neasignate</span>
-        <span *ngIf="filters.flag=='mine'">Cererile mele</span>
-        <span *ngIf="filters.flag!='mine' && filters.flag!='unassigned'">Listă cereri</span>
-    </h1>
-    <div class="list-flags" style="width: 600px; text-align: right;">
-
-      <span *ngIf="filters.flag==='unassigned'">
-        <button mat-stroked-button (click)="onMassAssign(10)">Preia 10</button>&nbsp;
-        <button mat-stroked-button (click)="onMassAssign(25)">Preia 25</button>&nbsp;
-        <button mat-stroked-button (click)="onMassAssign(50)">Preia 50</button>&nbsp;
-      </span>
-      <a [ngClass]="{'active': filters.flag==='all'}" mat-button [routerLink]="['/admin/requests/all']"
-        queryParamsHandling="merge">Toate</a>
-      <a [ngClass]="{'active': filters.flag==='unassigned'}" mat-button [routerLink]="['/admin/requests/unassigned']"
-        queryParamsHandling="merge">Cereri neasignate</a>
-      <a [ngClass]="{'active': filters.flag==='mine'}" mat-button [routerLink]="['/admin/requests/mine']"
-        queryParamsHandling="merge">Cererile mele</a>
+    <div>
+      <h1 fxGrow>
+          <span *ngIf="flag=='unassigned'">Cereri neasignate</span>
+          <span *ngIf="flag=='mine'">Cererile mele</span>
+          <span *ngIf="flag=='all'">Toate cererile</span>
+          <span *ngIf="requestsLoaded"> ({{ paging.total }})</span>
+      </h1>
     </div>
+    <div class="list-flags" fxFlex style="padding-left: 30px;">
+      <span *ngIf="flag==='unassigned'">
+        <app-loading-button [loading]="!requestsLoaded" btnStyle="stroked" (btnClick)="onMassAssign(25)" label="Preia 25"></app-loading-button>&nbsp;
+        <app-loading-button [loading]="!requestsLoaded" btnStyle="stroked" (btnClick)="onMassAssign(25)"
+          label="Preia 50"></app-loading-button>
+        &nbsp;
+      </span>
+    </div>
+    
+    <app-request-filter-form></app-request-filter-form>
+    <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange"
+      [length]="paging.total" [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
+    </mat-paginator>
   </div>
-  
   
   <app-loading-status [loaded]="requestsLoaded"></app-loading-status>
   
@@ -48,7 +63,7 @@
           </div>
           <div style="flex-grow: 1;">
             <h3>Nevoi</h3>
-            <p></p>
+            <p>{{ request.needs_text }}</p>
             <h3>Alte informații</h3>
             <p>{{ request.extra_info }}</p>
           </div>
@@ -56,9 +71,9 @@
             
             <div>
               <strong>Status: </strong>
-              <button mat-button [matMenuTriggerFor]="statusChange">
-                {{ dataService.getMetadataLabel('request_status_types', request.status) }}
-              </button>
+              <app-loading-button [loading]="statusChanging===request.id" [matMenuTriggerFor]="statusChange" 
+              [label]="dataService.getMetadataLabel('request_status_types', request.status)">
+              </app-loading-button>
               <mat-menu #statusChange="matMenu" xPosition="before">
                 <button (click)="onChangeRequestStatus(request.id, k.id)" *ngFor="let k of dataService.metadata['request_status_types']" mat-menu-item>{{ k.label }}</button>
               </mat-menu>
@@ -66,12 +81,11 @@
             <div>
               <ng-container *ngIf="request.assigned_user">
                 <strong>Asignat: </strong>
-                <button mat-button class="assigned-user" (click)="onUnassign(request.id)">
-                  {{ request.assigned_user.name }} 
-                  <mat-icon>close</mat-icon>
-                </button>
+                <app-loading-button [loading]="assignChanging===request.id" (click)="onUnassign(request.id)"
+                  [label]="request.assigned_user.name" icon="close" showIcon="hover"></app-loading-button>
               </ng-container>
-              <button *ngIf="!request.assigned_user" mat-stroked-button color="primary" (click)="onAssign(request.id)">Preia cererea</button>
+              <app-loading-button [loading]="assignChanging===request.id" *ngIf="!request.assigned_user" btnStyle="stroked" color="primary"
+                (click)="onAssign(request.id)" label="Preia cererea"></app-loading-button>
             </div>
 
             <div class="actions">

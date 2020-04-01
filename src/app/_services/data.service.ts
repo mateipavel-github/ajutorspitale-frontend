@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { switchMap } from 'rxjs/operators';
 import { forkJoin, Subject } from 'rxjs';
 
 @Injectable({
@@ -55,8 +54,28 @@ export class DataService {
     return this.api.get(environment.api.url + '/requests/' + id);
   }
 
-  public getMetadataLabel(type, id) {
+  public getUsers() {
+    return this.api.get(environment.api.url + '/users');
+  }
 
+  public saveUser(data) {
+    if (data.id && data.id > 0) {
+      data._method = 'PUT';
+      return this.api.post(environment.api.url + '/users/' + data.id, data);
+    } else {
+      data._method = 'POST';
+      return this.api.post(environment.api.url + '/users', data);
+    }
+
+  }
+
+  public deleteUser(id) {
+    const data = { '_method':  'DELETE' };
+    return this.api.post(environment.api.url + '/users/' + id, data);
+  }
+
+  public getMetadataLabel(type, id) {
+    id = parseInt(id, 10);
     for (let i = 0; i < this.metadata[type].length; i++) {
       if (this.metadata[type][i]['id'] === id) {
         return this.metadata[type][i]['label'];

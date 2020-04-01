@@ -16,6 +16,13 @@
                   placeholder="" class="form-control-plaintext" (blur)="onSaveItem(metadataType, i);">
               </mat-form-field>
             </div>
+            <div fxFlex>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <mat-label>Identificator cod</mat-label>
+                <input matInput formControlName="slug" type="text" class="form-control" placeholder=""
+                  class="form-control-plaintext" (blur)="onSaveItem(metadataType, i);">
+              </mat-form-field>
+            </div>
             <div>
               <button mat-button (click)="onRemoveItem(metadataType, i)"><mat-icon>delete</mat-icon></button>
             </div>

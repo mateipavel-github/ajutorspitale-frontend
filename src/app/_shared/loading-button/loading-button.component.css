@@ -1,0 +1,27 @@
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container {
+  display: inline-block;
+  position: relative;
+}
+
+button mat-icon.showOnHover {
+    visibility: hidden;
+}
+button:hover mat-icon.showOnHover {
+    visibility: visible;
+}
+
+button:hover:not([ng-reflect-color=primary]) {
+    background-color:rgba(0, 0, 0, .04);
+}

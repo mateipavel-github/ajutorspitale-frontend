@@ -12,6 +12,9 @@ import { EditRequestDataComponent } from './requests/edit-request/edit-request-d
 import { ListDeliveriesComponent } from './deliveries/list-deliveries/list-deliveries.component';
 import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.component';
 import { MetadataEditorComponent } from './metadata/editor/metadata-editor.component';
+import { FilterFormComponent } from './requests/list-requests/filter-form/filter-form.component';
+import { ListUsersComponent } from './users/list-users/list-users.component';
+import { MatTableModule } from '@angular/material/table';
 
 
 
@@ -26,12 +29,15 @@ import { MetadataEditorComponent } from './metadata/editor/metadata-editor.compo
     EditRequestDataComponent,
     ListDeliveriesComponent,
     EditDeliveryComponent,
-    MetadataEditorComponent
+    MetadataEditorComponent,
+    FilterFormComponent,
+    ListUsersComponent
   ],
   imports: [
     CommonModule,
     WidgetModule,
     BootstrapInterfaceModule,
+    MatTableModule,
     AdminRoutingModule
   ]
 })

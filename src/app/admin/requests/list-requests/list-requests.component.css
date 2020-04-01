@@ -12,7 +12,8 @@ a.active {
     color: #673AB7;
 }
 
-.assigned-user mat-icon {
-    visibility: hidden;
+.side-options {width:200px;}
+
+.status2 {
+    color: green;
 }
-.assigned-user:hover mat-icon {visibility: visible; }

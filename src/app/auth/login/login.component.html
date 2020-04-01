@@ -15,10 +15,9 @@
 
     <span class="login-error" *ngIf="loginRequestError">Date invalide.</span>
     <span class="login-success" *ngIf="loginRequestSucces">Login OK. Te redirecționăm...</span>
-    <app-loading-status [loaded]="loginRequestDone"></app-loading-status>
 
     <div>
-      <button type="submit" mat-flat-button color="primary">Login</button>
+      <app-loading-button btnStyle="flat" type="submit" [loading]="!loginRequestDone" color="primary" label="Login"></app-loading-button>
     </div>
 
   </form>

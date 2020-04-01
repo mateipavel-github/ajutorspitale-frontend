@@ -1,0 +1,100 @@
+<div class="page-content">
+  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="40px">
+
+    <div class="list" fxFlex>
+      <h1>Listă utilizatori</h1>
+    
+      <app-loading-status [loaded]="usersLoaded"></app-loading-status>
+      <table *ngIf="usersLoaded" #usersTable style="width: 100%;" mat-table [dataSource]="users" class="mat-elevation-z1">
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Nume </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="phone_number">
+          <th mat-header-cell *matHeaderCellDef> Telefon </th>
+          <td mat-cell *matCellDef="let element"> {{element.phone_number}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <td mat-cell *matCellDef="let element"> {{element.role?.label || "not set" }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let element; let i=index">
+            <button (click)="onEditUser(i);" mat-icon-button>
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button (click)="onDeleteUser(i);" mat-icon-button>
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <div class="form" style="width: 400px;">
+      <h1 *ngIf="userEditForm.get('id').value">Modifică utilizator</h1>
+      <h1 *ngIf="!userEditForm.get('id').value">Adaugă utilizator</h1>
+      <mat-card>
+        <form [formGroup]="userEditForm" (submit)="onSaveUser()">
+          <input type="hidden" formControlName="id" />
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-label>Nume</mat-label>
+            <input matInput formControlName="name" type="text" class="form-control" aria-describedby="name"
+              placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-label>Telefon</mat-label>
+            <input matInput formControlName="phone_number" type="text" class="form-control"
+              aria-describedby="phone_number" placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="text" class="form-control" aria-describedby="email"
+              placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-label>Parolă</mat-label>
+            <input matInput formControlName="password" type="text" class="form-control" aria-describedby="password"
+              placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Rol</mat-label>
+            <mat-select placeholder="Alege" formControlName="role_type_id">
+              <mat-option *ngFor="let r of dataService.metadata.user_role_types" [value]="r.id">{{ r.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div style="margin-top: 20px;">
+            <!-- <button type="submit" mat-flat-button color="primary">Salvează</button> -->
+            <app-loading-button color="primary" label="Save" [loading]="formLoading" type="submit"></app-loading-button>
+
+            <button mat-stroked-button (click)="resetForm()" *ngIf="userEditForm.get('id').value">Anulează</button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>

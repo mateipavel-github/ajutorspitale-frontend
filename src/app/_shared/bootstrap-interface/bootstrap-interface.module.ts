@@ -1,3 +1,4 @@
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NewMetadataDialogComponent } from './../new-metadata-dialog/new-metadata-dialog.component';
 import { LoadingStatusComponent } from './../loading-status/loading-status.component';
 import { NgModule } from '@angular/core';
@@ -19,9 +20,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule, MatMenu } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatChipsModule } from '@angular/material/chips';
 
 
 @NgModule({
@@ -47,6 +51,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatCardModule,
     MatMenuModule,
     MatDialogModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -73,6 +81,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatCardModule,
     MatMenuModule,
     MatDialogModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
 
     ReactiveFormsModule,
     FormsModule

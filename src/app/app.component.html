@@ -1,2 +1,2 @@
-<div *ngIf="!appLoaded">Loading...</div>
+<app-loading-status [loaded]="appLoaded"></app-loading-status>
 <router-outlet *ngIf="appLoaded"></router-outlet>
