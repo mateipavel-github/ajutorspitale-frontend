@@ -5,6 +5,7 @@ import { DataService } from 'src/app/_services/data.service';
 import { SessionDataService } from 'src/app/_services/session-data.service';
 import { switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-new-request',
@@ -24,17 +25,18 @@ export class NewRequestComponent implements OnInit {
         return dataService.getRequest(params.get('id'));
       } else {
         this.mode = 'newRequest';
-        if (!params.get('id')) {
-          this.dataLoaded = true;
+        this.dataLoaded = true;
+
+        if (environment.dummyData) {
+          this.sessionData.currentRequest = environment.dummyData.request;
         }
-        this.initForm();
+
         return new Subject();
       }
     })).subscribe(serverResponse => {
       this.dataLoaded = true;
       this.sessionData.currentRequest = serverResponse['data'];
       this.mode = 'updateRequest';
-      this.initForm();
     });
   }
 
@@ -64,15 +66,6 @@ export class NewRequestComponent implements OnInit {
     });
   }
 
-  public initForm() {
-    if (this.mode === 'updateRequest') {
-      this.editForm.setValue({
-        extra_info: this.sessionData.currentRequest['extra_info'],
-        needs_text: this.sessionData.currentRequest['needs_text']
-      });
-    }
-  }
-
   public initSessionData() {
     this.sessionData.currentRequestId = 0;
     this.sessionData.currentRequest = {
@@ -98,6 +91,9 @@ export class NewRequestComponent implements OnInit {
       extra_info: new FormControl(),
       needs_text: new FormControl()
     });
+    if (this.sessionData.currentRequest) {
+      this.editForm.setValue(this.sessionData.currentRequest);
+    }
   }
 
 }

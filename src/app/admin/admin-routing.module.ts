@@ -1,3 +1,4 @@
+import { AuthGuardService } from './../_middleware/route-guards/auth-guard.service';
 import { ListDeliveriesComponent } from './deliveries/list-deliveries/list-deliveries.component';
 import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.component';
 import { EditRequestComponent } from './requests/edit-request/edit-request.component';
@@ -12,7 +13,7 @@ import { AdminComponent } from './admin.component';
 
 const routes: Routes = [
   {
-    path: 'admin', component: AdminComponent,
+    path: 'admin', component: AdminComponent, canActivate: [AuthGuardService],
     children: [
       { path: 'requests', component: ListRequestsComponent },
       { path: 'requests/:filter', component: ListRequestsComponent },

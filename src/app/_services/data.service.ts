@@ -67,12 +67,17 @@ export class DataService {
 
   }
 
+  public addMetadata(type, item) {
+    this.metadata[type].push(item);
+  }
+
   public storeRequestChange(data) {
-    console.log('Sending data to ', environment.api.url + '/changeRequests', data);
+    data._method = 'PUT';
     return this.api.post(environment.api.url + '/changeRequests', data);
   }
 
   public storeRequest(data) {
+    data._method = 'PUT';
     return this.api.post(environment.api.url + '/requests', data);
   }
 
@@ -104,5 +109,10 @@ export class DataService {
 
   public login(data: any) {
     return this.api.post(environment.api.url + '/user/login', data);
+  }
+
+  public storeMetadataType(data) {
+    data['_method'] = 'PUT';
+    return this.api.post(environment.api.url + '/metadata', data);
   }
 }

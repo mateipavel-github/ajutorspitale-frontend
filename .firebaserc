@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "ajutorspitale-entreprenation"
+  },
+  "targets": {
+    "ajutorspitale-entreprenation": {
+      "hosting": {
+        "frontend": [
+          "ajutorspitale-entreprenation"
+        ]
+      }
+    }
+  }
+}

@@ -1,7 +1,9 @@
+import { NewMetadataDialogComponent } from './../../../../_shared/new-metadata-dialog/new-metadata-dialog.component';
 import { SessionDataService } from './../../../../_services/session-data.service';
 import { DataService } from './../../../../_services/data.service';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit-request-needs',
@@ -13,9 +15,24 @@ export class EditRequestNeedsComponent implements OnInit {
   changeForm: FormGroup;
   showChangeForm = false;
 
-  constructor(public dataService: DataService, public sessionData: SessionDataService) {}
+  constructor(public dataService: DataService, public sessionData: SessionDataService, public dialog: MatDialog) {}
 
   ngOnInit(): void { }
+
+  openNewMetadataDialog(metadataType, formControl: FormControl): void {
+    const dialogRef = this.dialog.open(NewMetadataDialogComponent, {
+      width: '400px',
+      data: {'metadata_type': metadataType}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        formControl.setValue(result.id);
+      } else {
+        formControl.reset();
+      }
+    });
+  }
 
   initForm() {
     this.changeForm = new FormGroup({
@@ -39,6 +56,13 @@ export class EditRequestNeedsComponent implements OnInit {
       quantity: new FormControl()
     });
 
+    f.get('need_type_id').valueChanges.subscribe(val => {
+      console.log(val);
+      if (val === 0) {
+        this.openNewMetadataDialog('need_types', <FormControl>f.get('need_type_id'));
+      }
+    });
+
     switch (type) {
       case 'add':
         this.getAsFormArray('needs_to_add').push(f);
@@ -53,16 +77,20 @@ export class EditRequestNeedsComponent implements OnInit {
     // tslint:disable-next-line:prefer-const
     let data = this.changeForm.value;
     data.needs = [];
-    data.needs_to_add.forEach(need => {
-      need.quantity = parseInt(need.quantity, 10);
-      data.needs.push(need);
-    });
-    data.needs_to_subtract.forEach(need => {
-      need.quantity = -1 * need.quantity;
-      data.needs.push(need);
-    });
-    delete data.needs_to_add;
-    delete data.needs_to_subtract;
+    if (data.needs_to_add) {
+      data.needs_to_add.forEach(need => {
+        need.quantity = parseInt(need.quantity, 10);
+        data.needs.push(need);
+      });
+      delete data.needs_to_add;
+    }
+    if (data.needs_to_subtract) {
+      data.needs_to_subtract.forEach(need => {
+        need.quantity = -1 * need.quantity;
+        data.needs.push(need);
+      });
+      delete data.needs_to_subtract;
+    }
     this.dataService.storeRequestChange(data).subscribe(serverResponse => {
       if (serverResponse['success']) {
         this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];

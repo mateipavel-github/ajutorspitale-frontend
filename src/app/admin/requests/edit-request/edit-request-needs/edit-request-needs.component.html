@@ -26,6 +26,7 @@
             <mat-label>Tip</mat-label>
             <mat-select placeholder="Alege" formControlName="need_type_id">
               <mat-option *ngFor="let k of dataService.metadata['need_types']" [value]="k.id">{{ k.label }}</mat-option>
+              <mat-option [value]="0"> (+) Nevoie nouă (+)</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field fxFlex="30%" appearance="outline">
@@ -50,8 +51,8 @@
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Nevoie</mat-label>
             <mat-select placeholder="Alege" formControlName="need_type_id">
-              <mat-option *ngFor="let k of dataService.metadata['need_types']" [value]="k.id">{{ k.label }}
-              </mat-option>
+              <mat-option *ngFor="let k of dataService.metadata['need_types']" [value]="k.id">{{ k.label }}</mat-option>
+              <mat-option [value]="0"> (+) Nevoie nouă (+)</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field fxFlex="30%" appearance="outline">

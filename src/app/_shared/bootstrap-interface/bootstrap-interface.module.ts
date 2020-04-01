@@ -1,3 +1,4 @@
+import { NewMetadataDialogComponent } from './../new-metadata-dialog/new-metadata-dialog.component';
 import { LoadingStatusComponent } from './../loading-status/loading-status.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -24,7 +25,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [NewMetadataDialogComponent],
   imports: [
     CommonModule,
     BrowserModule,
@@ -45,6 +46,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatSelectModule,
     MatCardModule,
     MatMenuModule,
+    MatDialogModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -70,9 +72,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatSelectModule,
     MatCardModule,
     MatMenuModule,
+    MatDialogModule,
 
     ReactiveFormsModule,
     FormsModule
+  ],
+
+  entryComponents: [
+    NewMetadataDialogComponent
   ]
 
 })

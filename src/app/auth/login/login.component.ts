@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AuthService } from './../../_services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -12,8 +13,9 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loginRequestDone = true;
   loginRequestError = false;
+  loginRequestSucces = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   onLogin() {
     this.loginRequestDone = false;
@@ -22,6 +24,9 @@ export class LoginComponent implements OnInit {
       this.loginRequestDone = true;
       if (!loginResult.success) {
         this.loginRequestError = true;
+      } else {
+        this.loginRequestSucces = true;
+        this.router.navigate(['admin']);
       }
     });
   }
