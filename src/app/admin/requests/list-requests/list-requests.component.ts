@@ -79,7 +79,6 @@ export class ListRequestsComponent implements OnInit {
   }
 
   onMassAssign(howMany) {
-    
     this.requestsLoaded = false;
 
     this.dataService.assignCurrentUserToManyRequests(howMany).subscribe(serverResponse => {

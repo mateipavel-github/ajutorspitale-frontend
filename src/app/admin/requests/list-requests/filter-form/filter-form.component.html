@@ -2,7 +2,7 @@
   <mat-form-field>
     <mat-label>Status</mat-label>
     <mat-select placeholder="Filtrează" formControlName="status">
-      <mat-option *ngFor="let s of statusOptions" [value]="s.id">{{ s.label }}</mat-option>
+      <mat-option *ngFor="let s of statusOptions" [value]="s.slug">{{ s.label }}</mat-option>
     </mat-select>
   </mat-form-field>
 </form>

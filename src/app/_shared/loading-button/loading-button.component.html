@@ -4,7 +4,7 @@
   </div>
 
   <ng-template #buttonContentTemplate>
-    {{ loading ? 'Loading...' : label }}
+    {{ label }}
     <mat-icon *ngIf="icon!=''" [ngClass]="{'showOnHover': showIcon==='hover'}">{{icon}}</mat-icon>
   </ng-template>
 

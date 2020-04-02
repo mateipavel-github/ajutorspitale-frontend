@@ -11,7 +11,7 @@ export class FilterService {
   defaultFilters = {
     'flag': 'all',
     'per_page': 100,
-    'status': 1
+    'status': 'new'
   };
 
   filters = {};
@@ -49,15 +49,15 @@ export class FilterService {
     switch (flag) {
       case 'mine':
         this.filters['assigned_user_id'] = this.authService.currentUserValue.id;
-        this.filters['status'] = '1,2,4';
+        this.filters['status'] = 'new,approved,complete';
         break;
       case 'unassigned':
         this.filters['assigned_user_id'] = null;
-        this.filters['status'] = '1,2,4';
+        this.filters['status'] = 'new,approved,complete';
         break;
       case 'all':
         delete this.filters['assigned_user_id'];
-        this.filters['status'] = '1,2,4';
+        this.filters['status'] = 'new,approved,complete';
         break;
     }
   }
