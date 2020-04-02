@@ -16,6 +16,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 this.authService.logout();
                 this.router.navigate(['user', 'login']);
             }
+            if (err.status === 500) {
+                alert('Server error');
+            }
 
             const error = err.error.message || err.statusText;
             return throwError(err.error);

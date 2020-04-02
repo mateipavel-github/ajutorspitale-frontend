@@ -1,6 +1,6 @@
 import { AdminModule } from './admin/admin.module';
 
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { BootstrapInterfaceModule } from './_shared/bootstrap-interface/bootstrap-interface.module';
@@ -11,6 +11,11 @@ import { WidgetModule } from './_shared/widget/widget.module';
 import { LoginComponent } from './auth/login/login.component';
 import { HttpErrorInterceptor } from './_middleware/http/http-error.interceptor';
 import { HttpAuthInterceptor } from './_middleware/http/http-auth.interceptor';
+import localeRo from '@angular/common/locales/ro';
+import { registerLocaleData } from '@angular/common';
+
+// the second parameter 'fr-FR' is optional
+registerLocaleData(localeRo, 'ro-RO');
 
 @NgModule({
   declarations: [
@@ -30,7 +35,8 @@ import { HttpAuthInterceptor } from './_middleware/http/http-auth.interceptor';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true },
+    { provide: LOCALE_ID, useValue: 'ro-RO' }
   ],
   bootstrap: [AppComponent]
 })

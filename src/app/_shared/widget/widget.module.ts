@@ -1,3 +1,4 @@
+import { Nl2BrPipe } from './../nl2br.pipe';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,13 +9,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 
-const components = [
+const componentsAndPipes = [
   LoadingStatusComponent,
-  LoadingButtonComponent
+  LoadingButtonComponent,
+  Nl2BrPipe
 ];
 
 @NgModule({
-  declarations: components,
+  declarations: componentsAndPipes,
   imports: [
     CommonModule,
     RouterModule,
@@ -22,6 +24,7 @@ const components = [
     MatIconModule,
     MatProgressSpinnerModule
   ],
-  exports: components
+  exports: componentsAndPipes
 })
+
 export class WidgetModule { }

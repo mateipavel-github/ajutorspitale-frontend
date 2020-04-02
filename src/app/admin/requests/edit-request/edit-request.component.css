@@ -23,6 +23,11 @@ h1 {margin-bottom: 0;}
     font-weight: bold;
     margin-top: 10px;
 }
+.item .label > a {
+    font-weight: normal;
+    color: #673ab7;
+    cursor: pointer;
+}
 .item .value {
     font-weight: normal;
 }

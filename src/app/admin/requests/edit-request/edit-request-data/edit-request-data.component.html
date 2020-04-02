@@ -37,6 +37,21 @@
     </mat-form-field>
   </div>
 
-  <button mat-flat-button color="primary">Salvează</button>
+  <h2>Tipul și motivul actualizării</h2>
+  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+    <mat-form-field fxFlex="30%" appearance="outline">
+      <mat-label>Tip actualizare</mat-label>
+      <mat-select required placeholder="Alege" formControlName="change_type_id">
+        <mat-option *ngFor="let k of dataService.metadata['change_types']" [value]="k.id">{{ k.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="70%" appearance="outline">
+      <mat-label>Detalii</mat-label>
+      <input matInput formControlName="user_comment" type="text" class="form-control" class="form-control-plaintext">
+    </mat-form-field>
+  </div>
+
+  <app-loading-button [loading]="formLoading" btnStyle="flat" color="primary" (btnClick)="onSubmit()" label="Salvează"></app-loading-button>
 
 </form>

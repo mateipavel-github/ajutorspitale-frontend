@@ -14,6 +14,8 @@ export class EditRequestNeedsComponent implements OnInit {
 
   changeForm: FormGroup;
   showChangeForm = false;
+  showHistory;
+  needsFormLoading = false;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService, public dialog: MatDialog) {}
 
@@ -47,6 +49,10 @@ export class EditRequestNeedsComponent implements OnInit {
   onUpdateNeeds() {
     this.initForm();
     this.showChangeForm = true;
+  }
+
+  onRemoveNeed(type, i) {
+    this.getAsFormArray('needs_to_' + type).removeAt(i);
   }
 
   onAddNeed(type) {
@@ -91,9 +97,16 @@ export class EditRequestNeedsComponent implements OnInit {
       });
       delete data.needs_to_subtract;
     }
+
+    this.needsFormLoading = true;
     this.dataService.storeRequestChange(data).subscribe(serverResponse => {
+      this.needsFormLoading = false;
       if (serverResponse['success']) {
         this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];
+        this.changeForm.reset();
+        this.showChangeForm = false;
+      } else {
+        alert(serverResponse['error']);
       }
     });
   }

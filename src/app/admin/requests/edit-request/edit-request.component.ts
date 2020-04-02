@@ -13,6 +13,7 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 export class EditRequestComponent implements OnInit {
 
   dataLoaded = false;
+  showNeedsText = true;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService, private route: ActivatedRoute) {
 
@@ -22,6 +23,7 @@ export class EditRequestComponent implements OnInit {
     })).subscribe(serverResponse => {
       this.dataLoaded = true;
       this.sessionData.currentRequest = serverResponse['data'];
+      this.showNeedsText = !(this.sessionData.currentRequest.needs && this.sessionData.currentRequest.needs.length > 0);
     });
 
   }

@@ -1,12 +1,22 @@
 <div class="tab-content">
 
+  <div class="current-needs" *ngIf="!showChangeForm">
+    <h2>Nevoi curente</h2>
+    <div class="change-need-row" *ngFor="let n of sessionData.currentRequest.current_needs" fxLayout="row"
+      fxLayoutAlign="space-between start" fxLayoutGap="5px">
+      <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
+      <div class="bottom-dots" fxFlex>&nbsp;</div>
+      <div>{{ n.quantity | number : '1.0-0' }}</div>
+    </div>
+  </div>
+
   <form class="changeForm" *ngIf="showChangeForm" [formGroup]="changeForm">
-    <h2>Actualizează nevoi</h2>
+    <h2>Tipul și motivul actualizării</h2>
 
     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
         <mat-form-field fxFlex="30%" appearance="outline">
             <mat-label>Tip actualizare</mat-label>
-            <mat-select placeholder="Alege" formControlName="change_type_id">
+            <mat-select required placeholder="Alege" formControlName="change_type_id">
                 <mat-option *ngFor="let k of dataService.metadata['change_types']" [value]="k.id">{{ k.label }}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -17,6 +27,7 @@
         </mat-form-field>
     </div>
 
+    <h2>Nevoi de actualizat</h2>
     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="15px">
       <mat-card fxFlex="50%" formArrayName="needs_to_add">
         <h3 class="needs-header">De adăugat (nevoi în plus)</h3>
@@ -60,7 +71,7 @@
             <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext">
           </mat-form-field>
           <div fxFlex="none" class="deleteItem">
-            <button mat-icon-button type="button" (click)="onRemoveNeed('substract',i)">
+            <button mat-icon-button type="button" (click)="onRemoveNeed('subtract',i)">
               <mat-icon>delete_forever</mat-icon>
             </button>
           </div>
@@ -71,7 +82,10 @@
       </mat-card>
     </div>
 
-    <button style="margin-top: 20px;" mat-flat-button color="primary" (click)="onSubmit()">Salvează</button>
+    <div style="margin-top: 20px;">
+      <app-loading-button (btnClick)="onSubmit()" type="submit" [loading]="needsFormLoading" label="Salvează" btnStyle="flat" color="primary"></app-loading-button>
+      <button style="margin-left: 20px;" mat-button (click)="showChangeForm=!showChangeForm">Anulează</button>
+    </div>
 
   </form>
 
@@ -81,23 +95,31 @@
         nevoi</button>
     </div>
   </div>
+
   <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,.12) ">
-    <h2>Istoric</h2>
-    <div class="history" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="15px" ngClass.gt-xs="ml-10">
+    <div fxLayout="row" fxLayoutAlign="start start">
+      <h2>Istoric</h2>
+      <button mat-button color="primary" style="margin-left: 20px;" (click)="showHistory=!showHistory">{{ showHistory ? "hide" : "show" }}</button>
+    </div>
+    <div *ngIf="showHistory" class="history" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="15px"
+      ngClass.gt-xs="ml-10">
         <mat-card fxFlex.sm="0 1 calc(50%-15px)" fxFlex.md="0 1 calc(33%-15px)" fxFlex.gt-md="0 1 calc(25%-15px)"
           *ngFor="let change of sessionData.currentRequest.changes">
-            <mat-card-subtitle><strong>{{ dataService.getMetadataLabel('change_types',change.change_type_id) }}</strong>
-                {{ change.created_at | date }}</mat-card-subtitle>
+            <mat-card-title>
+              <span>{{ dataService.getMetadataLabel('change_types',change.change_type_id) }}</span>
+              by 
+              <span>{{ change.user ? change.user.name : 'unknown'}}</span>
+            </mat-card-title>
+            <mat-card-subtitle>{{ change.created_at | date : 'short' }}</mat-card-subtitle>
             <mat-card-content>
                 <div class="change-need-row" *ngFor="let n of change.needs" fxLayout="row" fxLayoutAlign="space-between start"
                 fxLayoutGap="5px">
                 <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
                 <div class="bottom-dots" fxFlex>&nbsp;</div>
-                <div>{{ n.quantity }}</div>
+                <div>{{ n.quantity | number : '1.0-0' }}</div>
                 </div>
             </mat-card-content>
         </mat-card>
     </div>
   </div>
-
 </div>

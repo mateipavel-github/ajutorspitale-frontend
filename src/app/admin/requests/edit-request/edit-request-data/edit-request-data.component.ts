@@ -11,13 +11,13 @@ import { Component, OnInit } from '@angular/core';
 export class EditRequestDataComponent implements OnInit {
 
   editForm: FormGroup;
+  formLoading = false;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService) {
 
   }
 
   public initForm() {
-    console.log('initializing form');
     this.editForm = new FormGroup({
       name: new FormControl(this.sessionData.currentRequest['name']),
       phone_number: new FormControl(this.sessionData.currentRequest['phone_number']),
@@ -25,12 +25,28 @@ export class EditRequestDataComponent implements OnInit {
       medical_unit_name: new FormControl(this.sessionData.currentRequest['medical_unit_name']),
       medical_unit_id: new FormControl(this.sessionData.currentRequest['medical_unit_id']),
       medical_unit_type_id: new FormControl(this.sessionData.currentRequest['medical_unit_type_id']),
-      extra_info: new FormControl(this.sessionData.currentRequest['extra_info'])
+      extra_info: new FormControl(this.sessionData.currentRequest['extra_info']),
+
+      help_request_id: new FormControl(this.sessionData.currentRequestId),
+      change_type_id: new FormControl(),
+      user_comment: new FormControl(),
     });
   }
 
   ngOnInit(): void {
     this.initForm();
+  }
+
+  public onSubmit() {
+    this.formLoading = true;
+    this.dataService.storeRequestChange(this.editForm.value).subscribe(serverResponse => {
+      this.formLoading = false;
+      if (serverResponse['success']) {
+        this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];
+      } else {
+        alert(serverResponse['error']);
+      }
+    });
   }
 
 }

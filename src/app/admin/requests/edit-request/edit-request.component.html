@@ -20,6 +20,21 @@
         </div>
         <div class="preview-side">
             <div class="item">
+              <div class="label">Cererea originală: <a (click)="showNeedsText=!showNeedsText">{{ showNeedsText ? "ascunde" : "arată" }}</a></div>
+              <div *ngIf="showNeedsText" class="value" [innerHTML]="sessionData.currentRequest.needs_text | nl2br"></div>
+            </div>
+            <div class="item">
+              <div class="label">Nevoi curente (agregate): </div>
+              <div class="value">
+                  <div class="change-need-row" *ngFor="let n of sessionData.currentRequest.current_needs" fxLayout="row"
+                    fxLayoutAlign="space-between start" fxLayoutGap="5px">
+                    <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
+                    <div class="bottom-dots" fxFlex>&nbsp;</div>
+                    <div>{{ n.quantity | number : '1.0-0' }}</div>
+                  </div>
+              </div>
+            </div>
+            <div class="item">
                 <div class="label">Unitate: </div>
                 <div class="value">{{ sessionData.currentRequest.medical_unit_name }}</div>
                 <div class="value">{{ dataService.getMetadataLabel('medical_unit_types', sessionData.currentRequest.medical_unit_type_id) }}</div>
