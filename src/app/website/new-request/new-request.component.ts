@@ -27,8 +27,8 @@ export class NewRequestComponent implements OnInit {
         this.mode = 'newRequest';
         this.dataLoaded = true;
 
-        if (environment.dummyData) {
-          this.sessionData.currentRequest = environment.dummyData.request;
+        if ('dummyData' in environment && environment['dummyData']) {
+          this.sessionData.currentRequest = environment['dummyData']['request'];
         }
 
         return new Subject();
