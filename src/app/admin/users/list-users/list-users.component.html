@@ -58,7 +58,7 @@
       <h1 *ngIf="userEditForm.get('id').value">Modifică utilizator</h1>
       <h1 *ngIf="!userEditForm.get('id').value">Adaugă utilizator</h1>
       <mat-card>
-        <form [formGroup]="userEditForm" (submit)="onSaveUser()">
+        <form [formGroup]="userEditForm" (submit)="onSaveUser()" #userFormByDirective="ngForm">
           <input type="hidden" formControlName="id" />
           <mat-form-field style="width: 100%;" appearance="outline">
             <mat-label>Nume</mat-label>

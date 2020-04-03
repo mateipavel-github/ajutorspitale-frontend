@@ -1,8 +1,10 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppConstants } from './../../../app-constants';
 import { DataService } from 'src/app/_services/data.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
+import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-list-users',
@@ -10,6 +12,8 @@ import { MatTable } from '@angular/material/table';
   styleUrls: ['./list-users.component.css']
 })
 export class ListUsersComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective) userFormDirective;
 
   users;
   usersLoaded = false;
@@ -20,7 +24,7 @@ export class ListUsersComponent implements OnInit {
   @ViewChild(MatTable) usersTable: MatTable<any>;
   AppConstants;
 
-  constructor(public dataService: DataService) {
+  constructor(public dataService: DataService, private snackBar: MatSnackBar) {
 
     this.AppConstants = AppConstants;
 
@@ -64,15 +68,22 @@ export class ListUsersComponent implements OnInit {
     this.dataService.saveUser(this.userEditForm.value).subscribe(serverResponse => {
       this.formLoading = false;
       if (serverResponse['success']) {
-        this.resetForm();
         if (data.id > 0) {
           this.users[this.findUserIndexById(data.id)] = serverResponse['data']['item'];
         } else {
           this.users.push(serverResponse['data']['item']);
         }
         this.usersTable.renderRows();
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: 'Succes' },
+          panelClass: 'snackbar-success'
+        });
+        this.resetForm();
       } else {
-        alert(serverResponse['error']);
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: 'Ceva nu a mers...' },
+          panelClass: 'snackbar-error'
+        });
       }
     });
   }
@@ -100,6 +111,7 @@ export class ListUsersComponent implements OnInit {
   resetForm() {
     this.userEditForm.get('password').setValidators([Validators.required]);
     this.userEditForm.reset();
+    this.userFormDirective.resetForm();
   }
 
 }

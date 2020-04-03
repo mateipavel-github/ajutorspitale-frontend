@@ -38,6 +38,7 @@ export class NewRequestComponent implements OnInit {
 
         if ('dummyData' in environment && environment['dummyData']) {
           this.sessionData.currentRequest = environment['dummyData']['request'];
+          this.sessionData.currentRequestId = 1;
         }
 
         return new Subject();
@@ -115,6 +116,7 @@ export class NewRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.editForm = new FormGroup({
+      id: new FormControl(),
       name: new FormControl(null, [Validators.required]),
       phone_number: new FormControl(null, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
       job_title: new FormControl(null, [Validators.required]),
@@ -127,16 +129,12 @@ export class NewRequestComponent implements OnInit {
     });
 
     if (this.sessionData.currentRequest) {
-      this.editForm.setValue(this.sessionData.currentRequest);
+      this.editForm.setValue({ ...this.sessionData.currentRequest, ...{ id: this.sessionData.currentRequestId } });
     }
   }
 
   public showSuccessDialog() {
       const dialogRef = this.dialog.open(RequestSentDialogComponent);
-
-      // dialogRef.afterClosed().subscribe(result => {
-      // });
-
   }
 
 }
