@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
+  { 'path': '', redirectTo: 'user/login', pathMatch: 'full'},
   { 'path': 'new-request', component: NewRequestComponent },
   { 'path': 'new-request/:id', component: NewRequestComponent },
   //

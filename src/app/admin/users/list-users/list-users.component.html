@@ -62,18 +62,21 @@
           <input type="hidden" formControlName="id" />
           <mat-form-field style="width: 100%;" appearance="outline">
             <mat-label>Nume</mat-label>
-            <input matInput formControlName="name" type="text" class="form-control" aria-describedby="name"
+            <input required matInput formControlName="name" type="text" class="form-control" aria-describedby="name"
               placeholder="" class="form-control-plaintext">
           </mat-form-field>
           <mat-form-field style="width: 100%;" appearance="outline">
             <mat-label>Telefon</mat-label>
-            <input matInput formControlName="phone_number" type="text" class="form-control"
+            <input required matInput formControlName="phone_number" type="text" class="form-control"
               aria-describedby="phone_number" placeholder="" class="form-control-plaintext">
+              <mat-error *ngIf="userEditForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}
+              </mat-error>
           </mat-form-field>
           <mat-form-field style="width: 100%;" appearance="outline">
             <mat-label>Email</mat-label>
             <input matInput formControlName="email" type="text" class="form-control" aria-describedby="email"
               placeholder="" class="form-control-plaintext">
+              <mat-error *ngIf="userEditForm.get('email').errors">Email invalid</mat-error>
           </mat-form-field>
           <mat-form-field style="width: 100%;" appearance="outline">
             <mat-label>Parolă</mat-label>
@@ -82,16 +85,15 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Rol</mat-label>
-            <mat-select placeholder="Alege" formControlName="role_type_id">
+            <mat-select required placeholder="Alege" formControlName="role_type_id">
               <mat-option *ngFor="let r of dataService.metadata.user_role_types" [value]="r.id">{{ r.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <div style="margin-top: 20px;">
             <!-- <button type="submit" mat-flat-button color="primary">Salvează</button> -->
-            <app-loading-button color="primary" label="Save" [loading]="formLoading" type="submit"></app-loading-button>
-
-            <button mat-stroked-button (click)="resetForm()" *ngIf="userEditForm.get('id').value">Anulează</button>
+            <app-loading-button [btnDisabled]="!userEditForm.valid" color="primary" label="Save" [loading]="formLoading" type="submit"></app-loading-button>
+            <button style="margin-left: 20px;" mat-stroked-button (click)="resetForm()" *ngIf="userEditForm.get('id').value">Anulează</button>
           </div>
         </form>
       </mat-card>

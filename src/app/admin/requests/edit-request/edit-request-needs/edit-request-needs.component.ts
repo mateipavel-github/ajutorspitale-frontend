@@ -1,9 +1,12 @@
+import { EditNeedsValidator } from '../../../../_shared/_form-validators/edit-request-validators';
 import { NewMetadataDialogComponent } from './../../../../_shared/new-metadata-dialog/new-metadata-dialog.component';
 import { SessionDataService } from './../../../../_services/session-data.service';
 import { DataService } from './../../../../_services/data.service';
-import { FormGroup, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-request-needs',
@@ -17,7 +20,8 @@ export class EditRequestNeedsComponent implements OnInit {
   showHistory;
   needsFormLoading = false;
 
-  constructor(public dataService: DataService, public sessionData: SessionDataService, public dialog: MatDialog) {}
+  constructor(public dataService: DataService, public sessionData: SessionDataService,
+    public dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void { }
 
@@ -38,12 +42,18 @@ export class EditRequestNeedsComponent implements OnInit {
 
   initForm() {
     this.changeForm = new FormGroup({
-      'help_request_id': new FormControl(this.sessionData.currentRequestId),
-      'change_type_id': new FormControl(),
+      'help_request_id': new FormControl(this.sessionData.currentRequestId, [
+        Validators.required,
+        Validators.min(1)
+      ]),
+      'change_type_id': new FormControl(null, [
+        Validators.required,
+        Validators.min(1)
+      ]),
       'user_comment': new FormControl(),
       'needs_to_add': new FormArray([]),
       'needs_to_subtract': new FormArray([])
-    });
+    }, { validators: EditNeedsValidator });
   }
 
   onUpdateNeeds() {
@@ -58,8 +68,8 @@ export class EditRequestNeedsComponent implements OnInit {
   onAddNeed(type) {
 
     const f = new FormGroup({
-      need_type_id: new FormControl(),
-      quantity: new FormControl()
+      need_type_id: new FormControl(null, Validators.required),
+      quantity: new FormControl(null, Validators.required)
     });
 
     f.get('need_type_id').valueChanges.subscribe(val => {
@@ -80,35 +90,52 @@ export class EditRequestNeedsComponent implements OnInit {
   }
 
   onSubmit() {
-    // tslint:disable-next-line:prefer-const
-    let data = this.changeForm.value;
-    data.needs = [];
-    if (data.needs_to_add) {
-      data.needs_to_add.forEach(need => {
-        need.quantity = parseInt(need.quantity, 10);
-        data.needs.push(need);
-      });
-      delete data.needs_to_add;
-    }
-    if (data.needs_to_subtract) {
-      data.needs_to_subtract.forEach(need => {
-        need.quantity = -1 * need.quantity;
-        data.needs.push(need);
-      });
-      delete data.needs_to_subtract;
-    }
 
-    this.needsFormLoading = true;
-    this.dataService.storeRequestChange(data).subscribe(serverResponse => {
-      this.needsFormLoading = false;
-      if (serverResponse['success']) {
-        this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];
-        this.changeForm.reset();
-        this.showChangeForm = false;
-      } else {
-        alert(serverResponse['error']);
-      }
+    Object.keys(this.changeForm.controls).forEach(field => {
+      const control = this.changeForm.get(field);
+      control.markAsTouched({ onlySelf: true });
     });
+
+    if (this.changeForm.valid) {
+      // tslint:disable-next-line:prefer-const
+      let data = this.changeForm.value;
+      data.needs = [];
+      if (data.needs_to_add) {
+        data.needs_to_add.forEach(need => {
+          need.quantity = parseInt(need.quantity, 10);
+          data.needs.push(need);
+        });
+        delete data.needs_to_add;
+      }
+      if (data.needs_to_subtract) {
+        data.needs_to_subtract.forEach(need => {
+          need.quantity = -1 * need.quantity;
+          data.needs.push(need);
+        });
+        delete data.needs_to_subtract;
+      }
+
+      this.needsFormLoading = true;
+      this.dataService.storeRequestChange(data).subscribe(serverResponse => {
+        this.needsFormLoading = false;
+        if (serverResponse['success']) {
+          this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];
+          this.changeForm.reset();
+          this.showChangeForm = false;
+          this.snackBar.openFromComponent(SnackbarComponent, {
+            data: { message: 'Nevoile au fost actualizate.' },
+            panelClass: 'snackbar-success'
+          });
+        } else {
+          this.snackBar.openFromComponent(SnackbarComponent, {
+            data: { message: serverResponse['error'] },
+            panelClass: 'snackbar-error'
+          });
+        }
+      });
+    } else {
+
+    }
   }
 
   getAsFormArray(key: string) {

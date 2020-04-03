@@ -38,6 +38,7 @@
                 <div class="label">Unitate: </div>
                 <div class="value">{{ sessionData.currentRequest.medical_unit_name }}</div>
                 <div class="value">{{ dataService.getMetadataLabel('medical_unit_types', sessionData.currentRequest.medical_unit_type_id) }}</div>
+                <div class="value">{{ dataService.getMetadataLabel('counties', sessionData.currentRequest.county_id) }}</div>
             </div>
             <div class="item">
               <div class="label">Persoană: </div>

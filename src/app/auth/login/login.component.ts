@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { AuthService } from './../../_services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -18,23 +18,25 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   onLogin() {
-    this.loginRequestDone = false;
-    this.loginRequestError = false;
-    this.authService.login(this.loginForm.value).subscribe(loginResult => {
-      this.loginRequestDone = true;
-      if (!loginResult.success) {
-        this.loginRequestError = true;
-      } else {
-        this.loginRequestSucces = true;
-        this.router.navigate(['admin']);
-      }
-    });
+    if (this.loginForm.valid) {
+      this.loginRequestDone = false;
+      this.loginRequestError = false;
+      this.authService.login(this.loginForm.value).subscribe(loginResult => {
+        this.loginRequestDone = true;
+        if (!loginResult.success) {
+          this.loginRequestError = true;
+        } else {
+          this.loginRequestSucces = true;
+          this.router.navigate(['admin']);
+        }
+      });
+    }
   }
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
-      'login_identifier': new FormControl(),
-      'password': new FormControl()
+      'login_identifier': new FormControl(null, [Validators.required]),
+      'password': new FormControl(null, [Validators.required])
     });
   }
 

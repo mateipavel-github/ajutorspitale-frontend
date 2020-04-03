@@ -12,7 +12,9 @@ a.active {
     color: #673AB7;
 }
 
-.side-options {width:200px;}
+.side-options {
+    width: 200px;
+}
 
 .status2 {
     color: green;

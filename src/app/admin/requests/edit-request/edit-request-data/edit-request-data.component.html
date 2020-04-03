@@ -5,36 +5,57 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
     <mat-form-field style="width: 100%;" appearance="outline">
       <mat-label>Name</mat-label>
-      <input matInput formControlName="name" type="text" class="form-control" aria-describedby="name" placeholder=""
+      <input required matInput formControlName="name" type="text" class="form-control" aria-describedby="name" placeholder=""
         class="form-control-plaintext">
     </mat-form-field>
 
     <mat-form-field style="width: 100%;" appearance="outline">
       <mat-label>Funcție</mat-label>
-      <input matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
+      <input required matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
         placeholder="" class="form-control-plaintext">
     </mat-form-field>
 
-    <mat-form-field style="width: 100%;" appearance="outline">
+    <mat-form-field matPrefix="+40-" style="width: 100%;" appearance="outline">
       <mat-label>Phone number</mat-label>
-      <input matInput formControlName="phone_number" type="text" class="form-control" aria-describedby="phoneNumber"
+      <input required matInput formControlName="phone_number" type="text" class="form-control"
+        aria-describedby="phoneNumber"
         placeholder="" class="form-control-plaintext">
+        <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}</mat-error>
     </mat-form-field>
   </div>
 
+  <h2>Unitate medicală</h2>
+
   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
-    <mat-form-field style="width: 100%;" appearance="outline">
+    <mat-form-field style="width: 50%;" appearance="outline">
       <mat-label>Medical Unit Name</mat-label>
-      <input matInput formControlName="medical_unit_name" type="text" class="form-control"
+      <input required matInput formControlName="medical_unit_name" type="text" class="form-control"
         aria-describedby="medicalUnitName" placeholder="" class="form-control-plaintext">
     </mat-form-field>
 
-    <mat-form-field style="width: 100%;" appearance="outline">
+    <mat-form-field style="width: 30%;" appearance="outline">
       <mat-label>Medical Unit Type</mat-label>
-      <mat-select placeholder="Medical unit type" formControlName="medical_unit_type_id">
+      <mat-select required placeholder="Medical unit type" formControlName="medical_unit_type_id">
         <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}</mat-option>
       </mat-select>
     </mat-form-field>
+    
+    <mat-form-field style="width: 20%;" appearance="outline">
+      <mat-label>Județ</mat-label>
+      <mat-select required placeholder="Alege" formControlName="county_id">
+        <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- <input type="hidden" formControlName="medical_unit_id" />
+    <label *ngIf="editForm.get('medical_unit_id').value>0">{{ request.medical_unit.name }}</label>
+    <a *ngIf="editForm.get('medical_unit_id').value>0" (click)="clearMedicalUnit()">șterge</a>
+    <a (click)="showMedicalUnitSearch=!showMedicalUnitSearch">{{ showMedicalUnitSearch ? "anulează" : "schimbă" }}</a> -->
+    <app-medical-unit-input-search [inputControl]="editForm.get('medical_unit')" label="Spital de stat" (selected)="onChangeMedicalUnit($event)">
+    </app-medical-unit-input-search>
   </div>
 
   <h2>Tipul și motivul actualizării</h2>
@@ -48,7 +69,8 @@
 
     <mat-form-field fxFlex="70%" appearance="outline">
       <mat-label>Detalii</mat-label>
-      <input matInput formControlName="user_comment" type="text" class="form-control" class="form-control-plaintext">
+      <input required matInput formControlName="user_comment" type="text" class="form-control"
+        class="form-control-plaintext">
     </mat-form-field>
   </div>
 

@@ -1,4 +1,27 @@
 .form-container {
     margin: 20px auto;
+    max-width: 600px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+form { 
+    width: 100;
     max-width: 400px;
+    margin: 40px auto;
+}
+
+.form-error {
+    color: #f44336;
+    margin-bottom: 15px;
+}
+
+mat-card {
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+mat-card-title {
+    font-size: 14px;
 }

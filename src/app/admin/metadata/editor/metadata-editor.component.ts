@@ -1,6 +1,8 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { DataService } from 'src/app/_services/data.service';
 import { Component, OnInit } from '@angular/core';
+import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-metadata-editor',
@@ -13,7 +15,7 @@ export class MetadataEditorComponent implements OnInit {
   metadata;
   editForm: FormGroup;
 
-  constructor(public dataService: DataService) {
+  constructor(public dataService: DataService, private snackBar: MatSnackBar) {
     this.metadataTypes = Object.keys(this.dataService.metadata);
     this.metadata = this.dataService.metadata;
   }
@@ -69,8 +71,15 @@ export class MetadataEditorComponent implements OnInit {
         if (serverResponse['success']) {
           // update ID if necessary
           this.getAsFormArray(metadataType).controls[index].setValue(serverResponse['data']['new_item']);
+          this.snackBar.openFromComponent(SnackbarComponent, {
+            data: { message: 'Succes' },
+            panelClass: 'snackbar-success'
+          });
         } else {
-          alert(serverResponse['error']);
+          this.snackBar.openFromComponent(SnackbarComponent, {
+            data: { message: serverResponse['error'] },
+            panelClass: 'snackbar-error'
+          });
         }
       });
     }

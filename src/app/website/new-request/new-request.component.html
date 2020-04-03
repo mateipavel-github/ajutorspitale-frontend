@@ -1,59 +1,116 @@
 <div class="form-container">
+
+  <h1 *ngIf="mode.value==='newRequest'">Spune-ne ce ai nevoie în lupta împotriva COVID-19</h1>
+  <h1 *ngIf="mode.value==='updateRequest'">Modifică cerere</h1>
+
+  <p>Ești reprezentant al unei unități medicale? Ai nevoie de orice formă de ajutor, de resurse materiale sau umane?
+    Aici poți face apel la mediul de business pentru sprijin imediat!</p>
+  <p>Completează cât mai precis nevoile tale. Ne vom strădui să găsim cât mai rapid soluții practice la problemele cu
+    care te confrunți.</p>
+
   <app-loading-status [loaded]="dataLoaded"></app-loading-status>
+
   <form *ngIf="dataLoaded" [formGroup]="editForm">
 
-    <h1 *ngIf="mode==='newRequest'">Cerere nouă</h1>
-    <h1 *ngIf="mode==='updateRequest'">Modifică cerere</h1>
+    <ng-container *ngIf="mode.value==='newRequest'">
+      <mat-card>
+        <mat-card-title>Care este numele tău? *</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="name" type="text" class="form-control" aria-describedby="name"
+              placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
-    <ng-container *ngIf="mode==='newRequest'">
+      <mat-card>
+        <mat-card-title>La ce număr de telefon te putem contacta? *</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="phone_number" type="text" class="form-control"
+              aria-describedby="phoneNumber" placeholder="0721123456 sau 0268123229" class="form-control-plaintext">
+            <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-form-field style="width: 100%;" appearance="outline">
-        <mat-label>Nume complet</mat-label>
-        <input matInput formControlName="name" type="text" class="form-control" aria-describedby="name" placeholder=""
-          class="form-control-plaintext">
-      </mat-form-field>
+      <mat-card>
+        <mat-card-title>Ce tip de unitate reprezinți? *
+        </mat-card-title>
+        <mat-card-content>
 
-      <mat-form-field style="width: 100%;" appearance="outline">
-        <mat-label>Funcție</mat-label>
-        <input matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
-          placeholder="" class="form-control-plaintext">
-      </mat-form-field>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-select required placeholder="Alege" formControlName="medical_unit_type_id">
+              <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-form-field style="width: 100%;" appearance="outline">
-        <mat-label>Număr de telefon</mat-label>
-        <input matInput formControlName="phone_number" type="text" class="form-control" aria-describedby="phoneNumber"
-          placeholder="07XX XXX XXX" class="form-control-plaintext">
-      </mat-form-field>
+      <mat-card>
+        <mat-card-title>Pe cine reprezinți?</mat-card-title>
+        <mat-card-subtitle>Denumirea spitalului / unității sanitare / medic de familie / altceva</mat-card-subtitle>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="medical_unit_name" type="text" class="form-control"
+              aria-describedby="medicalUnitName" placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-form-field style="width: 100%;" appearance="outline">
-        <mat-label>Nume unitate medicală</mat-label>
-        <input matInput formControlName="medical_unit_name" type="text" class="form-control"
-          aria-describedby="medicalUnitName" placeholder="" class="form-control-plaintext">
-      </mat-form-field>
+      <mat-card>
+        <mat-card-title>Județ *</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-select required placeholder="Alege" formControlName="county_id">
+              <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
-      <mat-form-field style="width: 100%;" appearance="outline">
-        <mat-label>Tip unitate</mat-label>
-        <mat-select placeholder="Alege" formControlName="medical_unit_type_id">
-          <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-card>
+        <mat-card-title>Care este funcția ta?</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="job_title" type="text" class="form-control"
+              aria-describedby="jobTitle" placeholder="" class="form-control-plaintext">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
     </ng-container>
 
-    <mat-form-field style="width: 100%;" appearance="outline">
-      <mat-label>Nevoile curente</mat-label>
-      <textarea style="height: 300px;" matInput formControlName="needs_text" type="text" class="form-control"
-        aria-describedby="needsText" placeholder="" class="form-control-plaintext"></textarea>
-    </mat-form-field>
 
-    <mat-form-field style="width: 100%;" appearance="outline">
-      <mat-label>Alte informații</mat-label>
-      <textarea style="height: 300px;" matInput formControlName="extra_info" type="text" class="form-control"
-        aria-describedby="needsText" placeholder="" class="form-control-plaintext"></textarea>
-    </mat-form-field>
+    <mat-card>
+      <mat-card-title>Care sunt nevoile pe care le aveți? *</mat-card-title>
+      <mat-card-content>
+        <p>Ne vom strădui să găsim cât mai rapid soluții practice la problemele cu care te confrunți. Completează cât
+          mai
+          precis nevoile tale: alimente, apă, materiale sanitare, echipamente, medicamente, infrastructură, transport,
+          orice
+          altceva.</p>
+        <mat-form-field style="width: 100%;" appearance="outline">
+          <textarea required style="height: 300px;" matInput formControlName="needs_text" type="text"
+            class="form-control" aria-describedby="needsText" placeholder="" class="form-control-plaintext"></textarea>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
 
-    <button mat-flat-button color="primary" (click)="onSaveRequest()">Salvează</button>
+    <mat-card>
+      <mat-card-title>Mai e ceva ce vrei să ne transmiți?</mat-card-title>
+      <mat-card-content>
+        <mat-form-field style="width: 100%;" appearance="outline">
+          <textarea style="height: 300px;" matInput formControlName="extra_info" type="text" class="form-control"
+            aria-describedby="extraInfo" placeholder="" class="form-control-plaintext"></textarea>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="form-error" *ngIf="!editForm.valid && editForm.touched">Formularul are erori.</div>
+    <app-loading-button [loading]="formLoading" btnStyle="flat" color="primary" (btnClick)="onSaveRequest()" label="Trimite cererea"></app-loading-button>
   </form>
 
 </div>

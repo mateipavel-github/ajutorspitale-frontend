@@ -8,3 +8,12 @@
   max-width: 1280px;
   margin: 0 auto;
 }
+
+::ng-deep .snackbar-success {
+  background: #4caf50;
+}
+
+::ng-deep .snackbar-error {
+  background: #f44336;
+  color: #FFF;
+}

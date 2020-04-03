@@ -1,6 +1,7 @@
+import { AppConstants } from './../../../app-constants';
 import { DataService } from 'src/app/_services/data.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 
 @Component({
@@ -17,8 +18,11 @@ export class ListUsersComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'email', 'phone_number', 'role', 'actions'];
 
   @ViewChild(MatTable) usersTable: MatTable<any>;
+  AppConstants;
 
   constructor(public dataService: DataService) {
+
+    this.AppConstants = AppConstants;
 
     this.dataService.getUsers().subscribe(serverResponse => {
       this.usersLoaded = true;
@@ -29,17 +33,18 @@ export class ListUsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.userEditForm = new FormGroup({
-        id: new FormControl(),
-        name: new FormControl(),
-        phone_number: new FormControl(),
-        role_type_id: new FormControl(),
-        email: new FormControl(),
-        password: new FormControl()
+        id: new FormControl(null),
+        name: new FormControl(null, [Validators.required]),
+        phone_number: new FormControl(null, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
+        role_type_id: new FormControl(null, [Validators.required]),
+        email: new FormControl(null, [Validators.email]),
+        password: new FormControl(null, [Validators.required])
     });
   }
 
   onEditUser(index) {
     const data = this.users[index];
+    this.userEditForm.get('password').clearValidators();
     this.userEditForm.setValue({
       id: data.id,
       name: data.name,
@@ -93,6 +98,7 @@ export class ListUsersComponent implements OnInit {
   }
 
   resetForm() {
+    this.userEditForm.get('password').setValidators([Validators.required]);
     this.userEditForm.reset();
   }
 

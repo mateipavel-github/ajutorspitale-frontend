@@ -81,9 +81,13 @@ export class DataService {
         return this.metadata[type][i]['label'];
       }
     }
-
     return '<metadata not found>';
+  }
 
+  public getMedicalUnits(filterString) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.set('filter', filterString);
+    return this.api.get(environment.api.url + '/metadata/medical-units', { params: queryParams });
   }
 
   public addMetadata(type, item) {

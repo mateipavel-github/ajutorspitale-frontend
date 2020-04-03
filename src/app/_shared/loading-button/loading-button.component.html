@@ -9,13 +9,15 @@
   </ng-template>
 
   <ng-container [ngSwitch]="btnStyle">
-    <button mat-flat-button *ngSwitchCase="'flat'" [type]="type" [color]="color" [disabled]="loading" (click)="onClick()">
+    <button mat-flat-button *ngSwitchCase="'flat'" [type]="type" [color]="color" [disabled]="loading || btnDisabled" (click)="onClick()">
         <ng-container *ngTemplateOutlet="buttonContentTemplate"></ng-container>
     </button>
-    <button mat-stroked-button *ngSwitchCase="'stroked'" [type]="type" [color]="color" [disabled]="loading" (click)="onClick()">
+    <button mat-stroked-button *ngSwitchCase="'stroked'" [type]="type" [color]="color"
+      [disabled]="loading || btnDisabled" (click)="onClick()">
         <ng-container *ngTemplateOutlet="buttonContentTemplate"></ng-container>
     </button>
-    <button mat-button *ngSwitchDefault [type]="type" [color]="color" [disabled]="loading" (click)="onClick()">
+    <button mat-button *ngSwitchDefault [type]="type" [color]="color" [disabled]="loading || btnDisabled"
+      (click)="onClick()">
         <ng-container *ngTemplateOutlet="buttonContentTemplate"></ng-container>
     </button>
   </ng-container>

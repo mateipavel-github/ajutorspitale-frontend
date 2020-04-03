@@ -57,11 +57,11 @@
             <h3>Unitatea medicală</h3>
             <p>
               <strong>Nume: </strong>{{ request.medical_unit_name }}<br />
-              <strong>Tip:
-              </strong>{{ dataService.getMetadataLabel('medical_unit_types', request.medical_unit_type_id) }}<br />
+              <strong>Județ: </strong>{{ dataService.getMetadataLabel('counties', request.county_id) }}<br />
+              <strong>Tip: </strong>{{ dataService.getMetadataLabel('medical_unit_types', request.medical_unit_type_id) }}
             </p>
           </div>
-          <div style="flex-grow: 1;">
+          <div fxFlex>
             <h3>Nevoi</h3>
             <p>{{ request.needs_text }}</p>
             <h3>Alte informații</h3>
@@ -80,7 +80,7 @@
             </div>
             <div>
               <ng-container *ngIf="request.assigned_user">
-                <strong>Asignat: </strong>
+                <span>Asignat: </span>
                 <app-loading-button [loading]="assignChanging===request.id" (click)="onUnassign(request.id)"
                   [label]="request.assigned_user.name" icon="close" showIcon="hover"></app-loading-button>
               </ng-container>

@@ -13,6 +13,8 @@ import { HttpErrorInterceptor } from './_middleware/http/http-error.interceptor'
 import { HttpAuthInterceptor } from './_middleware/http/http-auth.interceptor';
 import localeRo from '@angular/common/locales/ro';
 import { registerLocaleData } from '@angular/common';
+import { SnackbarComponent } from './_shared/snackbar/snackbar.component';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 // the second parameter 'fr-FR' is optional
 registerLocaleData(localeRo, 'ro-RO');
@@ -21,7 +23,8 @@ registerLocaleData(localeRo, 'ro-RO');
   declarations: [
     AppComponent,
     NewRequestComponent,
-    LoginComponent
+    LoginComponent,
+    SnackbarComponent
   ],
   imports: [
     WidgetModule,
@@ -36,7 +39,8 @@ registerLocaleData(localeRo, 'ro-RO');
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true },
-    { provide: LOCALE_ID, useValue: 'ro-RO' }
+    { provide: LOCALE_ID, useValue: 'ro-RO' },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000, verticalPosition: 'bottom', horizontalPosition: 'left' } }
   ],
   bootstrap: [AppComponent]
 })

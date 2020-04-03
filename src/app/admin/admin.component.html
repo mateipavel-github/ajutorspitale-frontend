@@ -13,6 +13,7 @@
             <mat-icon>person</mat-icon>
             </button>
             <mat-menu #userMenu="matMenu">
+                <div mat-menu-item><strong>{{ currentUser.name }}</strong> {{currentUser.role.slug}}</div>
                 <button mat-menu-item (click)="onLogout()">Logout</button>
             </mat-menu>
         </ng-container>

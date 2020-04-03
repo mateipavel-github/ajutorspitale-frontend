@@ -12,6 +12,7 @@ export class LoadingButtonComponent implements OnInit {
   @Input() label;
   @Input() color = '';
   @Input() btnStyle = 'flat';
+  @Input() btnDisabled = false;
   @Input() type = 'button';
   @Input() icon = '';
   @Input() showIcon = 'always';

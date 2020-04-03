@@ -1,11 +1,14 @@
+import { RequestSentDialogComponent } from './../../_shared/request-sent-dialog/request-sent-dialog';
+import { AppConstants } from './../../app-constants';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService } from 'src/app/_services/data.service';
 import { SessionDataService } from 'src/app/_services/session-data.service';
 import { switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-new-request',
@@ -14,17 +17,23 @@ import { environment } from 'src/environments/environment';
 })
 export class NewRequestComponent implements OnInit {
 
-  mode = 'newRequest';
+  mode: BehaviorSubject<string> = new BehaviorSubject('newRequest');
   dataLoaded = false;
   editForm: FormGroup;
+  AppConstants;
+  formLoading = false;
 
-  constructor(public dataService: DataService, public sessionData: SessionDataService, private route: ActivatedRoute) {
+  constructor(public dataService: DataService,
+    public sessionData: SessionDataService, private route: ActivatedRoute, public dialog: MatDialog) {
+
+    this.AppConstants = AppConstants;
+
     this.route.paramMap.pipe(switchMap((params) => {
       if (params.get('id')) {
         this.sessionData.currentRequestId = params.get('id');
         return dataService.getRequest(params.get('id'));
       } else {
-        this.mode = 'newRequest';
+        this.mode.next('newRequest');
         this.dataLoaded = true;
 
         if ('dummyData' in environment && environment['dummyData']) {
@@ -36,34 +45,58 @@ export class NewRequestComponent implements OnInit {
     })).subscribe(serverResponse => {
       this.dataLoaded = true;
       this.sessionData.currentRequest = serverResponse['data'];
-      this.mode = 'updateRequest';
+      this.mode.next('updateRequest');
+    });
+
+    this.mode.subscribe(mode => {
+      switch (mode) {
+        case 'newRequest':
+
+          break;
+        case 'updateRequest':
+          this.editForm.clearValidators();
+          this.editForm.get('needs_text').setValidators([Validators.required]);
+          break;
+      }
     });
   }
 
   public onSaveRequest() {
 
-    let apiObservable;
-    if (this.mode === 'newRequest') {
-      apiObservable = this.dataService.storeRequest(this.editForm.value);
-    } else {
-      const data = {
-        'help_request_id': this.sessionData.currentRequestId,
-        'needs_text': this.editForm.get('needs_text').value,
-        'extra_info': this.editForm.get('extra_info').value
-      };
-      apiObservable = this.dataService.storeRequestChange(data);
-    }
-
-    apiObservable.subscribe(serverResponse => {
-      switch (serverResponse.success) {
-        case 'true':
-          this.editForm.reset();
-          break;
-        case 'false':
-          alert(serverResponse.error);
-          break;
-      }
+    Object.keys(this.editForm.controls).forEach(field => {
+      const control = this.editForm.get(field);
+      control.markAsTouched({ onlySelf: true });
     });
+
+    if (this.editForm.valid) {
+      let apiObservable;
+      if (this.mode.value === 'newRequest') {
+        apiObservable = this.dataService.storeRequest(this.editForm.value);
+      } else {
+        const data = {
+          'help_request_id': this.sessionData.currentRequestId,
+          'needs_text': this.editForm.get('needs_text').value,
+          'extra_info': this.editForm.get('extra_info').value
+        };
+        apiObservable = this.dataService.storeRequestChange(data);
+      }
+
+      this.formLoading = true;
+      apiObservable.subscribe(serverResponse => {
+        this.formLoading = false;
+        switch (serverResponse.success) {
+          case true:
+            this.showSuccessDialog();
+            this.editForm.reset();
+            break;
+          case false:
+            alert(serverResponse.error);
+            break;
+        }
+      });
+    } else {
+
+    }
   }
 
   public initSessionData() {
@@ -82,18 +115,28 @@ export class NewRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.editForm = new FormGroup({
-      name: new FormControl(),
-      phone_number: new FormControl(),
-      job_title: new FormControl(),
-      medical_unit_name: new FormControl(),
+      name: new FormControl(null, [Validators.required]),
+      phone_number: new FormControl(null, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
+      job_title: new FormControl(null, [Validators.required]),
+      medical_unit_name: new FormControl(null, [Validators.required]),
       medical_unit_id: new FormControl(),
-      medical_unit_type_id: new FormControl(),
+      medical_unit_type_id: new FormControl(null, [Validators.required]),
+      county_id: new FormControl(null, [Validators.required]),
       extra_info: new FormControl(),
-      needs_text: new FormControl()
+      needs_text: new FormControl(null, [Validators.required])
     });
+
     if (this.sessionData.currentRequest) {
       this.editForm.setValue(this.sessionData.currentRequest);
     }
+  }
+
+  public showSuccessDialog() {
+      const dialogRef = this.dialog.open(RequestSentDialogComponent);
+
+      // dialogRef.afterClosed().subscribe(result => {
+      // });
+
   }
 
 }

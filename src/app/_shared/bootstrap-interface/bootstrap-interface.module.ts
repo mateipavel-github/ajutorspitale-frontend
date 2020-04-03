@@ -1,3 +1,4 @@
+import { RequestSentDialogComponent } from './../request-sent-dialog/request-sent-dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NewMetadataDialogComponent } from './../new-metadata-dialog/new-metadata-dialog.component';
 import { LoadingStatusComponent } from './../loading-status/loading-status.component';
@@ -29,7 +30,7 @@ import { MatChipsModule } from '@angular/material/chips';
 
 
 @NgModule({
-  declarations: [NewMetadataDialogComponent],
+  declarations: [NewMetadataDialogComponent, RequestSentDialogComponent],
   imports: [
     CommonModule,
     BrowserModule,
@@ -44,7 +45,6 @@ import { MatChipsModule } from '@angular/material/chips';
     MatRadioModule,
     MatSidenavModule,
     MatIconModule,
-    MatDialogModule,
     MatSnackBarModule,
     MatToolbarModule,
     MatSelectModule,
@@ -55,6 +55,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatAutocompleteModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -74,7 +75,6 @@ import { MatChipsModule } from '@angular/material/chips';
     MatRadioModule,
     MatSidenavModule,
     MatIconModule,
-    MatDialogModule,
     MatSnackBarModule,
     MatToolbarModule,
     MatSelectModule,
@@ -85,13 +85,15 @@ import { MatChipsModule } from '@angular/material/chips';
     MatAutocompleteModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
 
     ReactiveFormsModule,
     FormsModule
   ],
 
   entryComponents: [
-    NewMetadataDialogComponent
+    NewMetadataDialogComponent,
+    RequestSentDialogComponent
   ]
 
 })

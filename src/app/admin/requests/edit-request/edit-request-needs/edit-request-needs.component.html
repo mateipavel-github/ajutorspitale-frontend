@@ -83,7 +83,7 @@
     </div>
 
     <div style="margin-top: 20px;">
-      <app-loading-button (btnClick)="onSubmit()" type="submit" [loading]="needsFormLoading" label="Salvează" btnStyle="flat" color="primary"></app-loading-button>
+      <app-loading-button [btnDisabled]="!changeForm.valid" (btnClick)="onSubmit()" type="submit" [loading]="needsFormLoading" label="Salvează" btnStyle="flat" color="primary"></app-loading-button>
       <button style="margin-left: 20px;" mat-button (click)="showChangeForm=!showChangeForm">Anulează</button>
     </div>
 
