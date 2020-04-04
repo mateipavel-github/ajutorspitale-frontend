@@ -168,9 +168,17 @@ export class EditRequestNeedsComponent implements OnInit {
         } else {
           this.snackBar.openFromComponent(SnackbarComponent, {
             data: { message: serverResponse['error'] },
-            panelClass: 'snackbar-error'
+            panelClass: 'snackbar-error',
+            duration: 5000
           });
         }
+      }, error => {
+        this.needsFormLoading = false;
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: error.message },
+          panelClass: 'snackbar-error',
+          duration: 5000
+        });
       });
     } else {
 

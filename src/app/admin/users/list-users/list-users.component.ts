@@ -85,6 +85,12 @@ export class ListUsersComponent implements OnInit {
           panelClass: 'snackbar-error'
         });
       }
+    }, error => {
+        this.formLoading = false;
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: error.message },
+          panelClass: 'snackbar-error'
+        });
     });
   }
 
@@ -106,6 +112,8 @@ export class ListUsersComponent implements OnInit {
       } else {
         alert(serverResponse['error']);
       }
+    }, error => {
+        alert(error);
     });
   }
 

@@ -45,7 +45,7 @@ export class EditRequestComponent implements OnInit {
         });
       } else {
         this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: 'A apărut o eroare' },
+          data: { message: serverResponse['success'] },
           panelClass: 'snackbar-error',
           duration: 5000
         });
@@ -66,7 +66,7 @@ export class EditRequestComponent implements OnInit {
         });
       } else {
         this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: 'A apărut o eroare' },
+          data: { message: serverResponse['error'] },
           panelClass: 'snackbar-error',
           duration: 5000
         });
@@ -86,7 +86,7 @@ export class EditRequestComponent implements OnInit {
         });
       } else {
         this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: 'A apărut o eroare' },
+          data: { message: serverResponse['success'] },
           panelClass: 'snackbar-error',
           duration: 5000
         });

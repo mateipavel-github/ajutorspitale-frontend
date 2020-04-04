@@ -66,7 +66,6 @@ export class DataService {
       data._method = 'POST';
       return this.api.post(environment.api.url + '/users', data);
     }
-
   }
 
   public deleteUser(id) {

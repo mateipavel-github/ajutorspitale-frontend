@@ -1,9 +1,11 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FilterService } from './filter-service/filter-service.service';
 import { AuthService } from './../../../_services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../../_services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
+import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-requests',
@@ -22,7 +24,7 @@ export class ListRequestsComponent implements OnInit {
   assignChanging = 0;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
-    private authService: AuthService, private filterService: FilterService) {
+    private authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar) {
 
     this.filterService.filtersObservable$.subscribe(filters => {
       this.paging = { current: 1, last: 1, total: 0, per_page: 100 };
@@ -64,6 +66,12 @@ export class ListRequestsComponent implements OnInit {
             this.requests[index].assigned_user_id = serverResponse['assigned_user_id'];
           }
         });
+      } else {
+        this.snackBar.openFromComponent(SnackbarComponent, {
+            data: { message: serverResponse['error'] },
+            panelClass: 'snackbar-error',
+            duration: 5000
+          });
       }
     });
   }
@@ -79,7 +87,11 @@ export class ListRequestsComponent implements OnInit {
           }
         });
       } else {
-        alert(serverResponse['error']);
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: serverResponse['error'] },
+          panelClass: 'snackbar-error',
+          duration: 5000
+        });
       }
     });
   }
@@ -104,7 +116,11 @@ export class ListRequestsComponent implements OnInit {
           }
         });
       } else {
-        alert(serverResponse['error']);
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: serverResponse['error'] },
+          panelClass: 'snackbar-error',
+          duration: 5000
+        });
       }
     });
   }
