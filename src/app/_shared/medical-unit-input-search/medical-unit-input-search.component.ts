@@ -12,8 +12,9 @@ export class MedicalUnitInputSearchComponent implements OnInit {
 
   @Input() label;
   @Input() inputControl;
+  @Input() countyId = null;
   searchControl = new FormControl();
-  filteredOptions: any;
+  filteredOptions = [];
   isLoading = false;
   errorMsg: string;
 
@@ -33,7 +34,7 @@ export class MedicalUnitInputSearchComponent implements OnInit {
           this.filteredOptions = [];
           this.isLoading = true;
         }),
-        switchMap(value => this.dataService.getMedicalUnits(value)
+        switchMap(value => this.dataService.getMedicalUnits(value, this.countyId)
           .pipe(
             finalize(() => {
               this.isLoading = false;

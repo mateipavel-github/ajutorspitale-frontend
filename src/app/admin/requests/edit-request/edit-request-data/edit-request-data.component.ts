@@ -1,10 +1,10 @@
+import { EditRequestValidators } from './../../../../_shared/_form-validators/edit-request-validators';
 import { SnackbarComponent } from './../../../../_shared/snackbar/snackbar.component';
 import { AppConstants } from './../../../../app-constants';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SessionDataService } from './../../../../_services/session-data.service';
 import { DataService } from './../../../../_services/data.service';
 import { Component, OnInit } from '@angular/core';
-import { EditMedicalUnitValidator } from 'src/app/_shared/_form-validators/edit-request-validators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -16,10 +16,14 @@ export class EditRequestDataComponent implements OnInit {
 
   editForm: FormGroup;
   formLoading = false;
+  changeTypes;
   AppConstants;
 
-  constructor(public dataService: DataService, public sessionData: SessionDataService, private snackBar: MatSnackBar) {
+  constructor(public dataService: DataService, public sessionData: SessionDataService,
+    private snackBar: MatSnackBar, private editRequestValidators: EditRequestValidators) {
+
     this.AppConstants = AppConstants;
+    this.changeTypes = this.dataService.getMetadataFiltered('change_types', { exclude: ['new_request', 'delivery'] });
   }
 
   public initForm() {
@@ -29,15 +33,15 @@ export class EditRequestDataComponent implements OnInit {
       phone_number: new FormControl(this.sessionData.currentRequest['phone_number'], [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
       job_title: new FormControl(this.sessionData.currentRequest['job_title'], [Validators.required]),
       medical_unit_name: new FormControl(this.sessionData.currentRequest['medical_unit_name'], [Validators.required]),
-      medical_unit: new FormControl(this.sessionData.currentRequest['medical_unit'], [EditMedicalUnitValidator]),
+      medical_unit: new FormControl(this.sessionData.currentRequest['medical_unit'], [this.editRequestValidators.EditMedicalUnitValidator]),
       medical_unit_type_id: new FormControl(this.sessionData.currentRequest['medical_unit_type_id'], [Validators.required]),
       county_id: new FormControl(this.sessionData.currentRequest['county_id'], [Validators.required]),
       extra_info: new FormControl(this.sessionData.currentRequest['extra_info']),
 
       help_request_id: new FormControl(this.sessionData.currentRequestId, [Validators.required, Validators.min(1)]),
       change_type_id: new FormControl(null, [Validators.required]),
-      user_comment: new FormControl(null, [Validators.required]),
-    });
+      user_comment: new FormControl(null),
+    }, { validators: this.editRequestValidators.EditDataValidator });
   }
 
   ngOnInit(): void {
@@ -65,6 +69,7 @@ export class EditRequestDataComponent implements OnInit {
         this.formLoading = false;
         if (serverResponse['success']) {
           this.sessionData.currentRequest = serverResponse['reloadHelpRequest'];
+          this.editForm.get('user_comment').reset();
           this.snackBar.openFromComponent(SnackbarComponent, {
             data: { message: 'Cererea a fost actualizată' },
             panelClass: 'snackbar-success'

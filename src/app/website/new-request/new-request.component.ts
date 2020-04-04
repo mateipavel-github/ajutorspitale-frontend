@@ -131,6 +131,11 @@ export class NewRequestComponent implements OnInit {
     if (this.sessionData.currentRequest) {
       this.editForm.setValue({ ...this.sessionData.currentRequest, ...{ id: this.sessionData.currentRequestId } });
     }
+
+    const driftChat = window['driftt'] = window['drift'] = window['driftt'] || [];
+    if (driftChat) {
+      console.log(driftChat);
+    }
   }
 
   public showSuccessDialog() {

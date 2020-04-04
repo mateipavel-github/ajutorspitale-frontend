@@ -84,9 +84,42 @@ export class DataService {
     return '<metadata not found>';
   }
 
-  public getMedicalUnits(filterString) {
+  public getMetadataSlug(type, id) {
+    id = parseInt(id, 10);
+    for (let i = 0; i < this.metadata[type].length; i++) {
+      if (this.metadata[type][i]['id'] === id) {
+        return this.metadata[type][i]['slug'];
+      }
+    }
+    return null;
+  }
+
+  public getMetadataFiltered(metadata_type, options) {
+    let filterType, slugs;
+    if (options?.include) {
+        filterType = 'include';
+        slugs = options.include;
+        return this.metadata[metadata_type].filter(item => {
+          return slugs.includes(item.slug);
+        });
+    }
+    if (options?.exclude) {
+      filterType = 'exclude';
+      slugs = options.exclude;
+      return this.metadata[metadata_type].filter(item => {
+        return !slugs.includes(item.slug);
+      });
+    }
+    console.warn('must provide either {exclude: [slug1, slug2...]} or {include: [slug1, slug2]}');
+    return this.metadata[metadata_type];
+  }
+
+  public getMedicalUnits(filterString, countyId?) {
     let queryParams = new HttpParams();
     queryParams = queryParams.set('filter', filterString);
+    if (countyId) {
+      queryParams = queryParams.set('county_id', countyId);
+    }
     return this.api.get(environment.api.url + '/metadata/medical-units', { params: queryParams });
   }
 

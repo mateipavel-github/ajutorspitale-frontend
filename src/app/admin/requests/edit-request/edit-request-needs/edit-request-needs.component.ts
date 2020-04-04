@@ -1,5 +1,4 @@
-import { EditNeedsValidator } from '../../../../_shared/_form-validators/edit-request-validators';
-import { NewMetadataDialogComponent } from './../../../../_shared/new-metadata-dialog/new-metadata-dialog.component';
+import { EditRequestValidators } from './../../../../_shared/_form-validators/edit-request-validators';
 import { SessionDataService } from './../../../../_services/session-data.service';
 import { DataService } from './../../../../_services/data.service';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
@@ -7,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, Subject, of } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-request-needs',
@@ -20,24 +21,69 @@ export class EditRequestNeedsComponent implements OnInit {
   showHistory;
   needsFormLoading = false;
 
+  filteredNeedTypes: Observable<any[]>;
+  needTypeFilter: Subject<string> = new Subject<string>();
+  currentNeedIndex = 0;
+
   constructor(public dataService: DataService, public sessionData: SessionDataService,
-    public dialog: MatDialog, private snackBar: MatSnackBar) { }
+    public dialog: MatDialog, private snackBar: MatSnackBar, private editRequestValidators: EditRequestValidators) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.filteredNeedTypes = this.needTypeFilter.pipe(
+      startWith(''),
+      map(value => typeof value === 'string' ? value : value['label']),
+      map(label => label ? this._filter(label) : this.dataService.metadata['need_types'])
+    );
+  }
 
-  openNewMetadataDialog(metadataType, formControl: FormControl): void {
-    const dialogRef = this.dialog.open(NewMetadataDialogComponent, {
-      width: '400px',
-      data: {'metadata_type': metadataType}
-    });
+  removeDiacritice(str) {
+    str = str.toLowerCase();
+    str = str.replace('ă', 'a');
+    str = str.replace('â', 'a');
+    str = str.replace('ș', 's');
+    str = str.replace('ț', 't');
+    str = str.replace('î', 'i');
+    return str;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        formControl.setValue(result.id);
-      } else {
-        formControl.reset();
+  _filter(label) {
+    let exactMatch = false;
+    const filterValue = this.removeDiacritice(label);
+    const list = this.dataService.metadata['need_types'].filter((need_type, index) => {
+      if (this.removeDiacritice(need_type.label) === filterValue) {
+        exactMatch = true;
       }
+      return (this.removeDiacritice(need_type.label).indexOf(filterValue) === 0);
     });
+    if (!exactMatch) {
+      list.push({ id: 0, label: label});
+    }
+    return list;
+  }
+
+  public needsAutocompleteDisplay(needType) {
+    return needType && needType.label ? needType.label : '';
+  }
+
+  public needTypeSelected($event) {
+    const ctrl = (<FormArray>this.changeForm.get('needs')).controls[this.currentNeedIndex].get('need_type');
+    if ($event.option.value.id === 0) {
+      this.dataService.storeMetadataType({ metadata_type: 'need_types', label: $event.option.value.label })
+        .subscribe(serverResponse => {
+        if (serverResponse['success']) {
+          const newMetadataItem = serverResponse['data']['new_item'];
+          ctrl.setValue(newMetadataItem);
+          this.needTypeFilter.next('');
+          this.dataService.addMetadata(serverResponse['data']['metadata_type'], newMetadataItem);
+          this.snackBar.openFromComponent(SnackbarComponent, {
+            data: { message: 'Am adăugat "' + newMetadataItem.label + '" la tipuri de nevoi' },
+            panelClass: 'snackbar-success'
+          });
+        } else {
+          alert(serverResponse['error']);
+        }
+      });
+    }
   }
 
   initForm() {
@@ -51,9 +97,8 @@ export class EditRequestNeedsComponent implements OnInit {
         Validators.min(1)
       ]),
       'user_comment': new FormControl(),
-      'needs_to_add': new FormArray([]),
-      'needs_to_subtract': new FormArray([])
-    }, { validators: EditNeedsValidator });
+      'needs': new FormArray([])
+    }, { validators: this.editRequestValidators.EditNeedsValidator });
   }
 
   onUpdateNeeds() {
@@ -61,32 +106,31 @@ export class EditRequestNeedsComponent implements OnInit {
     this.showChangeForm = true;
   }
 
-  onRemoveNeed(type, i) {
-    this.getAsFormArray('needs_to_' + type).removeAt(i);
+  onRemoveNeed(action, i) {
+    this.getAsFormArray('needs').removeAt(i);
   }
 
-  onAddNeed(type) {
+  onAddNeed(action) {
 
     const f = new FormGroup({
-      need_type_id: new FormControl(null, Validators.required),
-      quantity: new FormControl(null, Validators.required)
+      need_type: new FormControl(null, [this.editRequestValidators.NeedTypeValidator]),
+      quantity: new FormControl(null, Validators.required),
+      action: new FormControl(action)
     });
 
-    f.get('need_type_id').valueChanges.subscribe(val => {
-      console.log(val);
-      if (val === 0) {
-        this.openNewMetadataDialog('need_types', <FormControl>f.get('need_type_id'));
+    this.getAsFormArray('needs').push(f);
+    const index = this.getAsFormArray('needs').length - 1;
+
+    f.get('need_type').valueChanges.subscribe(val => {
+      this.currentNeedIndex = index;
+      if (typeof (val) === 'string') {
+        this.needTypeFilter.next(val);
       }
     });
+  }
 
-    switch (type) {
-      case 'add':
-        this.getAsFormArray('needs_to_add').push(f);
-        break;
-      case 'substract':
-        this.getAsFormArray('needs_to_subtract').push(f);
-        break;
-    }
+  setCurrentNeed(index) {
+    this.currentNeedIndex = index;
   }
 
   onSubmit() {
@@ -99,21 +143,16 @@ export class EditRequestNeedsComponent implements OnInit {
     if (this.changeForm.valid) {
       // tslint:disable-next-line:prefer-const
       let data = this.changeForm.value;
-      data.needs = [];
-      if (data.needs_to_add) {
-        data.needs_to_add.forEach(need => {
-          need.quantity = parseInt(need.quantity, 10);
-          data.needs.push(need);
-        });
-        delete data.needs_to_add;
-      }
-      if (data.needs_to_subtract) {
-        data.needs_to_subtract.forEach(need => {
+      data.needs.forEach(need => {
+        need.quantity = parseInt(need.quantity, 10);
+        if (need.action === 'subtract') {
           need.quantity = -1 * need.quantity;
-          data.needs.push(need);
-        });
-        delete data.needs_to_subtract;
-      }
+        }
+        delete need.action;
+
+        need.need_type_id = need.need_type.id;
+        delete need.need_type;
+      });
 
       this.needsFormLoading = true;
       this.dataService.storeRequestChange(data).subscribe(serverResponse => {

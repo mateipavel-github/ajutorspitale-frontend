@@ -1,6 +1,30 @@
 <div *ngIf="!dataLoaded">Se încarcă...</div>
 <div *ngIf="dataLoaded">
-    <h1>Cererea # {{ sessionData.currentRequestId }}</h1>
+    <div fxLayout="row" fxLayoutAlign="start start">
+      <div>
+        <h1 style="display: inline-block;">
+        Cererea # {{ sessionData.currentRequestId }}
+        </h1>
+      </div>
+      <div style="padding: 20px;" fxFlex>
+        <app-loading-button btnStyle="stroked" [loading]="statusChanging" [matMenuTriggerFor]="statusChange"
+          [label]="dataService.getMetadataLabel('request_status_types', sessionData.currentRequest.status)">
+        </app-loading-button>
+        <mat-menu #statusChange="matMenu" xPosition="before">
+          <button (click)="onChangeRequestStatus(k.id)"
+            *ngFor="let k of dataService.metadata['request_status_types']" mat-menu-item>{{ k.label }}</button>
+        </mat-menu>
+        <span style="display: inline-block; padding: 0px 5px;">&nbsp;</span>
+
+        <app-loading-button *ngIf="sessionData.currentRequest.assigned_user" (click)="onUnassign()" btnStyle="stroked" [loading]="assignChanging" icon="close" showIcon="hover"
+          [label]="'Preluată de ' + sessionData.currentRequest.assigned_user.name ">
+        </app-loading-button>
+        <app-loading-button *ngIf="sessionData.currentRequest.assigned_user===null" (click)="onAssign()" btnStyle="stroked"
+          [loading]="assignChanging"
+          label="Preia cererea">
+        </app-loading-button>
+      </div>
+    </div>
     <div class="page-container">
         <div class="edit-side">
             <mat-tab-group>

@@ -10,80 +10,94 @@
     </div>
   </div>
 
-  <form class="changeForm" *ngIf="showChangeForm" [formGroup]="changeForm">
+  <form class="changeForm" *ngIf="showChangeForm" [formGroup]="changeForm" #changeFormElementRef>
     <h2>Tipul și motivul actualizării</h2>
 
     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
-        <mat-form-field fxFlex="30%" appearance="outline">
-            <mat-label>Tip actualizare</mat-label>
-            <mat-select required placeholder="Alege" formControlName="change_type_id">
-                <mat-option *ngFor="let k of dataService.metadata['change_types']" [value]="k.id">{{ k.label }}</mat-option>
-            </mat-select>
-        </mat-form-field>
+      <mat-form-field fxFlex="30%" appearance="outline">
+        <mat-label>Tip actualizare</mat-label>
+        <mat-select required placeholder="Alege" formControlName="change_type_id">
+          <mat-option *ngFor="let k of dataService.metadata['change_types']" [value]="k.id">{{ k.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field fxFlex="70%" appearance="outline">
-            <mat-label>Detalii</mat-label>
-            <input matInput formControlName="user_comment" type="text" class="form-control" class="form-control-plaintext">
-        </mat-form-field>
+      <mat-form-field fxFlex="70%" appearance="outline">
+        <mat-label>Detalii</mat-label>
+        <input matInput formControlName="user_comment" type="text" class="form-control" class="form-control-plaintext">
+      </mat-form-field>
     </div>
 
     <h2>Nevoi de actualizat</h2>
-    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="15px">
-      <mat-card fxFlex="50%" formArrayName="needs_to_add">
-        <h3 class="needs-header">De adăugat (nevoi în plus)</h3>
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
-          *ngFor="let n of getAsFormArray('needs_to_add').controls; let i=index" [formGroupName]="i">
-          <mat-form-field fxFlex appearance="outline">
-            <mat-label>Tip</mat-label>
-            <mat-select placeholder="Alege" formControlName="need_type_id">
-              <mat-option *ngFor="let k of dataService.metadata['need_types']" [value]="k.id">{{ k.label }}</mat-option>
-              <mat-option [value]="0"> (+) Nevoie nouă (+)</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field fxFlex="30%" appearance="outline">
-            <mat-label>Cantitate</mat-label>
-            <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext">
-          </mat-form-field>
-          <div fxFlex="none" class="deleteItem">
-            <button mat-icon-button type="button" (click)="onRemoveNeed('add',i)">
-              <mat-icon>delete_forever</mat-icon>
-            </button>
-          </div>
-        </div>
-        <div style="text-align: center">
+
+    <mat-autocomplete panelWidth="300px" autoActiveFirstOption #needTypesAutocomplete="matAutocomplete"
+      (optionSelected)="needTypeSelected($event)"
+      [displayWith]="needsAutocompleteDisplay">
+      <ng-container *ngFor="let needType of filteredNeedTypes | async">
+        <mat-option *ngIf="needType.id!==0" [value]="needType">{{ needType.label }}</mat-option>
+        <mat-option *ngIf="needType.id===0" [value]="needType">Adaugă <strong>{{ needType.label }}</strong></mat-option>
+      </ng-container>
+    </mat-autocomplete>
+
+    <div formArrayName="needs">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="15px">
+        <mat-card fxFlex="50%">
+          <h3 class="needs-header">De adăugat (nevoi în plus)</h3>
+          <ng-container *ngFor="let n of getAsFormArray('needs').controls; let i=index" [formGroupName]="i">
+            <div *ngIf="getAsFormArray('needs').controls[i].get('action').value==='add'" fxLayout=" row"
+              fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-form-field fxFlex appearance="outline">
+                <mat-label>Nevoie</mat-label> 
+                  <input (focus)="setCurrentNeed(i)" matInput formControlName="need_type" type="text" class="form-control" class="form-control-plaintext"
+                    id="quantity-{{i}}" [matAutocomplete]="needTypesAutocomplete">
+              </mat-form-field>
+              <mat-form-field fxFlex="30%" appearance="outline">
+                <mat-label>Cantitate</mat-label>
+                <input matInput formControlName="quantity" type="text" class="form-control"
+                  class="form-control-plaintext" id="quantity-{{i}}">
+              </mat-form-field>
+              <div fxFlex="none" class="deleteItem">
+                <button mat-icon-button type="button" (click)="onRemoveNeed('add',i)">
+                  <mat-icon>delete_forever</mat-icon>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+          <div style="text-align: center;">
             <button mat-button (click)="onAddNeed('add')">+</button>
-        </div>
-      </mat-card>
-
-      <mat-card fxFlex="50%" formArrayName="needs_to_subtract">
-        <h3 class="needs-header">De scos (nevoi rezolvate)</h3>
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
-          *ngFor="let n of getAsFormArray('needs_to_subtract').controls; let i=index" [formGroupName]="i">
-          <mat-form-field fxFlex appearance="outline">
-            <mat-label>Nevoie</mat-label>
-            <mat-select placeholder="Alege" formControlName="need_type_id">
-              <mat-option *ngFor="let k of dataService.metadata['need_types']" [value]="k.id">{{ k.label }}</mat-option>
-              <mat-option [value]="0"> (+) Nevoie nouă (+)</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field fxFlex="30%" appearance="outline">
-            <mat-label>Cantitate</mat-label>
-            <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext">
-          </mat-form-field>
-          <div fxFlex="none" class="deleteItem">
-            <button mat-icon-button type="button" (click)="onRemoveNeed('subtract',i)">
-              <mat-icon>delete_forever</mat-icon>
-            </button>
           </div>
-        </div>
-        <div style="text-align: center;">
-            <button mat-button (click)="onAddNeed('substract')">+</button>
-        </div>
-      </mat-card>
-    </div>
+        </mat-card>
 
+        <mat-card fxFlex="50%">
+          <h3 class="needs-header">De scos (nevoi rezolvate)</h3>
+          <ng-container *ngFor="let n of getAsFormArray('needs').controls; let i=index" [formGroupName]="i">
+            <div *ngIf="getAsFormArray('needs').controls[i].get('action').value==='subtract'" fxLayout="row"
+              fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-form-field fxFlex appearance="outline">
+                <mat-label>Nevoie</mat-label>
+                <input (focus)="setCurrentNeed(i)" matInput formControlName="need_type" type="text" class="form-control"
+                  class="form-control-plaintext" id="quantity-{{i}}" [matAutocomplete]="needTypesAutocomplete">
+              </mat-form-field>
+              <mat-form-field fxFlex="30%" appearance="outline">
+                <mat-label>Cantitate</mat-label>
+                <input matInput formControlName="quantity" type="text" class="form-control"
+                  class="form-control-plaintext">
+              </mat-form-field>
+              <div fxFlex="none" class="deleteItem">
+                <button mat-icon-button type="button" (click)="onRemoveNeed('subtract',i)">
+                  <mat-icon>delete_forever</mat-icon>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+          <div style="text-align: center;">
+            <button mat-button (click)="onAddNeed('subtract')">+</button>
+          </div>
+        </mat-card>
+      </div>
+    </div>
     <div style="margin-top: 20px;">
-      <app-loading-button [btnDisabled]="!changeForm.valid" (btnClick)="onSubmit()" type="submit" [loading]="needsFormLoading" label="Salvează" btnStyle="flat" color="primary"></app-loading-button>
+      <app-loading-button [btnDisabled]="!changeForm.valid" (btnClick)="onSubmit()" type="submit"
+        [loading]="needsFormLoading" label="Salvează" btnStyle="flat" color="primary"></app-loading-button>
       <button style="margin-left: 20px;" mat-button (click)="showChangeForm=!showChangeForm">Anulează</button>
     </div>
 
@@ -99,27 +113,28 @@
   <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,.12) ">
     <div fxLayout="row" fxLayoutAlign="start start">
       <h2>Istoric</h2>
-      <button mat-button color="primary" style="margin-left: 20px;" (click)="showHistory=!showHistory">{{ showHistory ? "hide" : "show" }}</button>
+      <button mat-button color="primary" style="margin-left: 20px;"
+        (click)="showHistory=!showHistory">{{ showHistory ? "hide" : "show" }}</button>
     </div>
     <div *ngIf="showHistory" class="history" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="15px"
       ngClass.gt-xs="ml-10">
-        <mat-card fxFlex.sm="0 1 calc(50%-15px)" fxFlex.md="0 1 calc(33%-15px)" fxFlex.gt-md="0 1 calc(25%-15px)"
-          *ngFor="let change of sessionData.currentRequest.changes">
-            <mat-card-title>
-              <span>{{ dataService.getMetadataLabel('change_types',change.change_type_id) }}</span>
-              by 
-              <span>{{ change.user ? change.user.name : 'unknown'}}</span>
-            </mat-card-title>
-            <mat-card-subtitle>{{ change.created_at | date : 'short' }}</mat-card-subtitle>
-            <mat-card-content>
-                <div class="change-need-row" *ngFor="let n of change.needs" fxLayout="row" fxLayoutAlign="space-between start"
-                fxLayoutGap="5px">
-                <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
-                <div class="bottom-dots" fxFlex>&nbsp;</div>
-                <div>{{ n.quantity | number : '1.0-0' }}</div>
-                </div>
-            </mat-card-content>
-        </mat-card>
+      <mat-card fxFlex.sm="0 1 calc(50%-15px)" fxFlex.md="0 1 calc(33%-15px)" fxFlex.gt-md="0 1 calc(25%-15px)"
+        *ngFor="let change of sessionData.currentRequest.changes">
+        <mat-card-title>
+          <span>{{ dataService.getMetadataLabel('change_types',change.change_type_id) }}</span>
+          by
+          <span>{{ change.user ? change.user.name : 'unknown'}}</span>
+        </mat-card-title>
+        <mat-card-subtitle>{{ change.created_at | date : 'short' }}</mat-card-subtitle>
+        <mat-card-content>
+          <div class="change-need-row" *ngFor="let n of change.needs" fxLayout="row" fxLayoutAlign="space-between start"
+            fxLayoutGap="5px">
+            <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
+            <div class="bottom-dots" fxFlex>&nbsp;</div>
+            <div>{{ n.quantity | number : '1.0-0' }}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>

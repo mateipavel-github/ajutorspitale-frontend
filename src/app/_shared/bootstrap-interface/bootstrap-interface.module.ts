@@ -1,7 +1,5 @@
 import { RequestSentDialogComponent } from './../request-sent-dialog/request-sent-dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { NewMetadataDialogComponent } from './../new-metadata-dialog/new-metadata-dialog.component';
-import { LoadingStatusComponent } from './../loading-status/loading-status.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,7 +28,7 @@ import { MatChipsModule } from '@angular/material/chips';
 
 
 @NgModule({
-  declarations: [NewMetadataDialogComponent, RequestSentDialogComponent],
+  declarations: [RequestSentDialogComponent],
   imports: [
     CommonModule,
     BrowserModule,
@@ -92,7 +90,6 @@ import { MatChipsModule } from '@angular/material/chips';
   ],
 
   entryComponents: [
-    NewMetadataDialogComponent,
     RequestSentDialogComponent
   ]
 

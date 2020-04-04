@@ -13,9 +13,14 @@ a.active {
 }
 
 .side-options {
-    width: 200px;
+    width: 300px;
 }
 
 .status2 {
     color: green;
+}
+
+.side-option label {
+    color: rgba(0,0,0,0.6);
+    font-weight: bold;
 }

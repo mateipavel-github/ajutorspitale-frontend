@@ -97,7 +97,8 @@ export class ListUsersComponent implements OnInit {
     return null;
   }
 
-  onDeleteUser(id) {
+  onDeleteUser(index) {
+    const id = this.users[index].id;
     this.dataService.deleteUser(id).subscribe(serverResponse => {
       if (serverResponse['success']) {
         this.users.splice(this.findUserIndexById(id), 1);

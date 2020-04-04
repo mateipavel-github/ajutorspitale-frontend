@@ -25,16 +25,8 @@ export class ListRequestsComponent implements OnInit {
     private authService: AuthService, private filterService: FilterService) {
 
     this.filterService.filtersObservable$.subscribe(filters => {
-      this.requests = [];
-      this.paging = { current: 1, last: 1, total: 0, per_page: 100};
-      this.requestsLoaded = false;
-      this.dataService.getRequests(filters).subscribe(serverResponse => {
-        this.requestsLoaded = true;
-        this.requests = serverResponse['data']['items'];
-        this.paging.current = serverResponse['data']['current_page'];
-        this.paging.last = serverResponse['data']['last_page'];
-        this.paging.total = serverResponse['data']['total'];
-      });
+      this.paging = { current: 1, last: 1, total: 0, per_page: 100 };
+      this.loadRequests(filters);
     });
 
     this.route.paramMap.subscribe(params => {
@@ -44,8 +36,21 @@ export class ListRequestsComponent implements OnInit {
 
   }
 
+  loadRequests(filters, page?) {
+    this.requests = [];
+    this.requestsLoaded = false;
+    this.dataService.getRequests({ ...filters, ...{ per_page: this.paging.per_page, page: page ? page : this.paging.current } })
+      .subscribe(serverResponse => {
+        this.requestsLoaded = true;
+        this.requests = serverResponse['data']['items'];
+        this.paging.current = serverResponse['data']['current_page'];
+        this.paging.last = serverResponse['data']['last_page'];
+        this.paging.total = serverResponse['data']['total'];
+      });
+  }
+
   onPageChange(page) {
-    console.log('gotopage', page);
+    this.loadRequests(this.filterService.getFilters(), page);
   }
 
   onAssign(requestId) {
@@ -62,6 +67,7 @@ export class ListRequestsComponent implements OnInit {
       }
     });
   }
+
   onUnassign(requestId) {
     this.assignChanging = requestId;
     this.dataService.unassignCurrentUserFromRequest(requestId).subscribe(serverResponse => {

@@ -69,8 +69,8 @@
           </div>
           <div class="side-options">
             
-            <div>
-              <strong>Status: </strong>
+            <div class="side-option">
+              <label>Status: </label>
               <app-loading-button [loading]="statusChanging===request.id" [matMenuTriggerFor]="statusChange" 
               [label]="dataService.getMetadataLabel('request_status_types', request.status)">
               </app-loading-button>
@@ -78,9 +78,9 @@
                 <button (click)="onChangeRequestStatus(request.id, k.id)" *ngFor="let k of dataService.metadata['request_status_types']" mat-menu-item>{{ k.label }}</button>
               </mat-menu>
             </div>
-            <div>
+            <div class="side-option">
               <ng-container *ngIf="request.assigned_user">
-                <span>Asignat: </span>
+                <label>Asignat: </label>
                 <app-loading-button [loading]="assignChanging===request.id" (click)="onUnassign(request.id)"
                   [label]="request.assigned_user.name" icon="close" showIcon="hover"></app-loading-button>
               </ng-container>

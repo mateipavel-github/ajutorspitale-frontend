@@ -1,4 +1,4 @@
-<form [formGroup]="editForm">
+<form [formGroup]="editForm" (submit)="onSubmit()">
 
   <h2>Date solicitant</h2>
 
@@ -50,11 +50,7 @@
   </div>
 
   <div>
-    <!-- <input type="hidden" formControlName="medical_unit_id" />
-    <label *ngIf="editForm.get('medical_unit_id').value>0">{{ request.medical_unit.name }}</label>
-    <a *ngIf="editForm.get('medical_unit_id').value>0" (click)="clearMedicalUnit()">șterge</a>
-    <a (click)="showMedicalUnitSearch=!showMedicalUnitSearch">{{ showMedicalUnitSearch ? "anulează" : "schimbă" }}</a> -->
-    <app-medical-unit-input-search [inputControl]="editForm.get('medical_unit')" label="Spital de stat" (selected)="onChangeMedicalUnit($event)">
+    <app-medical-unit-input-search [countyId]="editForm.get('county_id').value" [inputControl]="editForm.get('medical_unit')" label="Spital de stat" (selected)="onChangeMedicalUnit($event)">
     </app-medical-unit-input-search>
   </div>
 
@@ -63,17 +59,17 @@
     <mat-form-field fxFlex="30%" appearance="outline">
       <mat-label>Tip actualizare</mat-label>
       <mat-select required placeholder="Alege" formControlName="change_type_id">
-        <mat-option *ngFor="let k of dataService.metadata['change_types']" [value]="k.id">{{ k.label }}</mat-option>
+        <mat-option *ngFor="let k of changeTypes" [value]="k.id">{{ k.label }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field fxFlex="70%" appearance="outline">
       <mat-label>Detalii</mat-label>
-      <input required matInput formControlName="user_comment" type="text" class="form-control"
+      <input matInput formControlName="user_comment" type="text" class="form-control"
         class="form-control-plaintext">
     </mat-form-field>
   </div>
 
-  <app-loading-button [loading]="formLoading" btnStyle="flat" color="primary" (btnClick)="onSubmit()" label="Salvează"></app-loading-button>
+  <app-loading-button type="submit" [loading]="formLoading" btnStyle="flat" color="primary" (btnClick)="onSubmit()" label="Salvează"></app-loading-button>
 
 </form>
