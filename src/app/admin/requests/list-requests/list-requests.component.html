@@ -45,6 +45,7 @@
       <mat-card-title fxLayout="row" fxLayoutAlign="start start">
         <span>cererea #{{ request.id }}</span>
       </mat-card-title>
+      <mat-card-subtitle>{{ request.created_at | date : 'short' }}</mat-card-subtitle>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="15px">
           <div style="width: 300px;">
@@ -63,7 +64,7 @@
           </div>
           <div fxFlex>
             <h3>Nevoi</h3>
-            <p>{{ request.currentNeeds?.length || 0 }} procesate</p>
+            <p>{{ request.current_needs?.length || 0 }} procesate</p>
             <ng-container *ngIf="request?.other_needs?.length>0">
               <h3>Alte nevoi (rămase în spreadsheet))</h3>
               <p>{{ request?.other_needs }}</p>
