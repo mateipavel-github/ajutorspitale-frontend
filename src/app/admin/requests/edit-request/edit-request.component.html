@@ -126,7 +126,7 @@
             <li>
               Ati scris la noi pe site (azi) ca aveti nevoie de <a href="javascript:void"
                 (click)="showScriptNeeds=!showScriptNeeds">{{ showScriptNeeds ? 'ascunde' : 'arată' }} cererea</a>.
-              <p *ngIf="showScriptNeeds">{{ sessionData.currentRequest.needs_text }}</p>
+              <p class="script-needs" *ngIf="showScriptNeeds" [innerHTML]="sessionData.currentRequest.needs_text | nl2br"></p>
             </li>
             <li>Este exact genul de probleme la care ne asteptam si va multumim pentru ca ne-ati contactat.</li>
             <li>Aveti o procedura specifica pentru acceptarea donatiilor?</li>
