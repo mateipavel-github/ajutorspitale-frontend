@@ -56,7 +56,10 @@ export class EditRequestNeedsComponent implements OnInit {
       if (this.removeDiacritice(need_type.label) === filterValue) {
         exactMatch = true;
       }
-      return (this.removeDiacritice(need_type.label).indexOf(filterValue) === 0);
+      return (
+        this.removeDiacritice(need_type.label).indexOf(filterValue) === 0 ||
+        this.removeDiacritice(need_type.label).indexOf('| ' + filterValue) > -1
+      );
     });
     if (!exactMatch) {
       list.push({ id: 0, label: label});

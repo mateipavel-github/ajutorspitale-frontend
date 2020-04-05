@@ -29,11 +29,12 @@
 
     <h2>Nevoi de actualizat</h2>
 
-    <mat-autocomplete panelWidth="300px" autoActiveFirstOption #needTypesAutocomplete="matAutocomplete"
+    <mat-autocomplete panelWidth="400px" autoActiveFirstOption #needTypesAutocomplete="matAutocomplete"
       (optionSelected)="needTypeSelected($event)"
       [displayWith]="needsAutocompleteDisplay">
       <ng-container *ngFor="let needType of filteredNeedTypes | async">
-        <mat-option *ngIf="needType.id!==0" [value]="needType">{{ needType.label }}</mat-option>
+        <mat-option *ngIf="needType.id!==0" [value]="needType" title="{{ needType.label }}">{{ needType.label }}
+        </mat-option>
         <mat-option *ngIf="needType.id===0" [value]="needType">Adaugă <strong>{{ needType.label }}</strong></mat-option>
       </ng-container>
     </mat-autocomplete>
