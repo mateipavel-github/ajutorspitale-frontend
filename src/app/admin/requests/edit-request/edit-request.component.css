@@ -15,7 +15,7 @@ h1 {margin-bottom: 0;}
 
 .preview-side {
     width: 300px;
-    padding: 20px;
+    padding: 0px 20px 0px 20px;
     border-left: 1px solid #DDD;
 }
 
@@ -39,4 +39,31 @@ h1 {margin-bottom: 0;}
 .preview-need .dots {
     flex-grow: 1;
     border-bottom: 1px dotted black;
+}
+
+.script {
+    padding: 0 0 0 20px;
+}
+.script > li {
+    padding-bottom: 10px;
+}
+
+mat-expansion-panel {
+    margin-bottom: 10px;
+}
+
+.notes {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notes > li {
+    padding: 5px 0px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.notes > li > span.date {
+    font-size: 11px;
+    display: block;
+    color: rgba(0,0,0,0.4);
 }

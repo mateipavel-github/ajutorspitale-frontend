@@ -26,10 +26,10 @@ export class ListRequestsComponent implements OnInit {
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
     private authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar) {
 
-    this.filterService.filtersObservable$.subscribe(filters => {
+    this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.paging = { current: 1, last: 1, total: 0, per_page: 100 };
-      this.loadRequests(filters);
-    });
+      return this.loadRequests(filters);
+    })).subscribe(this.onRequestsLoaded.bind(this), this.onRequestsError.bind(this));
 
     this.route.paramMap.subscribe(params => {
       this.flag = params.get('flag');
@@ -41,14 +41,23 @@ export class ListRequestsComponent implements OnInit {
   loadRequests(filters, page?) {
     this.requests = [];
     this.requestsLoaded = false;
-    this.dataService.getRequests({ ...filters, ...{ per_page: this.paging.per_page, page: page ? page : this.paging.current } })
-      .subscribe(serverResponse => {
-        this.requestsLoaded = true;
-        this.requests = serverResponse['data']['items'];
-        this.paging.current = serverResponse['data']['current_page'];
-        this.paging.last = serverResponse['data']['last_page'];
-        this.paging.total = serverResponse['data']['total'];
-      });
+    return this.dataService.getRequests({ ...filters, ...{ per_page: this.paging.per_page, page: page ? page : this.paging.current } });
+  }
+
+  onRequestsLoaded(serverResponse) {
+    this.requestsLoaded = true;
+    this.requests = serverResponse['data']['items'];
+    this.paging.current = serverResponse['data']['current_page'];
+    this.paging.last = serverResponse['data']['last_page'];
+    this.paging.total = serverResponse['data']['total'];
+  }
+
+  onRequestsError(serverError) {
+    this.snackBar.openFromComponent(SnackbarComponent, {
+      data: { message: serverError['error'] },
+      panelClass: 'snackbar-error',
+      duration: 5000
+    });
   }
 
   onPageChange(page) {

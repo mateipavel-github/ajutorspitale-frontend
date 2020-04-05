@@ -21,6 +21,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule, MatMenu } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -54,6 +55,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatExpansionModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -84,6 +86,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatExpansionModule,
 
     ReactiveFormsModule,
     FormsModule

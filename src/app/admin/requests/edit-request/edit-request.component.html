@@ -43,6 +43,39 @@
             </mat-tab-group>
         </div>
         <div class="preview-side">
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Notițe
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div>
+              <ul class="notes">
+                <li *ngFor="let n of sessionData.currentRequest?.notes">
+                  <span class="date">{{ n.created_at | date : 'short' }} by <strong>{{ n.user.name }}</strong></span>
+                  {{ n.content }}
+                </li>
+              </ul>
+            </div>
+            <div>
+            <mat-form-field fxFlex appearance="outline">
+              <mat-label>Adaugă</mat-label>
+              <input placeholder="Notițe..." (keydown.enter)="onSaveNote()" matInput [formControl]="newNote" type="text" class="form-control"
+                class="form-control-plaintext">
+            </mat-form-field>
+            </div>
+
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Sumar cerere
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
             <div class="item">
               <div class="label">Cererea originală: <a (click)="showNeedsText=!showNeedsText">{{ showNeedsText ? "ascunde" : "arată" }}</a></div>
               <div *ngIf="showNeedsText" class="value" [innerHTML]="sessionData.currentRequest.needs_text | nl2br"></div>
@@ -70,19 +103,48 @@
               <div class="value">{{ sessionData.currentRequest.job_title }}</div>
               <div class="value">{{ sessionData.currentRequest.phone_number }}</div>
             </div>
-            <div class="item-list">
-              <div class="label">Nevoi: </div>
-              
-              <!-- <div class="preview-need" *ngFor="let n of sessionData.currentRequest.needs">
-                  <div class="need-name">{{ dataService.getMetadataLabel('needs', n.need_id) }}</div>
-                  <div class="dots"></div>
-                  <div class="need-quantity">{{ n.quantity }}</div>
-              </div> -->
-            </div>
-            <div class="item">
-              <div class="label">Preluată de: </div>
-              <div class="value" *ngIf="sessionData.currentRequest.assigned_user">{{ sessionData.currentRequest.assigned_user.name }}</div>
-            </div>
+            
+          </mat-expansion-panel>
+          
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Script de urmat la telefon
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ul class="script">
+            <li>Bună ziua/seara, mă numesc <strong>{{ authService.currentUserValue.name }}</strong> și sunt voluntar la ajutorspitale.
+            Vorbesc cu dna/dl Doctor <strong>{{ sessionData.currentRequest.name }}</strong>?</li>
+            <li>Am primit cererea dvs</li>
+            <li>Am inteles nevoia dumneavoastra si vrem sa va asiguram ca mesajul a fost citit, nu sunteti singuri, echipa
+            noastra de voluntari cauta solutii.</li>
+            <li>Sunt multe probleme pe care le intampinam si in mediul de business, dar suntem siguri ca si in zona
+            medicala.</li>
+            <li>Ne asteptam sa fie multe probleme in zona unitatilor medicale, indiferent de dimensiunea lor si incercam sa
+            ajutam prin donatii.</li>
+            <li>
+              Ati scris la noi pe site (azi) ca aveti nevoie de <a href="javascript:void"
+                (click)="showScriptNeeds=!showScriptNeeds">{{ showScriptNeeds ? 'ascunde' : 'arată' }} cererea</a>.
+              <p *ngIf="showScriptNeeds">{{ sessionData.currentRequest.needs_text }}</p>
+            </li>
+            <li>Este exact genul de probleme la care ne asteptam si va multumim pentru ca ne-ati contactat.</li>
+            <li>Aveti o procedura specifica pentru acceptarea donatiilor?</li>
+            <li>Ati mai acceptat donatii pana acum?</li>
+            <li>Cum stati la capitolul mancare? Aveti ce va trebuie, personalul medical sau pacientii? Daca nu, pentru ce nr
+            de persoane aveti nevoie si de ce? (mancare gatita, materie prima pt gatit etc)</li>
+            <li>Va rog sa ne spuneti daca v-ar fi utila apa plata imbuteliata la sticle de 2L si ce cantitate aveti nevoie
+            pt 2 saptamani</li>
+            <li>Aveti nevoie de detergent de rufe sau produse de igiena personala (gel de dus, deodorant)?</li>
+            <li>Am preluat solicitarea dvs si colegii mei se ocupa sa gaseasca solutii. E greu sa spunem acum cu precizie
+            cand, dar un alt voluntar din echipa va va contacta cu un raspuns.</li>
+
+            <li>Apreciem efortul dumneavoastra, sunteti in prima linie de lupta si incercam sa va sprijinim cu tot ce gasim.</li>
+            <li>Va multumim</li>
+            </ul>
+            
+          </mat-expansion-panel>
+          
         </div>
     </div>
 </div>

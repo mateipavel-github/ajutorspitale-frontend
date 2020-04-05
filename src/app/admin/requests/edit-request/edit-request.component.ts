@@ -1,3 +1,4 @@
+import { AuthService } from './../../../_services/auth.service';
 import { SessionDataService } from './../../../_services/session-data.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from './../../../_services/data.service';
@@ -18,9 +19,11 @@ export class EditRequestComponent implements OnInit {
   showNeedsText = true;
   statusChanging = false;
   assignChanging = false;
+  newNote = new FormControl();
+  showScriptNeeds = false;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
-                private route: ActivatedRoute, private snackBar: MatSnackBar) {
+                private route: ActivatedRoute, private snackBar: MatSnackBar, private authService: AuthService) {
 
     this.route.paramMap.pipe(switchMap((params) => {
       this.sessionData.currentRequestId = params.get('id');
@@ -31,6 +34,26 @@ export class EditRequestComponent implements OnInit {
       this.showNeedsText = !(this.sessionData.currentRequest.needs && this.sessionData.currentRequest.needs.length > 0);
     });
 
+  }
+
+  onSaveNote() {
+    this.newNote.disable();
+    const data = { help_request_id: this.sessionData.currentRequestId, content: this.newNote.value };
+    this.dataService.storeNote(data).subscribe(serverResponse => {
+      this.newNote.enable();
+      this.newNote.setValue('');
+      if (serverResponse['success']) {
+        this.sessionData.currentRequest.notes.push(serverResponse['data']['newNote']);
+      }
+    }, error => {
+        this.newNote.enable();
+        this.newNote.setValue('');
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: { message: error['message'] },
+          panelClass: 'snackbar-error',
+          duration: 5000
+        });
+    });
   }
 
   onUnassign() {

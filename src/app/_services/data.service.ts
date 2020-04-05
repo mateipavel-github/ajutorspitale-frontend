@@ -185,4 +185,9 @@ export class DataService {
     data['_method'] = 'PUT';
     return this.api.post(environment.api.url + '/metadata', data);
   }
+
+  public storeNote(data) {
+    data['_METHOD'] = 'PUT';
+    return this.api.post(environment.api.url + '/request-notes', data);
+  }
 }
