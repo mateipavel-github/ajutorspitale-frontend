@@ -27,7 +27,7 @@
     </div>
     <div class="page-container">
         <div class="edit-side">
-            <mat-tab-group>
+            <mat-tab-group class="edit-tabs">
                 <mat-tab label="Date cerere">
                     <ng-template matTabContent>
                     <div class="tab-content">
@@ -47,7 +47,7 @@
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
-                Notițe
+                Notițe ({{ sessionData.currentRequest?.notes?.length || 0}})
               </mat-panel-title>
             </mat-expansion-panel-header>
 
@@ -79,6 +79,9 @@
             <div class="item">
               <div class="label">Cererea originală: <a (click)="showNeedsText=!showNeedsText">{{ showNeedsText ? "ascunde" : "arată" }}</a></div>
               <div *ngIf="showNeedsText" class="value" [innerHTML]="sessionData.currentRequest.needs_text | nl2br"></div>
+              <div *ngIf="showNeedsText" class="label">Alte nevoi (din spreadsheet)</div>
+              <div *ngIf="showNeedsText" class="value" [innerHTML]="sessionData.currentRequest?.other_needs | nl2br">
+            </div>
             </div>
             <div class="item">
               <div class="label">Nevoi curente (agregate): </div>

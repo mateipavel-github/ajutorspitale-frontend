@@ -17,7 +17,7 @@
       <mat-form-field fxFlex="30%" appearance="outline">
         <mat-label>Tip actualizare</mat-label>
         <mat-select required placeholder="Alege" formControlName="change_type_id">
-          <mat-option *ngFor="let k of dataService.metadata['change_types']" [value]="k.id">{{ k.label }}</mat-option>
+          <mat-option *ngFor="let k of changeTypes" [value]="k.id">{{ k.label }}</mat-option>
         </mat-select>
       </mat-form-field>
 

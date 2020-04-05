@@ -35,7 +35,7 @@
 
     <mat-form-field style="width: 30%;" appearance="outline">
       <mat-label>Medical Unit Type</mat-label>
-      <mat-select required placeholder="Medical unit type" formControlName="medical_unit_type_id">
+      <mat-select placeholder="Medical unit type" formControlName="medical_unit_type_id">
         <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}</mat-option>
       </mat-select>
     </mat-form-field>

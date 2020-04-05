@@ -72,3 +72,8 @@ mat-expansion-panel {
     color: #F44336;
     padding: 5px 0px;
 }
+
+.edit-tabs {
+    position: sticky;
+    top: 0;
+}

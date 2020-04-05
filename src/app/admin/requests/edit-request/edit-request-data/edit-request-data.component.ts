@@ -34,7 +34,7 @@ export class EditRequestDataComponent implements OnInit {
       job_title: new FormControl(this.sessionData.currentRequest['job_title'], [Validators.required]),
       medical_unit_name: new FormControl(this.sessionData.currentRequest['medical_unit_name'], [Validators.required]),
       medical_unit: new FormControl(this.sessionData.currentRequest['medical_unit'], [this.editRequestValidators.EditMedicalUnitValidator]),
-      medical_unit_type_id: new FormControl(this.sessionData.currentRequest['medical_unit_type_id'], [Validators.required]),
+      medical_unit_type_id: new FormControl(this.sessionData.currentRequest['medical_unit_type_id']),
       county_id: new FormControl(this.sessionData.currentRequest['county_id'], [Validators.required]),
       extra_info: new FormControl(this.sessionData.currentRequest['extra_info']),
 

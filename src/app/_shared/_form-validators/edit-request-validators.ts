@@ -39,7 +39,8 @@ export class EditRequestValidators {
                 formErrors['medical_unit_county_mismatch'] = true;
             }
         } else {
-            if (this.dataService.getMetadataSlug('medical_unit_types', medicalUnitType.value).indexOf('state-hospital') === 0) {
+            if (medicalUnitType.value &&
+                this.dataService.getMetadataSlug('medical_unit_types', medicalUnitType.value).indexOf('state-hospital') === 0) {
                 medical_unit.setErrors({ 'required_for_state_hospitals': true });
                 formErrors['medical_unit_missing'] = true;
             } else {

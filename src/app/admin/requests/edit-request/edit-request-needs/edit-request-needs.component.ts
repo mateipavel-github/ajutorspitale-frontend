@@ -20,13 +20,16 @@ export class EditRequestNeedsComponent implements OnInit {
   showChangeForm = false;
   showHistory;
   needsFormLoading = false;
+  changeTypes;
 
   filteredNeedTypes: Observable<any[]>;
   needTypeFilter: Subject<string> = new Subject<string>();
   currentNeedIndex = 0;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
-    public dialog: MatDialog, private snackBar: MatSnackBar, private editRequestValidators: EditRequestValidators) { }
+    public dialog: MatDialog, private snackBar: MatSnackBar, private editRequestValidators: EditRequestValidators) {
+    this.changeTypes = this.dataService.getMetadataFiltered('change_types', { exclude: ['new_request', 'delivery'] });
+    }
 
   ngOnInit(): void {
     this.filteredNeedTypes = this.needTypeFilter.pipe(

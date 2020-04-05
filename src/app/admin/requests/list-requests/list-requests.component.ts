@@ -61,7 +61,8 @@ export class ListRequestsComponent implements OnInit {
   }
 
   onPageChange(page) {
-    this.loadRequests(this.filterService.getFilters(), page);
+    this.loadRequests(this.filterService.getFilters(), page['pageIndex'] + 1).subscribe(this.onRequestsLoaded.bind(this),
+      this.onRequestsError.bind(this));
   }
 
   onAssign(requestId) {

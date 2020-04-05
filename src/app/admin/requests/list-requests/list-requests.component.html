@@ -33,7 +33,7 @@
     </div>
     
     <app-request-filter-form></app-request-filter-form>
-    <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange"
+    <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)"
       [length]="paging.total" [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
     </mat-paginator>
   </div>
@@ -46,7 +46,7 @@
         <span>cererea #{{ request.id }}</span>
       </mat-card-title>
       <mat-card-content>
-        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0px">
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="15px">
           <div style="width: 300px;">
             <h3>Persoana</h3>
             <p>
@@ -56,16 +56,18 @@
             </p>
             <h3>Unitatea medicală</h3>
             <p>
-              <strong>Nume: </strong>{{ request.medical_unit_name }}<br />
+              <strong>Nume: </strong>{{ request?.medical_unit?.name || request.medical_unit_name }}<br />
               <strong>Județ: </strong>{{ dataService.getMetadataLabel('counties', request.county_id) }}<br />
               <strong>Tip: </strong>{{ dataService.getMetadataLabel('medical_unit_types', request.medical_unit_type_id) }}
             </p>
           </div>
           <div fxFlex>
             <h3>Nevoi</h3>
-            <p>{{ request.needs_text }}</p>
-            <h3>Alte informații</h3>
-            <p>{{ request.extra_info }}</p>
+            <p>{{ request.currentNeeds?.length || 0 }} procesate</p>
+            <ng-container *ngIf="request?.other_needs?.length>0">
+              <h3>Alte nevoi (rămase în spreadsheet))</h3>
+              <p>{{ request?.other_needs }}</p>
+            </ng-container>
           </div>
           <div class="side-options">
             
