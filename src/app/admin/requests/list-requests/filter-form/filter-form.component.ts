@@ -16,7 +16,7 @@ export class FilterFormComponent implements OnInit {
   constructor(private dataService: DataService, private filterService: FilterService) {
 
     this.statusOptions = this.dataService.metadata.request_status_types.slice();
-    this.statusOptions.push({'slug': 'new,approved,complete', label: 'Noi, Aprobate sau Complete' });
+    this.statusOptions.push({'slug': 'new,approved,complete', label: 'Neprocesate, Validate sau Rezolvate' });
 
     this.filterForm = new FormGroup({
       'status': new FormControl()
