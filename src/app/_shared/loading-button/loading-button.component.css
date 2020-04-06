@@ -22,6 +22,6 @@ button:hover mat-icon.showOnHover {
     visibility: visible;
 }
 
-button:hover:not([ng-reflect-color=primary]) {
+button:hover:not([ng-reflect-color=primary]):not([disabled]) {
     background-color:rgba(0, 0, 0, .04);
 }
