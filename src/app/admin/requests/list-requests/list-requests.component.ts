@@ -24,7 +24,7 @@ export class ListRequestsComponent implements OnInit {
   assignChanging = 0;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
-    private authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar) {
+    public authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar) {
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.paging = { current: 1, last: 1, total: 0, per_page: 100 };

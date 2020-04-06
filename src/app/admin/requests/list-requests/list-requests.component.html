@@ -87,8 +87,8 @@
                 <app-loading-button [loading]="assignChanging===request.id" (click)="onUnassign(request.id)"
                   [label]="request.assigned_user.name" icon="close" showIcon="hover"></app-loading-button>
               </ng-container>
-              <app-loading-button [loading]="assignChanging===request.id" *ngIf="!request.assigned_user" btnStyle="stroked" color="primary"
-                (click)="onAssign(request.id)" label="Preia cererea"></app-loading-button>
+              <app-loading-button [loading]="assignChanging===request.id" *ngIf="request?.assigned_user?.id!==authService.currentUserValue.id" btnStyle="stroked" color="primary"
+                (click)="onAssign(request.id)" label="Preiau eu"></app-loading-button>
             </div>
 
             <div class="actions">
