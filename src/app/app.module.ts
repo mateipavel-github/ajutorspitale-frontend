@@ -15,6 +15,7 @@ import localeRo from '@angular/common/locales/ro';
 import { registerLocaleData } from '@angular/common';
 import { SnackbarComponent } from './_shared/snackbar/snackbar.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 // the second parameter 'fr-FR' is optional
 registerLocaleData(localeRo, 'ro-RO');
@@ -37,6 +38,7 @@ registerLocaleData(localeRo, 'ro-RO');
     AppRoutingModule
   ],
   providers: [
+    Title,
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true },
     { provide: LOCALE_ID, useValue: 'ro-RO' },

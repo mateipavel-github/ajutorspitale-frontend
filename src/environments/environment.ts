@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  appName: 'AjutorSpitale.ro',
   production: false,
   api: {
     url: 'http://ajutorspitale.local/api/v1',

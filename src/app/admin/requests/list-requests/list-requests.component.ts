@@ -6,6 +6,9 @@ import { DataService } from '../../../_services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
+import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-requests',
@@ -24,9 +27,11 @@ export class ListRequestsComponent implements OnInit {
   assignChanging = 0;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
-    public authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar) {
+    public authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar, private titleService: Title) {
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
+      this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);
+
       this.paging = { current: 1, last: 1, total: 0, per_page: 100 };
       return this.loadRequests(filters);
     })).subscribe(this.onRequestsLoaded.bind(this), this.onRequestsError.bind(this));

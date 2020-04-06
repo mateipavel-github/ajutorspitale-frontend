@@ -1,6 +1,8 @@
 import { AuthService } from './../_services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-admin',
@@ -12,10 +14,12 @@ export class AdminComponent implements OnInit {
   protected currentPage;
   public currentUser;
 
-  constructor(private router: Router, public authService: AuthService) {
+  constructor(private router: Router, public authService: AuthService, private titleService: Title) {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
+
+    this.titleService.setTitle('Administrare@' + this.titleService.getTitle());
   }
 
   hasAccess(roles) {

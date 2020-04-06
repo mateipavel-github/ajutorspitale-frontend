@@ -1,10 +1,12 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppConstants } from './../../../app-constants';
 import { DataService } from 'src/app/_services/data.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
+import { Title } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-list-users',
@@ -24,7 +26,7 @@ export class ListUsersComponent implements OnInit {
   @ViewChild(MatTable) usersTable: MatTable<any>;
   AppConstants;
 
-  constructor(public dataService: DataService, private snackBar: MatSnackBar) {
+  constructor(public dataService: DataService, private snackBar: MatSnackBar, private titleService: Title) {
 
     this.AppConstants = AppConstants;
 
@@ -32,6 +34,8 @@ export class ListUsersComponent implements OnInit {
       this.usersLoaded = true;
       this.users = serverResponse['data']['items'];
     });
+
+    this.titleService.setTitle('Utilizatori | ' + this.titleService.getTitle());
 
   }
 
@@ -64,6 +68,10 @@ export class ListUsersComponent implements OnInit {
     if (data.id > 0 && !data.password) {
       delete data.password;
     }
+    if (data.email === '' || data.email === null) {
+      delete data.email;
+    }
+
     this.formLoading = true;
     this.dataService.saveUser(this.userEditForm.value).subscribe(serverResponse => {
       this.formLoading = false;
@@ -95,12 +103,14 @@ export class ListUsersComponent implements OnInit {
   }
 
   public findUserIndexById(id) {
+    let foundIndex = null;
     this.users.forEach((user, index) => {
       if (user.id === id) {
-        return index;
+        foundIndex = index;
+        return;
       }
     });
-    return null;
+    return foundIndex;
   }
 
   onDeleteUser(index) {

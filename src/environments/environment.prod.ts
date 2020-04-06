@@ -1,4 +1,5 @@
 export const environment = {
+  appName: 'AjutorSpitale.ro',
   production: true,
   api: {
     url: 'https://ajutor-spitale-api.herokuapp.com/api/v1',

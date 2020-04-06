@@ -50,14 +50,17 @@ export class FilterService {
       case 'mine':
         this.filters['assigned_user_id'] = this.authService.currentUserValue.id;
         this.filters['status'] = 'new,approved,complete';
+        this.filters['pageTitle'] = 'Cererile mele';
         break;
       case 'unassigned':
         this.filters['assigned_user_id'] = null;
         this.filters['status'] = 'new,approved,complete';
+        this.filters['pageTitle'] = 'Cereri nerespinse și neasignate';
         break;
       case 'all':
         delete this.filters['assigned_user_id'];
         this.filters['status'] = 'new,approved,complete';
+        this.filters['pageTitle'] = 'Cereri nerespinse';
         break;
     }
   }
