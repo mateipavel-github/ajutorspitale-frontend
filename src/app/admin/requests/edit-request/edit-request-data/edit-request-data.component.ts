@@ -31,7 +31,7 @@ export class EditRequestDataComponent implements OnInit {
       name: new FormControl(this.sessionData.currentRequest['name'], [Validators.required]),
       // tslint:disable-next-line:max-line-length
       phone_number: new FormControl(this.sessionData.currentRequest['phone_number'], [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
-      job_title: new FormControl(this.sessionData.currentRequest['job_title'], [Validators.required]),
+      job_title: new FormControl(this.sessionData.currentRequest['job_title']),
       medical_unit_name: new FormControl(this.sessionData.currentRequest['medical_unit_name'], [Validators.required]),
       medical_unit: new FormControl(this.sessionData.currentRequest['medical_unit'], [this.editRequestValidators.EditMedicalUnitValidator]),
       medical_unit_type_id: new FormControl(this.sessionData.currentRequest['medical_unit_type_id']),
