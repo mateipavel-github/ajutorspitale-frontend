@@ -1,8 +1,27 @@
-<form [formGroup]="filterForm">
+<form [formGroup]="filterForm" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="50px">
+
+  <mat-form-field>
+    <mat-label>Tip unitate medicală</mat-label>
+    <mat-select placeholder="Alege tip" formControlName="medical_unit_type_id">
+      <mat-option [value]="0">Orice unitate medicală</mat-option>
+      <mat-option *ngFor="let s of dataService.metadata.medical_unit_types" [value]="s.id">{{ s.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Județ</mat-label>
+    <mat-select placeholder="Alege județ" formControlName="county_id">
+      <mat-option [value]="0">Orice județ</mat-option>
+      <mat-option *ngFor="let s of dataService.metadata.counties" [value]="s.id">{{ s.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <mat-form-field>
     <mat-label>Status</mat-label>
-    <mat-select placeholder="Filtrează" formControlName="status">
+    <mat-select placeholder="Alege status" formControlName="status">
+      <mat-option [value]="0">Orice status</mat-option>
       <mat-option *ngFor="let s of statusOptions" [value]="s.slug">{{ s.label }}</mat-option>
     </mat-select>
   </mat-form-field>
+
 </form>

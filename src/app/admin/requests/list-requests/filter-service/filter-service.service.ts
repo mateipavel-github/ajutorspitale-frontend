@@ -11,7 +11,9 @@ export class FilterService {
   defaultFilters = {
     'flag': 'all',
     'per_page': 100,
-    'status': 'new'
+    'status': 'new',
+    'county_id': 0,
+    'medical_unit_type_id': 0
   };
 
   filters = {};
@@ -26,6 +28,10 @@ export class FilterService {
     if (sendUpdates) {
       this.sendUpdates();
     }
+  }
+
+  public clearFilter(filter) {
+    delete this.filters[filter];
   }
 
   public setFilters(filters) {
@@ -49,17 +55,17 @@ export class FilterService {
     switch (flag) {
       case 'mine':
         this.filters['assigned_user_id'] = this.authService.currentUserValue.id;
-        this.filters['status'] = 'new,approved,complete';
+        this.filters['status'] = 'new,approved,processed,complete';
         this.filters['pageTitle'] = 'Cererile mele';
         break;
       case 'unassigned':
         this.filters['assigned_user_id'] = null;
-        this.filters['status'] = 'new,approved,complete';
+        this.filters['status'] = 'new,approved,processed,complete';
         this.filters['pageTitle'] = 'Cereri nerespinse și neasignate';
         break;
       case 'all':
         delete this.filters['assigned_user_id'];
-        this.filters['status'] = 'new,approved,complete';
+        this.filters['status'] = 'new,approved,processed,complete';
         this.filters['pageTitle'] = 'Cereri nerespinse';
         break;
     }

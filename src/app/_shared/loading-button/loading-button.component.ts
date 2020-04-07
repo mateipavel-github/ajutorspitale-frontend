@@ -10,6 +10,7 @@ export class LoadingButtonComponent implements OnInit {
 
   @Input() loading = false;
   @Input() label;
+  @Input() labelPrefix = null;
   @Input() color = '';
   @Input() btnStyle = 'flat';
   @Input() btnDisabled = false;

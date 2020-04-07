@@ -4,7 +4,7 @@
   </div>
 
   <ng-template #buttonContentTemplate>
-    {{ label }}
+    <span class="prefix" *ngIf="labelPrefix">{{ labelPrefix }}</span>{{ label }}
     <mat-icon *ngIf="icon!=''" [ngClass]="{'showOnHover': showIcon==='hover'}">{{icon}}</mat-icon>
   </ng-template>
 

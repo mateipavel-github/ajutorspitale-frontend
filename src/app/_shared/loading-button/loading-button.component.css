@@ -25,3 +25,10 @@ button:hover mat-icon.showOnHover {
 button:hover:not([ng-reflect-color=primary]):not([disabled]) {
     background-color:rgba(0, 0, 0, .04);
 }
+
+.prefix {
+  position: relative;
+  top: -2px;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.54);
+}

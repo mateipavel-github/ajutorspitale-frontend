@@ -24,3 +24,43 @@ a.active {
     color: rgba(0,0,0,0.6);
     font-weight: bold;
 }
+
+.request-item > mat-card-title {
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    padding-bottom: 15px;
+}
+
+.request-item > .nat-card-content {
+    margin-top: 18px;
+    padding-top: 0;
+}
+
+.request-item-section {
+    padding-right: 45px;
+    border-right: 1px solid rgba(0,0,0,0.07);
+}
+.request-item-section.noborder {
+  border-right: 0px;
+}
+
+.request-item-section > h3{
+  color: rgba(0,0,0,0.54);
+}
+
+.request-item-section > p {
+    line-height: 25px;
+    font-size: 14px;
+}
+
+.item-title > span {
+    display: block;
+}
+
+.item-title > .date {
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: normal;
+    color: rgba(0,0,0,0.54);
+}
+
+.page-content {min-width: 760px;}
