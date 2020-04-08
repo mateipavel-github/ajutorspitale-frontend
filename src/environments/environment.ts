@@ -21,7 +21,22 @@ export const environment = {
       'medical_unit_type_id': 4,
       'medical_unit_id': 0,
       'needs_text': '100 x apă plată 5l\n1000 măști FPP3',
-      'extra_info': 'power to the people'
+      'extra_info': 'extra info cerere'
+    },
+    offer: {
+      'name': 'Doctor Popescu',
+      'job_title': 'Șef secție ATI',
+      'phone_number': '0722278567',
+      'organization_name': 'Carpatina',
+      'medical_unit_name': 'Spitalul de urgență',
+      'medical_unit_id': null,
+      'county_ids': [1, 2],
+      'needs_text': '',
+      'needs': [
+        { need_type: { id: 10, label: 'test' } , quantity: 30 },
+        { need_type: { id: 0, label: 'Nevoie nouă' }, quantity: 40}
+      ],
+      'extra_info': 'extra info ofertă'
     }
   }
 };

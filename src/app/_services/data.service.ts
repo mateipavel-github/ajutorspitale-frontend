@@ -126,6 +126,16 @@ export class DataService {
     this.metadata[type].push(item);
   }
 
+  public storeOfferChange(data) {
+    data._method = 'PUT';
+    return this.api.post(environment.api.url + '/changeOffers', data);
+  }
+
+  public storeOffer(data) {
+    data._method = 'PUT';
+    return this.api.post(environment.api.url + '/offers', data);
+  }
+
   public storeRequestChange(data) {
     data._method = 'PUT';
     return this.api.post(environment.api.url + '/changeRequests', data);

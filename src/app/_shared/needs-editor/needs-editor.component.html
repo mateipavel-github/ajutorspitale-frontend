@@ -1,0 +1,35 @@
+<mat-autocomplete panelWidth="400px" autoActiveFirstOption #needTypesAutocomplete="matAutocomplete"
+  (optionSelected)="needTypeSelected($event)" [displayWith]="needsAutocompleteDisplay">
+  <ng-container *ngFor="let needType of filteredNeedTypes | async">
+    <mat-option *ngIf="needType.id!==0" [value]="needType" title="{{ needType.label }}">{{ needType.label }}
+    </mat-option>
+    <mat-option *ngIf="needType.id===0" [value]="needType">Adaugă <strong>{{ needType.label }}</strong></mat-option>
+  </ng-container>
+</mat-autocomplete>
+
+<form [formGroup]="needsForm">
+  <div formArrayName="needs">
+    <ng-container *ngFor="let n of getAsFormArray('needs').controls; let i=index" [formGroupName]="i">
+      <div fxLayout=" row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Nevoie</mat-label>
+          <input (focus)="setCurrentNeed(i)" matInput formControlName="need_type" type="text" class="form-control"
+            class="form-control-plaintext" id="quantity-{{i}}" [matAutocomplete]="needTypesAutocomplete">
+        </mat-form-field>
+        <mat-form-field fxFlex="30%" appearance="outline">
+          <mat-label>Cantitate</mat-label>
+          <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext"
+            id="quantity-{{i}}">
+        </mat-form-field>
+        <div fxFlex="none" class="deleteItem">
+          <button mat-icon-button type="button" (click)="onRemoveNeed('add',i)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+    <div style="text-align: center;">
+      <button mat-button (click)="onAddNeed('add')">+</button>
+    </div>
+  </div>
+</form>

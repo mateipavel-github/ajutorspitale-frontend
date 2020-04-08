@@ -1,0 +1,97 @@
+<div class="form-container">
+
+  <h1 *ngIf="mode.value==='new'">Spune-ne cu ce poți ajuta</h1>
+  <h1 *ngIf="mode.value==='update'">Modifică ofertă</h1>
+
+  <p>Ești antreprenor și poți să oferi o mână de ajutor ? Alătură-te comunității antreprenoriale care face eforturi
+    pentru a limita efectele crizei generate de COVID-19 în România!
+  </p>
+  <p>Completează formularul unde descrii concret resursele pe care le poți pune la dispoziție și ajută-ne să ajutăm! Ne
+    vom ocupa să direcționăm ajutorul tău acolo unde este cea mai mare nevoie.</p>
+
+  <app-loading-status [loaded]="dataLoaded"></app-loading-status>
+
+  <form *ngIf="dataLoaded" [formGroup]="editForm">
+
+    <ng-container *ngIf="mode.value==='new'">
+      <mat-card>
+        <mat-card-title>Care este numele tău? *</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="name" type="text" aria-describedby="name" placeholder="">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-title>La ce număr de telefon te putem contacta? *</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="phone_number" type="text" aria-describedby="phoneNumber"
+              placeholder="0721123456 sau 0268123229">
+            <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-title>Pe cine reprezinți și ce funcție ai în cadrul companiei / organizației?
+        </mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input matInput type="text" formControlName="organization_name" placeholder="Numele companiei/organizației">
+          </mat-form-field>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input matInput type="text" formControlName="job_title" placeholder="Funcție">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-title>În ce județe poți și vrei să ajuți? *</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-select required multiple placeholder="Alege" formControlName="county_ids">
+              <mat-option value="0">Toată țara</mat-option>
+              <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-title>Știi deja un spital anume unde vrei să ajuți?</mat-card-title>
+        <mat-card-content>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <input required matInput formControlName="medical_unit_name" type="text" aria-describedby="name"
+              placeholder="">
+          </mat-form-field>
+          <!-- <app-medical-unit-input-search></app-medical-unit-input-search> -->
+        </mat-card-content>
+      </mat-card>
+
+    </ng-container>
+
+    <mat-card>
+      <mat-card-title>Cu ce poți ajuta?</mat-card-title>
+      <mat-card-content>
+        <app-needs-editor #needsEditor (needsUpdated)="onNeedsUpdated($event)"></app-needs-editor>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Alte detalii</mat-card-title>
+      <mat-card-content>
+        <mat-form-field style="width: 100%;" appearance="outline">
+          <textarea style="height: 300px;" matInput formControlName="extra_info" type="text"
+            aria-describedby="extraInfo" placeholder=""></textarea>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="form-error" *ngIf="!editForm.valid && editForm.touched">Formularul are erori.</div>
+    <app-loading-button btnType="submit" (btnClick)="onSave()" [loading]="formLoading" btnStyle="flat" color="primary" label="Trimite"></app-loading-button>
+  </form>
+
+</div>

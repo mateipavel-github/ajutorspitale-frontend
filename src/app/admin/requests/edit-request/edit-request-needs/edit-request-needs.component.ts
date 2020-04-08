@@ -28,7 +28,7 @@ export class EditRequestNeedsComponent implements OnInit {
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
     public dialog: MatDialog, private snackBar: MatSnackBar, private editRequestValidators: EditRequestValidators) {
-    this.changeTypes = this.dataService.getMetadataFiltered('change_types', { exclude: ['new_request', 'delivery'] });
+    this.changeTypes = this.dataService.getMetadataFiltered('change_types', { exclude: ['new_request'] });
     }
 
   ngOnInit(): void {

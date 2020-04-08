@@ -1,3 +1,4 @@
+import { NewOfferComponent } from './website/new-offer/new-offer.component';
 import { AdminModule } from './admin/admin.module';
 
 import { NgModule, LOCALE_ID } from '@angular/core';
@@ -16,6 +17,7 @@ import { registerLocaleData } from '@angular/common';
 import { SnackbarComponent } from './_shared/snackbar/snackbar.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+import { NeedsEditorComponent } from './_shared/needs-editor/needs-editor.component';
 
 // the second parameter 'fr-FR' is optional
 registerLocaleData(localeRo, 'ro-RO');
@@ -24,6 +26,7 @@ registerLocaleData(localeRo, 'ro-RO');
   declarations: [
     AppComponent,
     NewRequestComponent,
+    NewOfferComponent,
     LoginComponent,
     SnackbarComponent
   ],

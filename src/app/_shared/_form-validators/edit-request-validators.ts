@@ -16,7 +16,6 @@ export class EditRequestValidators {
     }
 
     NeedTypeValidator: ValidatorFn = (control: FormControl): ValidationErrors | null => {
-        console.log(control.value);
         if ( control.value === null || typeof (control.value) === 'string' ||
             (typeof (control.value) === 'object' && control.value?.id === 0 ) ) {
             return { 'invalid': true };

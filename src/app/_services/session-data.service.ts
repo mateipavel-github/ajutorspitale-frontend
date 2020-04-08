@@ -8,5 +8,8 @@ export class SessionDataService {
   currentRequestId;
   currentRequest;
 
+  currentOfferId;
+  currentOffer;
+
   constructor() { }
 }

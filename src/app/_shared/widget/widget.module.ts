@@ -1,3 +1,4 @@
+import { NeedsEditorComponent } from './../needs-editor/needs-editor.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MedicalUnitInputSearchComponent } from './../medical-unit-input-search/medical-unit-input-search.component';
@@ -17,6 +18,7 @@ const componentsAndPipes = [
   LoadingStatusComponent,
   LoadingButtonComponent,
   MedicalUnitInputSearchComponent,
+  NeedsEditorComponent,
   Nl2BrPipe
 ];
 
