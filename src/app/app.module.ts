@@ -17,7 +17,7 @@ import { registerLocaleData } from '@angular/common';
 import { SnackbarComponent } from './_shared/snackbar/snackbar.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
-import { NeedsEditorComponent } from './_shared/needs-editor/needs-editor.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 // the second parameter 'fr-FR' is optional
 registerLocaleData(localeRo, 'ro-RO');
@@ -31,11 +31,11 @@ registerLocaleData(localeRo, 'ro-RO');
     SnackbarComponent
   ],
   imports: [
+    FlexLayoutModule,
     WidgetModule,
     BootstrapInterfaceModule,
     HttpClientModule,
     RouterModule,
-
     AdminModule,
 
     AppRoutingModule

@@ -9,27 +9,31 @@
 
 <form [formGroup]="needsForm">
   <div formArrayName="needs">
-    <ng-container *ngFor="let n of getAsFormArray('needs').controls; let i=index" [formGroupName]="i">
-      <div fxLayout=" row" fxLayoutAlign="start center" fxLayoutGap="10px">
-        <mat-form-field fxFlex appearance="outline">
-          <mat-label>Nevoie</mat-label>
-          <input (focus)="setCurrentNeed(i)" matInput formControlName="need_type" type="text" class="form-control"
-            class="form-control-plaintext" id="quantity-{{i}}" [matAutocomplete]="needTypesAutocomplete">
-        </mat-form-field>
-        <mat-form-field fxFlex="30%" appearance="outline">
-          <mat-label>Cantitate</mat-label>
-          <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext"
-            id="quantity-{{i}}">
-        </mat-form-field>
-        <div fxFlex="none" class="deleteItem">
+    <div *ngFor="let n of getAsFormArray('needs').controls; let i=index" [formGroupName]="i">
+      <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
+        <div fxFlex>
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Produs</mat-label>
+            <input (focus)="setCurrentNeed(i)" matInput formControlName="need_type" type="text" class="form-control"
+              class="form-control-plaintext" id="quantity-{{i}}" [matAutocomplete]="needTypesAutocomplete">
+          </mat-form-field>
+        </div>
+        <div fxFlex="60px">
+          <mat-form-field appearance="outline" style="width: 60px;">
+            <mat-label>Cantitate</mat-label>
+            <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext"
+              id="quantity-{{i}}">
+          </mat-form-field>
+        </div>
+        <div fxFlex="nogrow" class="deleteItem">
           <button mat-icon-button type="button" (click)="onRemoveNeed('add',i)">
             <mat-icon>delete_forever</mat-icon>
           </button>
         </div>
       </div>
-    </ng-container>
+    </div>
     <div style="text-align: center;">
-      <button mat-button (click)="onAddNeed('add')">+</button>
+      <button mat-button mat-button-stroked (click)="onAddNeed('add')"><mat-icon>library_add</mat-icon> Adaugă produs/serviciu</button>
     </div>
   </div>
 </form>
