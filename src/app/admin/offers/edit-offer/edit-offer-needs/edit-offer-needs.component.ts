@@ -59,7 +59,7 @@ export class EditOfferNeedsComponent implements OnInit {
       }
       return (
         this.removeDiacritice(need_type.label).indexOf(filterValue) === 0 ||
-        this.removeDiacritice(need_type.label).indexOf('| ' + filterValue) > -1
+        this.removeDiacritice(need_type.label).indexOf(' ' + filterValue) > -1
       );
     });
     if (!exactMatch) {
