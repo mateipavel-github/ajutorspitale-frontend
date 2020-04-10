@@ -1,10 +1,10 @@
-import { DataService } from './../../_services/data.service';
+import { DataService } from '../../_services/data.service';
 import { ValidatorFn, FormGroup, ValidationErrors, FormArray, FormControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 
 
 @Injectable({ providedIn: 'root' })
-export class EditRequestValidators {
+export class EditOfferValidators {
 
     constructor(private dataService: DataService) {
 

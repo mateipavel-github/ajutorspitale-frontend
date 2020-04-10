@@ -24,11 +24,11 @@ export const environment = {
       'extra_info': 'extra info cerere'
     },
     offer: {
-      'name': 'Doctor Popescu',
-      'job_title': 'Șef secție ATI',
-      'phone_number': '0722278567',
-      'organization_name': 'Carpatina',
-      'medical_unit_name': 'Spitalul de urgență',
+      'name': 'Director Zizou',
+      'job_title': 'CEO',
+      'phone_number': '0120120122',
+      'organization_name': 'Vodafone',
+      'medical_unit_name': 'Oriunde',
       'medical_unit_id': null,
       'county_ids': [1, 2],
       'needs_text': '',

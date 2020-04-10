@@ -1,6 +1,6 @@
 <form [formGroup]="editForm" (submit)="onSubmit()">
 
-  <h2>Date solicitant</h2>
+  <h2>Date ofertă</h2>
 
   <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
     <mat-form-field style="width: 100%;" appearance="outline">
@@ -9,49 +9,48 @@
         placeholder="" class="form-control-plaintext">
     </mat-form-field>
 
-    <mat-form-field style="width: 100%;" appearance="outline">
-      <mat-label>Funcție</mat-label>
-      <input required matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
-        placeholder="" class="form-control-plaintext">
-    </mat-form-field>
-
     <mat-form-field matPrefix="+40-" style="width: 100%;" appearance="outline">
-      <mat-label>Phone number</mat-label>
+      <mat-label>Telefon</mat-label>
       <input required matInput formControlName="phone_number" type="text" class="form-control"
         aria-describedby="phoneNumber" placeholder="" class="form-control-plaintext">
       <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}</mat-error>
     </mat-form-field>
   </div>
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Funcție</mat-label>
+      <input required matInput formControlName="job_title" type="text" class="form-control" aria-describedby="jobTitle"
+        placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Nume organizație</mat-label>
+      <input required matInput formControlName="organization_name" type="text" class="form-control"
+        aria-describedby="name" placeholder="" class="form-control-plaintext">
+    </mat-form-field>
+  </div>
 
-  <h2>Unitate medicală</h2>
+  <h2>Unde vrea să ajute</h2>
 
   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+
+    <mat-form-field style="width: 20%;" appearance="outline">
+      <mat-label>Județe</mat-label>
+      <mat-select multiple required placeholder="Alege" formControlName="counties">
+        <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <mat-form-field style="width: 50%;" appearance="outline">
       <mat-label>Medical Unit Name</mat-label>
       <input required matInput formControlName="medical_unit_name" type="text" class="form-control"
         aria-describedby="medicalUnitName" placeholder="" class="form-control-plaintext">
     </mat-form-field>
 
-    <mat-form-field style="width: 30%;" appearance="outline">
-      <mat-label>Medical Unit Type</mat-label>
-      <mat-select placeholder="Medical unit type" formControlName="medical_unit_type_id">
-        <mat-option *ngFor="let t of dataService.metadata['medical_unit_types']" [value]="t.id">{{ t.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field style="width: 20%;" appearance="outline">
-      <mat-label>Județ</mat-label>
-      <mat-select required placeholder="Alege" formControlName="county_id">
-        <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
   </div>
 
   <div>
-    <app-medical-unit-input-search [countyId]="editForm.get('county_id').value"
-      [inputControl]="editForm.get('medical_unit')" label="Spital de stat" (selected)="onChangeMedicalUnit($event)">
+    <app-medical-unit-input-search [inputControl]="editForm.get('medical_unit')" label="Spital de stat" (selected)="onChangeMedicalUnit($event)">
     </app-medical-unit-input-search>
   </div>
 

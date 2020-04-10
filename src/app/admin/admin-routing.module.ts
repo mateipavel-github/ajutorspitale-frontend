@@ -1,3 +1,5 @@
+import { EditOfferComponent } from './offers/edit-offer/edit-offer.component';
+import { ListOffersComponent } from './offers/list-offers/list-offers.component';
 import { ListUsersComponent } from './users/list-users/list-users.component';
 import { MetadataEditorComponent } from './metadata/editor/metadata-editor.component';
 import { AuthGuardService } from './../_middleware/route-guards/auth-guard.service';
@@ -18,10 +20,17 @@ const routes: Routes = [
       { path: 'requests', component: ListRequestsComponent, data: {expectedRoles: ['admin', 'volunteer']} },
       { path: 'requests/:flag', component: ListRequestsComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
       { path: 'request/:id', component: EditRequestComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+
+      { path: 'offers', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'offers/:flag', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'offer/:id', component: EditOfferComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+
+
       { path: 'deliveries', component: ListDeliveriesComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
       { path: 'deliveries/:flag', component: ListDeliveriesComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
       { path: 'delivery/:id', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] }  },
       { path: 'delivery/new', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
+
       { path: 'metadata', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
       { path: 'users', component: ListUsersComponent, data: { expectedRoles: ['admin'] } }
     ]

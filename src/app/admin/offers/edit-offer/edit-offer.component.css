@@ -1,0 +1,79 @@
+.page-container {
+    display: flex;
+    flex-direction: row;
+}
+
+h1, .tab-content {
+    padding: 20px;
+}
+
+h1 {margin-bottom: 0;}
+
+.edit-side {
+    flex-grow: 1;
+}
+
+.preview-side {
+    width: 300px;
+    padding: 0px 20px 0px 20px;
+    border-left: 1px solid #DDD;
+}
+
+.item .label, .item-list .label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+.item .label > a {
+    font-weight: normal;
+    color: #673ab7;
+    cursor: pointer;
+}
+.item .value {
+    font-weight: normal;
+}
+
+.preview-need {
+    display: flex;
+    flex-direction: row;
+}
+.preview-need .dots {
+    flex-grow: 1;
+    border-bottom: 1px dotted black;
+}
+
+.script {
+    padding: 0 0 0 20px;
+}
+.script > li {
+    padding-bottom: 10px;
+}
+
+mat-expansion-panel {
+    margin-bottom: 10px;
+}
+
+.notes {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notes > li {
+    padding: 5px 0px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.notes > li > span.date {
+    font-size: 11px;
+    display: block;
+    color: rgba(0,0,0,0.4);
+}
+
+.script-needs {
+    color: #F44336;
+    padding: 5px 0px;
+}
+
+.edit-tabs {
+    position: sticky;
+    top: 0;
+}

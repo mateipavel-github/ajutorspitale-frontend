@@ -54,7 +54,7 @@
             <div>
               <ul class="notes">
                 <li *ngFor="let n of sessionData.currentRequest?.notes">
-                  <span class="date">{{ n.created_at | date : 'short' }} by <strong>{{ n.user.name }}</strong></span>
+                  <span class="date">{{ n.created_at | date : 'short' }} by <strong>{{ n.user?.name }}</strong></span>
                   {{ n.content }}
                 </li>
               </ul>

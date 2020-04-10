@@ -1,0 +1,138 @@
+<div *ngIf="!dataLoaded">Se încarcă...</div>
+<div *ngIf="dataLoaded">
+  <div fxLayout="row" fxLayoutAlign="start start">
+    <div>
+      <h1 style="display: inline-block;">
+        Oferta # {{ sessionData.currentOfferId }}
+      </h1>
+    </div>
+    <div style="padding: 20px;" fxFlex>
+      <app-loading-button btnStyle="stroked" [loading]="statusChanging" [matMenuTriggerFor]="statusChange"
+        [label]="dataService.getMetadataLabel('request_status_types', sessionData.currentOffer.status)">
+      </app-loading-button>
+      <mat-menu #statusChange="matMenu" xPosition="before">
+        <button (click)="onChangeOfferStatus(k.id)" *ngFor="let k of dataService.metadata['request_status_types']"
+          mat-menu-item>{{ k.label }}</button>
+      </mat-menu>
+      <span style="display: inline-block; padding: 0px 5px;">&nbsp;</span>
+
+      <app-loading-button *ngIf="sessionData.currentOffer.assigned_user" (click)="onUnassign()" btnStyle="stroked"
+        [loading]="assignChanging" icon="close" showIcon="hover"
+        [label]="'Preluată de ' + sessionData.currentOffer.assigned_user.name ">
+      </app-loading-button>
+      <app-loading-button *ngIf="sessionData.currentOffer.assigned_user===null" (click)="onAssign()" btnStyle="stroked"
+        [loading]="assignChanging" label="Preia cererea">
+      </app-loading-button>
+    </div>
+  </div>
+  <div class="page-container">
+    <div class="edit-side">
+      <mat-tab-group class="edit-tabs">
+        <mat-tab label="Date ofertă">
+            <div class="tab-content">
+              <app-edit-offer-data></app-edit-offer-data>
+            </div>
+        </mat-tab>
+        <mat-tab label="Produse & servicii">
+            <app-edit-offer-needs></app-edit-offer-needs>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+    <div class="preview-side">
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Notițe ({{ sessionData.currentOffer?.notes?.length || 0}})
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div>
+          <ul class="notes">
+            <li *ngFor="let n of sessionData.currentOffer?.notes">
+              <span class="date">{{ n.created_at | date : 'short' }} by <strong>{{ n.user?.name }}</strong></span>
+              {{ n.content }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Adaugă</mat-label>
+            <input placeholder="Notițe..." (keydown.enter)="onSaveNote()" matInput [formControl]="newNote" type="text"
+              class="form-control" class="form-control-plaintext">
+          </mat-form-field>
+        </div>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Sumar ofertă
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="item">
+          <div class="label">Produse de oferit (agregate): </div>
+          <div class="value">
+            <div class="change-need-row" *ngFor="let n of sessionData.currentOffer.current_needs" fxLayout="row"
+              fxLayoutAlign="space-between start" fxLayoutGap="5px">
+              <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
+              <div class="bottom-dots" fxFlex>&nbsp;</div>
+              <div>{{ n.quantity | number : '1.0-0' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="label">Produse de oferit non-standard: </div>
+          <div class="value">
+            <div class="value" [innerHTML]="sessionData.currentOffer.needs_text | nl2br"></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="label">Vrea să ajute la: </div>
+          <div class="value">{{ sessionData.currentOffer.medical_unit_name }}</div>
+        </div>
+        <div class="item">
+          <div class="label">Vrea să ajute în: </div>
+          <div class="value">Toată țara</div>
+        </div>
+        <div class="item">
+          <div *ngIf="showNeedsText" class="label">Alte informații</div>
+          <div *ngIf="showNeedsText" class="value" [innerHTML]="sessionData.currentOffer?.extra_info | nl2br">
+          </div>
+        </div>
+        <div class="item">
+          <div class="label">Persoană: </div>
+          <div class="value">{{ sessionData.currentOffer.name }}</div>
+          <div class="value">{{ sessionData.currentOffer.job_title }}</div>
+          <div class="value">{{ sessionData.currentOffer.phone_number }}</div>
+        </div> 
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Script de urmat la telefon
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ul class="script">
+          <li>Bună ziua/seara, mă numesc <strong>{{ authService.currentUserValue.name }}</strong> și sunt voluntar la
+            ajutorspitale.
+            Vorbesc cu dna/dl Doctor <strong>{{ sessionData.currentOffer.name }}</strong>?</li>
+          <li>Am primit oferta dvs</li>
+          <li>
+            Ati scris la noi pe site (azi) ca puteți oferi <a href="javascript:void"
+              (click)="showScriptNeeds=!showScriptNeeds">{{ showScriptNeeds ? 'ascunde' : 'arată' }} cererea</a>.
+            <p class="script-needs" *ngIf="showScriptNeeds" [innerHTML]="sessionData.currentOffer.needs_text | nl2br">
+            </p>
+          </li>
+          <li>Va multumim</li>
+        </ul>
+
+      </mat-expansion-panel>
+
+    </div>
+  </div>
+</div>

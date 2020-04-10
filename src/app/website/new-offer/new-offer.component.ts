@@ -1,3 +1,4 @@
+import { validateAllFormFields } from './../../_helpers/form.helper';
 import { NeedsEditorComponent } from './../../_shared/needs-editor/needs-editor.component';
 import { RequestSentDialogComponent } from './../../_shared/request-sent-dialog/request-sent-dialog';
 import { AppConstants } from './../../app-constants';
@@ -68,11 +69,7 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
 
   public onSave() {
 
-    Object.keys(this.editForm.controls).forEach(field => {
-      const control = this.editForm.get(field);
-      control.markAsTouched({ onlySelf: true });
-      console.log(field, control.valid);
-    });
+    validateAllFormFields(this.editForm);
 
     if (this.editForm.valid) {
       let apiObservable;
@@ -83,7 +80,7 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
           'help_offer_id': this.sessionData.currentOfferId,
           'extra_info': this.editForm.get('extra_info').value
         };
-        apiObservable = this.dataService.storeOfferChange(data);
+        apiObservable = this.dataService.updateOffer(this.sessionData.currentOfferId, data);
       }
 
       this.formLoading = true;
@@ -92,6 +89,7 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
         switch (serverResponse.success) {
           case true:
             this.showSuccessDialog();
+            this.needsEditor.clearNeeds();
             this.editForm.reset();
             break;
           case false:
@@ -155,14 +153,23 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
   }
 
   public onNeedsUpdated(needs) {
+
+    this.editForm.get('needs_text').setValue('');
+
     const needsArray = <FormArray>this.editForm.get('needs');
     needsArray.controls.splice(0, needsArray.length);
     needs.forEach(need => {
-      const f = new FormGroup({
-        'need_type_id': new FormControl(need.need_type?.id ? need.need_type?.id : null),
-        'quantity': new FormControl(need.quantity)
-      });
-      needsArray.push(f);
+      if (need.need_type?.id > 0) {
+        const f = new FormGroup({
+          'need_type_id': new FormControl(need.need_type?.id ? need.need_type?.id : null),
+          'quantity': new FormControl(need.quantity)
+        });
+        needsArray.push(f);
+      } else {
+        this.editForm.get('needs_text').setValue(
+          this.editForm.get('needs_text').value + '\n' + need.quantity + ' x ' + need.need_type?.label
+        );
+      }
     });
   }
 

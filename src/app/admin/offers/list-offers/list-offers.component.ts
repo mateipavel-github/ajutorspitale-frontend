@@ -1,5 +1,5 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FilterService } from './filter-service/filter-service.service';
+import { FilterService } from './../../requests/list-requests/filter-service/filter-service.service';
 import { AuthService } from './../../../_services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../../_services/data.service';
@@ -11,14 +11,14 @@ import { environment } from 'src/environments/environment';
 
 
 @Component({
-  selector: 'app-requests',
-  templateUrl: './list-requests.component.html',
-  styleUrls: ['./list-requests.component.css']
+  selector: 'app-offers',
+  templateUrl: './list-offers.component.html',
+  styleUrls: ['./list-offers.component.css']
 })
-export class ListRequestsComponent implements OnInit {
+export class ListOffersComponent implements OnInit {
 
-  requestsLoaded = false;
-  requests;
+  offersLoaded = false;
+  offers;
   flag = 'all';
   paging = { current: 1, last: 1, total: 0, per_page: 100 };
 
@@ -33,8 +33,8 @@ export class ListRequestsComponent implements OnInit {
       this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);
 
       this.paging = { current: 1, last: 1, total: 0, per_page: 100 };
-      return this.loadRequests(filters);
-    })).subscribe(this.onRequestsLoaded.bind(this), this.onRequestsError.bind(this));
+      return this.loadOffers(filters);
+    })).subscribe(this.onOffersLoaded.bind(this), this.onOffersError.bind(this));
 
     this.route.paramMap.subscribe(params => {
       this.flag = params.get('flag');
@@ -43,21 +43,21 @@ export class ListRequestsComponent implements OnInit {
 
   }
 
-  loadRequests(filters, page?) {
-    this.requests = [];
-    this.requestsLoaded = false;
-    return this.dataService.getRequests({ ...filters, ...{ per_page: this.paging.per_page, page: page ? page : this.paging.current } });
+  loadOffers(filters, page?) {
+    this.offers = [];
+    this.offersLoaded = false;
+    return this.dataService.getOffers({ ...filters, ...{ per_page: this.paging.per_page, page: page ? page : this.paging.current } });
   }
 
-  onRequestsLoaded(serverResponse) {
-    this.requestsLoaded = true;
-    this.requests = serverResponse['data']['items'];
+  onOffersLoaded(serverResponse) {
+    this.offersLoaded = true;
+    this.offers = serverResponse['data']['items'];
     this.paging.current = serverResponse['data']['current_page'];
     this.paging.last = serverResponse['data']['last_page'];
     this.paging.total = serverResponse['data']['total'];
   }
 
-  onRequestsError(serverError) {
+  onOffersError(serverError) {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: { message: serverError['error'] },
       panelClass: 'snackbar-error',
@@ -66,19 +66,19 @@ export class ListRequestsComponent implements OnInit {
   }
 
   onPageChange(page) {
-    this.loadRequests(this.filterService.getFilters(), page['pageIndex'] + 1).subscribe(this.onRequestsLoaded.bind(this),
-      this.onRequestsError.bind(this));
+    this.loadOffers(this.filterService.getFilters(), page['pageIndex'] + 1).subscribe(this.onOffersLoaded.bind(this),
+      this.onOffersError.bind(this));
   }
 
-  onAssign(requestId) {
-    this.assignChanging = requestId;
-    this.dataService.assignCurrentUserToRequest(requestId).subscribe(serverResponse => {
+  onAssign(offerId) {
+    this.assignChanging = offerId;
+    this.dataService.assignCurrentUserToOffer(offerId).subscribe(serverResponse => {
       this.assignChanging = 0;
       if (serverResponse['success']) {
-        this.requests.forEach((request, index) => {
-          if (request.id === requestId) {
-            this.requests[index].assigned_user = serverResponse['data']['assigned_user'];
-            this.requests[index].assigned_user_id = serverResponse['data']['assigned_user']['id'];
+        this.offers.forEach((offer, index) => {
+          if (offer.id === offerId) {
+            this.offers[index].assigned_user = serverResponse['data']['assigned_user'];
+            this.offers[index].assigned_user_id = serverResponse['data']['assigned_user']['id'];
           }
         });
       } else {
@@ -91,14 +91,14 @@ export class ListRequestsComponent implements OnInit {
     });
   }
 
-  onUnassign(requestId) {
-    this.assignChanging = requestId;
-    this.dataService.unassignCurrentUserFromRequest(requestId).subscribe(serverResponse => {
+  onUnassign(offerId) {
+    this.assignChanging = offerId;
+    this.dataService.unassignCurrentUserFromOffer(offerId).subscribe(serverResponse => {
       this.assignChanging = 0;
       if (serverResponse['success']) {
-        this.requests.forEach( (request, index) => {
-          if (request.id === requestId) {
-            this.requests[index].assigned_user_id = this.requests[index].assigned_user = null;
+        this.offers.forEach( (offer, index) => {
+          if (offer.id === offerId) {
+            this.offers[index].assigned_user_id = this.offers[index].assigned_user = null;
           }
         });
       } else {
@@ -112,22 +112,22 @@ export class ListRequestsComponent implements OnInit {
   }
 
   onMassAssign(howMany) {
-    this.requestsLoaded = false;
+    this.offersLoaded = false;
 
-    this.dataService.assignCurrentUserToManyRequests(howMany).subscribe(serverResponse => {
-      this.requestsLoaded = true;
-      this.router.navigate(['/admin/requests/mine']);
+    this.dataService.assignCurrentUserToManyOffers(howMany).subscribe(serverResponse => {
+      this.offersLoaded = true;
+      this.router.navigate(['/admin/offers/mine']);
     });
   }
 
-  onChangeRequestStatus(requestId, status) {
-    this.statusChanging = requestId;
-    this.dataService.changeRequestStatus(requestId, status).subscribe(serverResponse => {
+  onChangeOfferStatus(offerId, status) {
+    this.statusChanging = offerId;
+    this.dataService.changeOfferStatus(offerId, status).subscribe(serverResponse => {
       this.statusChanging = 0;
       if (serverResponse['success']) {
-        this.requests.forEach((request, index) => {
-          if (request.id === requestId) {
-            request.status = status;
+        this.offers.forEach((offer, index) => {
+          if (offer.id === offerId) {
+            offer.status = status;
           }
         });
       } else {

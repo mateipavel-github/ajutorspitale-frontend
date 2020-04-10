@@ -1,0 +1,52 @@
+.tab-content {
+    padding: 20px;
+}
+
+.bottom-dots {
+    border-bottom: 1px dashed black;
+}
+
+.needs-header {
+    text-align: center; 
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+}
+
+.change-need-row {
+    margin-bottom: 5px;
+}
+
+.changeForm {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.current-needs {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.current-needs .change-need-row {
+    padding: 5px 5px;
+}
+.current-needs .change-need-row:hover {
+  background-color: rgba(0, 0, 0, .04);
+}
+
+.deleteItem button {
+  position: relative;
+  top: -10px;
+}
+
+.history > mat-card {
+    margin-bottom: 15px;
+}
+
+.history > mat-card > mat-card-title {
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.history>mat-card>mat-card-title > span {
+  font-weight: 500;
+}

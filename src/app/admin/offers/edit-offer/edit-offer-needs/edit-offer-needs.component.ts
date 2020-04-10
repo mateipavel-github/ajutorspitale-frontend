@@ -1,7 +1,6 @@
+import { DataService } from 'src/app/_services/data.service';
+import { SessionDataService } from 'src/app/_services/session-data.service';
 import { validateAllFormFields } from './../../../../_helpers/form.helper';
-import { EditRequestValidators } from './../../../../_shared/_form-validators/edit-request-validators';
-import { SessionDataService } from './../../../../_services/session-data.service';
-import { DataService } from './../../../../_services/data.service';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,13 +8,14 @@ import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, of } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { EditOfferValidators } from 'src/app/_shared/_form-validators/edit-offer-validators';
 
 @Component({
-  selector: 'app-edit-request-needs',
-  templateUrl: './edit-request-needs.component.html',
-  styleUrls: ['./edit-request-needs.component.css']
+  selector: 'app-edit-offer-needs',
+  templateUrl: './edit-offer-needs.component.html',
+  styleUrls: ['./edit-offer-needs.component.css']
 })
-export class EditRequestNeedsComponent implements OnInit {
+export class EditOfferNeedsComponent implements OnInit {
 
   changeForm: FormGroup;
   showChangeForm = false;
@@ -28,7 +28,7 @@ export class EditRequestNeedsComponent implements OnInit {
   currentNeedIndex = 0;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
-    public dialog: MatDialog, private snackBar: MatSnackBar, private editRequestValidators: EditRequestValidators) {
+    public dialog: MatDialog, private snackBar: MatSnackBar, private editOfferValidators: EditOfferValidators) {
     this.changeTypes = this.dataService.getMetadataFiltered('change_types', { exclude: ['new_request'] });
     }
 
@@ -100,7 +100,7 @@ export class EditRequestNeedsComponent implements OnInit {
         'user_comment': new FormControl(),
       }),
       'needs': new FormArray([])
-    }, { validators: this.editRequestValidators.EditNeedsValidator });
+    }, { validators: this.editOfferValidators.EditNeedsValidator });
   }
 
   onUpdateNeeds() {
@@ -115,7 +115,7 @@ export class EditRequestNeedsComponent implements OnInit {
   onAddNeed(action) {
 
     const f = new FormGroup({
-      need_type: new FormControl(null, [this.editRequestValidators.NeedTypeValidator]),
+      need_type: new FormControl(null, [this.editOfferValidators.NeedTypeValidator]),
       quantity: new FormControl(null, Validators.required),
       action: new FormControl(action)
     });
@@ -154,10 +154,10 @@ export class EditRequestNeedsComponent implements OnInit {
       });
 
       this.needsFormLoading = true;
-      this.dataService.updateRequest(this.sessionData.currentRequestId, data).subscribe(serverResponse => {
+      this.dataService.updateOffer(this.sessionData.currentOfferId, data).subscribe(serverResponse => {
         this.needsFormLoading = false;
         if (serverResponse['success']) {
-          this.sessionData.currentRequest = serverResponse['data']['item'];
+          this.sessionData.currentOffer = serverResponse['data']['item'];
           this.changeForm.reset();
           this.showChangeForm = false;
           this.snackBar.openFromComponent(SnackbarComponent, {

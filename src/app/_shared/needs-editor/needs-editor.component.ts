@@ -1,6 +1,6 @@
 import { EditRequestValidators } from './../_form-validators/edit-request-validators';
 import { DataService } from 'src/app/_services/data.service';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
@@ -19,6 +19,8 @@ export class NeedsEditorComponent implements OnInit {
   filteredNeedTypes: Observable<any[]>;
   needTypeFilter: Subject<string> = new Subject<string>();
   currentNeedIndex = 0;
+
+  @Input() canAdd = false;
 
   @Output() eventAddNew: EventEmitter<any> = new EventEmitter();
   @Output() eventAddNewError: EventEmitter<any> = new EventEmitter();
@@ -79,19 +81,27 @@ export class NeedsEditorComponent implements OnInit {
 
   public needTypeSelected($event) {
     const ctrl = (<FormArray>this.needsForm.get('needs')).controls[this.currentNeedIndex].get('need_type');
+    console.log('Need Type Selected', $event.option);
     if ($event.option.value.id === 0) {
-      this.dataService.storeMetadataType({ metadata_type: 'need_types', label: $event.option.value.label })
-        .subscribe(serverResponse => {
-          if (serverResponse['success']) {
-            const newMetadataItem = serverResponse['data']['new_item'];
-            ctrl.setValue(newMetadataItem);
-            this.needTypeFilter.next('');
-            this.dataService.addMetadata(serverResponse['data']['metadata_type'], newMetadataItem);
-            this.eventAddNew.emit(newMetadataItem);
-          } else {
-            this.eventAddNewError.emit({'error': serverResponse['error']});
-          }
-        });
+      if (this.canAdd) {
+        this.dataService.storeMetadataType({ metadata_type: 'need_types', label: $event.option.value.label })
+          .subscribe(serverResponse => {
+            if (serverResponse['success']) {
+              const newMetadataItem = serverResponse['data']['new_item'];
+              ctrl.setValue(newMetadataItem);
+              this.needTypeFilter.next('');
+              this.dataService.addMetadata(serverResponse['data']['metadata_type'], newMetadataItem);
+              this.eventAddNew.emit(newMetadataItem);
+            } else {
+              this.eventAddNewError.emit({ 'error': serverResponse['error'] });
+            }
+          });
+      } else {
+        this.eventAddNew.emit($event.option);
+        this.needTypeFilter.next('');
+      }
+    } else {
+      this.needTypeFilter.next('');
     }
   }
 
@@ -99,8 +109,13 @@ export class NeedsEditorComponent implements OnInit {
     return <FormArray>this.needsForm.get(key);
   }
 
+  clearNeeds() {
+    this.getAsFormArray('needs').controls.splice(0, this.getAsFormArray('needs').length);
+  }
+
   setNeeds(needs) {
-    console.log(needs);
+    console.log('Set needs: ', needs);
+    this.clearNeeds();
     needs.forEach(need => {
       this.onAddNeed(need);
     });
@@ -109,7 +124,8 @@ export class NeedsEditorComponent implements OnInit {
   onAddNeed(data?) {
 
     const f = new FormGroup({
-      need_type: new FormControl(data?.need_type, [this.editRequestValidators.NeedTypeValidator]),
+      need_type: new FormControl(data?.need_type,
+        this.canAdd ? [this.editRequestValidators.NeedTypeValidator] : [this.editRequestValidators.NeedTypeSoftValidator]),
       quantity: new FormControl(data?.quantity, Validators.required)
     });
 
@@ -122,6 +138,10 @@ export class NeedsEditorComponent implements OnInit {
         this.needTypeFilter.next(val);
       }
     });
+  }
+
+  onRemoveNeed(action, i) {
+    this.getAsFormArray('needs').removeAt(i);
   }
 
   setCurrentNeed(index) {

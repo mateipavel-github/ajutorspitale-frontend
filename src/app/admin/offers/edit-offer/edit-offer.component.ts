@@ -1,7 +1,7 @@
-import { AuthService } from './../../../_services/auth.service';
-import { SessionDataService } from './../../../_services/session-data.service';
+import { AuthService } from '../../../_services/auth.service'
+import { SessionDataService } from '../../../_services/session-data.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DataService } from './../../../_services/data.service';
+import { DataService } from '../../../_services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
@@ -9,11 +9,11 @@ import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-edit-request',
-  templateUrl: './edit-request.component.html',
-  styleUrls: ['./edit-request.component.css']
+  selector: 'app-edit-offer',
+  templateUrl: './edit-offer.component.html',
+  styleUrls: ['./edit-offer.component.css']
 })
-export class EditRequestComponent implements OnInit {
+export class EditOfferComponent implements OnInit {
 
   dataLoaded = false;
   showNeedsText = true;
@@ -26,24 +26,24 @@ export class EditRequestComponent implements OnInit {
                 private route: ActivatedRoute, private snackBar: MatSnackBar, private authService: AuthService) {
 
     this.route.paramMap.pipe(switchMap((params) => {
-      this.sessionData.currentRequestId = params.get('id');
-      return dataService.getRequest(params.get('id'));
+      this.sessionData.currentOfferId = params.get('id');
+      return dataService.getOffer(params.get('id'));
     })).subscribe(serverResponse => {
       this.dataLoaded = true;
-      this.sessionData.currentRequest = serverResponse['data'];
-      this.showNeedsText = !(this.sessionData.currentRequest.needs && this.sessionData.currentRequest.needs.length > 0);
+      this.sessionData.currentOffer = serverResponse['data'];
+      this.showNeedsText = !(this.sessionData.currentOffer.needs && this.sessionData.currentOffer.needs.length > 0);
     });
 
   }
 
   onSaveNote() {
     this.newNote.disable();
-    const data = { item_id: this.sessionData.currentRequestId, content: this.newNote.value };
-    this.dataService.addRequestNote(data).subscribe(serverResponse => {
+    const data = { item_id: this.sessionData.currentOfferId, content: this.newNote.value };
+    this.dataService.addOfferNote(data).subscribe(serverResponse => {
       this.newNote.enable();
       this.newNote.setValue('');
       if (serverResponse['success']) {
-        this.sessionData.currentRequest.notes.push(serverResponse['data']['new_note']);
+        this.sessionData.currentOffer.notes.push(serverResponse['data']['new_note']);
       }
     }, error => {
         this.newNote.enable();
@@ -58,10 +58,10 @@ export class EditRequestComponent implements OnInit {
 
   onUnassign() {
     this.assignChanging = true;
-    this.dataService.unassignCurrentUserFromRequest(this.sessionData.currentRequestId).subscribe(serverResponse => {
+    this.dataService.unassignCurrentUserFromOffer(this.sessionData.currentOfferId).subscribe(serverResponse => {
       this.assignChanging = false;
       if (serverResponse['success']) {
-        this.sessionData.currentRequest.assigned_user_id = this.sessionData.currentRequest.assigned_user = null;
+        this.sessionData.currentOffer.assigned_user_id = this.sessionData.currentOffer.assigned_user = null;
         this.snackBar.openFromComponent(SnackbarComponent, {
           data: { message: 'Cererea a fost eliberată și poate fi preluată de alt voluntar.' },
           panelClass: 'snackbar-success'
@@ -78,11 +78,11 @@ export class EditRequestComponent implements OnInit {
 
   onAssign() {
     this.assignChanging = true;
-    this.dataService.assignCurrentUserToRequest(this.sessionData.currentRequestId).subscribe(serverResponse => {
+    this.dataService.assignCurrentUserToOffer(this.sessionData.currentOfferId).subscribe(serverResponse => {
       this.assignChanging = false;
       if (serverResponse['success']) {
-        this.sessionData.currentRequest.assigned_user = serverResponse['data']['assigned_user'];
-        this.sessionData.currentRequest.assigned_user_id = serverResponse['data']['assigned_user']['id'];
+        this.sessionData.currentOffer.assigned_user = serverResponse['data']['assigned_user'];
+        this.sessionData.currentOffer.assigned_user_id = serverResponse['data']['assigned_user']['id'];
         this.snackBar.openFromComponent(SnackbarComponent, {
           data: { message: 'Ai preluat cererea.' },
           panelClass: 'snackbar-success'
@@ -97,12 +97,12 @@ export class EditRequestComponent implements OnInit {
     });
   }
 
-  onChangeRequestStatus(status) {
+  onChangeOfferStatus(status) {
     this.statusChanging = true;
-    this.dataService.changeRequestStatus(this.sessionData.currentRequestId, status).subscribe(serverResponse => {
+    this.dataService.changeOfferStatus(this.sessionData.currentOfferId, status).subscribe(serverResponse => {
       this.statusChanging = false;
       if (serverResponse['success']) {
-        this.sessionData.currentRequest.status = status;
+        this.sessionData.currentOffer.status = status;
         this.snackBar.openFromComponent(SnackbarComponent, {
           data: { message: 'Statusul a fost schimbat.' },
           panelClass: 'snackbar-success'

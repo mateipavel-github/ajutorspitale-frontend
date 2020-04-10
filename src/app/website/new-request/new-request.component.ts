@@ -75,11 +75,10 @@ export class NewRequestComponent implements OnInit {
         apiObservable = this.dataService.storeRequest(this.editForm.value);
       } else {
         const data = {
-          'help_request_id': this.sessionData.currentRequestId,
           'needs_text': this.editForm.get('needs_text').value,
           'extra_info': this.editForm.get('extra_info').value
         };
-        apiObservable = this.dataService.storeRequestChange(data);
+        apiObservable = this.dataService.updateRequest(this.sessionData.currentRequestId, data);
       }
 
       this.formLoading = true;

@@ -1,3 +1,5 @@
+import { EditOfferComponent } from './offers/edit-offer/edit-offer.component';
+import { ListOffersComponent } from './offers/list-offers/list-offers.component';
 import { WidgetModule } from './../_shared/widget/widget.module';
 import { BootstrapInterfaceModule } from './../_shared/bootstrap-interface/bootstrap-interface.module';
 import { NgModule } from '@angular/core';
@@ -22,6 +24,8 @@ import { MatTableModule } from '@angular/material/table';
   // tslint:disable-next-line:max-line-length
   declarations: [
     ListRequestsComponent,
+    ListOffersComponent,
+    EditOfferComponent,
     DashboardComponent,
     AdminComponent,
     EditRequestComponent,
