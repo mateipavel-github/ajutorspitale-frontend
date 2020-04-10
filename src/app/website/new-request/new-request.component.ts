@@ -138,7 +138,7 @@ export class NewRequestComponent implements OnInit {
   }
 
   public showSuccessDialog() {
-      const dialogRef = this.dialog.open(RequestSentDialogComponent);
+    const dialogRef = this.dialog.open(RequestSentDialogComponent);
   }
 
 }

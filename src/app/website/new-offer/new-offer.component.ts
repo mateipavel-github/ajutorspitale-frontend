@@ -149,7 +149,14 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
   }
 
   public showSuccessDialog() {
-      const dialogRef = this.dialog.open(RequestSentDialogComponent);
+    const dialogRef = this.dialog.open(RequestSentDialogComponent, {
+      data: {
+        title: 'Soluția a fost trimisă',
+        // tslint:disable-next-line:max-line-length
+        p1: 'Dacă există (sau apare) o nevoie pentru produsele sau serviciile oferite de tine, voluntarii de la AjutorSpitale te vor contacta telefonic.',
+        p2: 'Îți mulțumim!'
+      }
+    });
   }
 
   public onNeedsUpdated(needs) {

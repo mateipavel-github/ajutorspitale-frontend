@@ -9,14 +9,24 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class RequestSentDialogComponent implements OnInit {
 
+  title;
+  p1;
+  p2;
+
   constructor(
     public dialogRef: MatDialogRef<RequestSentDialogComponent>,
     public dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-      // received data
+
+        console.log(data);
+        this.title = data?.title;
+        this.p1 = data?.p1;
+        this.p2 = data?.p2;
+
     }
 
   ngOnInit(): void {
+    console.log(this.data);
   }
 
   public onClose() {
