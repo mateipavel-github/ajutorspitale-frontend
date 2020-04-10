@@ -8,7 +8,8 @@
         <!-- <a mat-button routerLink="/admin/deliveries">Livrări</a> -->
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/metadata">Metadata</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/users">Utilizatori</a>
-        <a mat-button routerLink="/new-request">Adaugă cerere</a>
+        <a mat-button target="_blank" routerLink="/new-request">Adaugă cerere</a>
+        <a mat-button target="_blank" routerLink="/new-offer">Adaugă ofertă</a>
 
         <ng-container *ngIf="currentUser">
             <button mat-icon-button [matMenuTriggerFor]="userMenu">
