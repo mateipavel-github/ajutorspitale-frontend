@@ -1,8 +1,8 @@
 <div class="tab-content">
 
   <div class="current-needs" *ngIf="!showChangeForm">
-    <h2>Nevoi curente</h2>
-    <div class="change-need-row" *ngFor="let n of sessionData.currentRequest.current_needs" fxLayout="row"
+    <h2>Stoc curent</h2>
+    <div class="change-need-row" *ngFor="let n of sessionData.currentOffer.current_needs" fxLayout="row"
       fxLayoutAlign="space-between start" fxLayoutGap="5px">
       <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
       <div class="bottom-dots" fxFlex>&nbsp;</div>
@@ -107,7 +107,7 @@
   <div *ngIf="!showChangeForm">
     <div style="text-align: center; padding-bottom: 20px;">
       <button mat-flat-button color="primary" (click)="onUpdateNeeds()">Actualizează
-        nevoi</button>
+        stoc</button>
     </div>
   </div>
 
@@ -120,7 +120,7 @@
     <div *ngIf="showHistory" class="history" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="15px"
       ngClass.gt-xs="ml-10">
       <mat-card fxFlex.sm="0 1 calc(50%-15px)" fxFlex.md="0 1 calc(33%-15px)" fxFlex.gt-md="0 1 calc(25%-15px)"
-        *ngFor="let change of sessionData.currentRequest.changes">
+        *ngFor="let change of sessionData.currentOffer.changes">
         <mat-card-title>
           <span>{{ dataService.getMetadataLabel('change_types',change.change_type_id) }}</span>
           by

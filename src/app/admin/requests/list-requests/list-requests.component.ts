@@ -1,6 +1,5 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FilterService } from './filter-service/filter-service.service';
-import { AuthService } from './../../../_services/auth.service';
+import { AuthService } from '../../../_services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../../_services/data.service';
 import { Component, OnInit } from '@angular/core';
@@ -8,13 +7,16 @@ import { switchMap } from 'rxjs/operators';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { RequestsFilterService } from './filter-form/requests-filter-service';
 
 
 @Component({
   selector: 'app-requests',
   templateUrl: './list-requests.component.html',
-  styleUrls: ['./list-requests.component.css']
+  styleUrls: ['./list-requests.component.css'],
+  providers: [ RequestsFilterService ]
 })
+
 export class ListRequestsComponent implements OnInit {
 
   requestsLoaded = false;
@@ -27,7 +29,8 @@ export class ListRequestsComponent implements OnInit {
   assignChanging = 0;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
-    public authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar, private titleService: Title) {
+    public authService: AuthService, public filterService: RequestsFilterService,
+    private snackBar: MatSnackBar, private titleService: Title) {
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);

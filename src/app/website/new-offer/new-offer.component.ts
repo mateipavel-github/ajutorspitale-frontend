@@ -110,7 +110,7 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
       'phone_number': '',
       'medical_unit_name': '',
       'organization_name': '',
-      'county_ids': [],
+      'counties_list': [],
       'medical_unit_id': 0,
       'extra_info': '',
       'needs_text': '',
@@ -127,7 +127,7 @@ export class NewOfferComponent implements OnInit, AfterViewInit {
       organization_name: new FormControl(null),
       medical_unit_name: new FormControl(null),
       medical_unit_id: new FormControl(),
-      county_ids: new FormControl(null, [Validators.required]),
+      counties_list: new FormControl(null, [Validators.required]),
       extra_info: new FormControl(null, [Validators.required]),
       needs_text: new FormControl(null),
       needs: new FormArray([])

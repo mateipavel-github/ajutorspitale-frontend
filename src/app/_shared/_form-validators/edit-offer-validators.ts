@@ -33,29 +33,22 @@ export class EditOfferValidators {
     }
 
     EditDataValidator: ValidatorFn = (form: FormGroup): ValidationErrors | null => {
-        const medicalUnitType = form.get('medical_unit_type_id');
         const medical_unit = form.get('medical_unit');
-        const county_id = form.get('county_id');
+        const counties_list = form.get('counties_list');
         const formErrors = {};
 
         medical_unit.setErrors(null);
 
         if (this.medicalUnitSelected(medical_unit)) {
-            if (medical_unit.value?.county_id !== county_id.value) {
+            if (counties_list.value.indexOf(medical_unit.value?.county_id) === -1) {
                 medical_unit.setErrors({ 'mismatch_county': true });
-                county_id.setErrors({ 'mismatch_hospital': true });
+                counties_list.setErrors({ 'mismatch_hospital': true });
                 formErrors['medical_unit_county_mismatch'] = true;
             }
         } else {
-            if (medicalUnitType.value &&
-                this.dataService.getMetadataSlug('medical_unit_types', medicalUnitType.value).indexOf('state-hospital') === 0) {
-                medical_unit.setErrors({ 'required_for_state_hospitals': true });
-                formErrors['medical_unit_missing'] = true;
-            } else {
-                if (typeof (medical_unit.value) === 'string' && medical_unit.value.length !== 0) {
+            if (typeof (medical_unit.value) === 'string' && medical_unit.value.length !== 0) {
                     medical_unit.setErrors({ 'has_value_but_not_selected': true });
                     formErrors['medical_unit_missing'] = true;
-                }
             }
         }
 

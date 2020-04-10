@@ -1,26 +1,25 @@
 import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DataService } from 'src/app/_services/data.service';
-import { RequestsFilterService } from './requests-filter-service';
+import { OffersFilterService } from './offers-filter-service';
 
 @Component({
-  selector: 'app-requests-filter-form',
+  selector: 'app-offers-filter-form',
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.css']
 })
-export class RequestsFilterFormComponent implements OnInit {
+export class OffersFilterFormComponent implements OnInit {
 
   filterForm: FormGroup;
   statusOptions = [];
 
-  constructor(public dataService: DataService, private filterService: RequestsFilterService) {
+  constructor(public dataService: DataService, private filterService: OffersFilterService) {
 
     this.statusOptions = this.filterService.getStatusOptions();
 
     this.filterForm = new FormGroup({
       'status': new FormControl(),
-      'county': new FormControl(),
-      'medical_unit_type_id': new FormControl()
+      'county': new FormControl()
     });
 
     this.filterForm.valueChanges.subscribe(changes => {

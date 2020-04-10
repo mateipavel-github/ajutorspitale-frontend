@@ -63,7 +63,7 @@ export class EditOfferComponent implements OnInit {
       if (serverResponse['success']) {
         this.sessionData.currentOffer.assigned_user_id = this.sessionData.currentOffer.assigned_user = null;
         this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: 'Cererea a fost eliberată și poate fi preluată de alt voluntar.' },
+          data: { message: 'Oferta a fost eliberată și poate fi preluată de alt voluntar.' },
           panelClass: 'snackbar-success'
         });
       } else {
@@ -84,7 +84,7 @@ export class EditOfferComponent implements OnInit {
         this.sessionData.currentOffer.assigned_user = serverResponse['data']['assigned_user'];
         this.sessionData.currentOffer.assigned_user_id = serverResponse['data']['assigned_user']['id'];
         this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: 'Ai preluat cererea.' },
+          data: { message: 'Ai preluat oferta.' },
           panelClass: 'snackbar-success'
         });
       } else {

@@ -1,14 +1,14 @@
 <nav mat-tab-nav-bar>
   <a mat-tab-link [routerLink]="['/admin/requests/unassigned']" queryParamsHandling="merge" routerLinkActive
-    #rla="routerLinkActive" [active]="rla.isActive">
+    #rla="routerLinkActive" [active]="flag==='unassigned'">
     Cereri neasignate
   </a>
   <a mat-tab-link [routerLink]="['/admin/requests/mine']" queryParamsHandling="merge" routerLinkActive
-    #rla="routerLinkActive" [active]="rla.isActive">
+    #rla="routerLinkActive" [active]="flag==='mine'">
     Cererile mele
   </a>
   <a mat-tab-link [routerLink]="['/admin/requests/all']" queryParamsHandling="merge" routerLinkActive
-    #rla="routerLinkActive" [active]="rla.isActive">
+    #rla="routerLinkActive" [active]="flag==='all'">
     Toate nerespinse
   </a>
 </nav>
@@ -36,7 +36,7 @@
   </div>
 
   <div style="margin-bottom: 30px;" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
-    <app-request-filter-form></app-request-filter-form>
+    <app-requests-filter-form></app-requests-filter-form>
     <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)" [length]="paging.total"
       [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
     </mat-paginator>

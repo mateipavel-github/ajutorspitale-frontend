@@ -33,9 +33,10 @@
 
   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
-    <mat-form-field style="width: 20%;" appearance="outline">
+    <mat-form-field style="width: 50%;" appearance="outline">
       <mat-label>Județe</mat-label>
-      <mat-select multiple required placeholder="Alege" formControlName="counties">
+      <mat-select multiple required placeholder="Alege" formControlName="counties_list">
+        <mat-option [value]="0">Toată țara</mat-option>
         <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
         </mat-option>
       </mat-select>

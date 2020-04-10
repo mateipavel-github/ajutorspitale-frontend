@@ -51,7 +51,7 @@
         <mat-card-title>În ce județe poți și vrei să ajuți? *</mat-card-title>
         <mat-card-content>
           <mat-form-field style="width: 100%;" appearance="outline">
-            <mat-select required multiple placeholder="Alege" formControlName="county_ids">
+            <mat-select required multiple placeholder="Alege" formControlName="counties_list">
               <mat-option value="0">Toată țara</mat-option>
               <mat-option *ngFor="let t of dataService.metadata['counties']" [value]="t.id">{{ t.label }}
               </mat-option>

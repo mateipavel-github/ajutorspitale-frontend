@@ -1,16 +1,12 @@
 <form [formGroup]="filterForm" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="25px">
 
-  <div>
-  <mat-form-field>
+  <!-- <mat-form-field>
     <mat-label>Tip unitate medicală</mat-label>
     <mat-select placeholder="Alege tip" formControlName="medical_unit_type_id">
+      <mat-option [value]="0">Orice unitate medicală</mat-option>
       <mat-option *ngFor="let s of dataService.metadata.medical_unit_types" [value]="s.id">{{ s.label }}</mat-option>
     </mat-select>
-  </mat-form-field>
-  <button color="primary" mat-button mat-icon-button (click)="onClearFilter('medical_unit_type_id')">
-    <mat-icon>close</mat-icon>
-  </button>
-  </div>
+  </mat-form-field> -->
 
   <div>
     <mat-form-field>

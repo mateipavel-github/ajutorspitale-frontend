@@ -22,9 +22,6 @@ export class EditOfferDataComponent implements OnInit {
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
     private snackBar: MatSnackBar, private editOfferValidators: EditOfferValidators) {
-
-    console.log('ABCD');
-    
     this.AppConstants = AppConstants;
     this.changeTypes = this.dataService.getMetadataFiltered('change_types', { exclude: ['new_request', 'delivery'] });
   }
@@ -35,11 +32,13 @@ export class EditOfferDataComponent implements OnInit {
       // tslint:disable-next-line:max-line-length
       phone_number: new FormControl(this.sessionData.currentOffer['phone_number'], [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
       job_title: new FormControl(this.sessionData.currentOffer['job_title']),
+      organization_name: new FormControl(this.sessionData.currentOffer['organization_name']),
+      counties_list: new FormControl(this.sessionData.currentOffer['counties']),
       medical_unit_name: new FormControl(this.sessionData.currentOffer['medical_unit_name'], [Validators.required]),
       medical_unit: new FormControl(this.sessionData.currentOffer['medical_unit'], [this.editOfferValidators.EditMedicalUnitValidator]),
       medical_unit_type_id: new FormControl(this.sessionData.currentOffer['medical_unit_type_id']),
-      county_id: new FormControl(this.sessionData.currentOffer['county_id'], [Validators.required]),
       extra_info: new FormControl(this.sessionData.currentOffer['extra_info']),
+      needs_text: new FormControl(this.sessionData.currentOffer['needs_text']),
       change_data: new FormGroup({
         change_type_id: new FormControl(null, [Validators.required]),
         user_comment: new FormControl(null)
@@ -72,7 +71,7 @@ export class EditOfferDataComponent implements OnInit {
           this.sessionData.currentOffer = serverResponse['data']['item'];
           this.editForm.get('change_data.user_comment').reset();
           this.snackBar.openFromComponent(SnackbarComponent, {
-            data: { message: 'Cererea a fost actualizată' },
+            data: { message: 'Oferta a fost actualizată' },
             panelClass: 'snackbar-success'
           });
         } else {

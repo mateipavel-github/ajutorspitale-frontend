@@ -30,7 +30,7 @@ export const environment = {
       'organization_name': 'Vodafone',
       'medical_unit_name': 'Oriunde',
       'medical_unit_id': null,
-      'county_ids': [1, 2],
+      'counties_list': [1, 2],
       'needs_text': '',
       'needs': [
         { need_type: { id: 10, label: 'test' } , quantity: 30 },

@@ -4,6 +4,7 @@
     <span fxFlex></span>
     <span class="links">
         <a mat-button routerLink="/admin/requests/all">Cereri</a>
+        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/offers/all">Oferte</a>
         <!-- <a mat-button routerLink="/admin/deliveries">Livrări</a> -->
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/metadata">Metadata</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/users">Utilizatori</a>

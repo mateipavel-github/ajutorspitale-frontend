@@ -14,9 +14,12 @@ import { EditRequestDataComponent } from './requests/edit-request/edit-request-d
 import { ListDeliveriesComponent } from './deliveries/list-deliveries/list-deliveries.component';
 import { EditDeliveryComponent } from './deliveries/edit-delivery/edit-delivery.component';
 import { MetadataEditorComponent } from './metadata/editor/metadata-editor.component';
-import { FilterFormComponent } from './requests/list-requests/filter-form/filter-form.component';
+import { RequestsFilterFormComponent } from './requests/list-requests/filter-form/filter-form.component';
+import { OffersFilterFormComponent } from './offers/list-offers/filter-form/filter-form.component';
 import { ListUsersComponent } from './users/list-users/list-users.component';
 import { MatTableModule } from '@angular/material/table';
+import { EditOfferNeedsComponent } from './offers/edit-offer/edit-offer-needs/edit-offer-needs.component';
+import { EditOfferDataComponent } from './offers/edit-offer/edit-offer-data/edit-offer-data.component';
 
 
 
@@ -26,6 +29,8 @@ import { MatTableModule } from '@angular/material/table';
     ListRequestsComponent,
     ListOffersComponent,
     EditOfferComponent,
+    EditOfferNeedsComponent,
+    EditOfferDataComponent,
     DashboardComponent,
     AdminComponent,
     EditRequestComponent,
@@ -34,7 +39,8 @@ import { MatTableModule } from '@angular/material/table';
     ListDeliveriesComponent,
     EditDeliveryComponent,
     MetadataEditorComponent,
-    FilterFormComponent,
+    RequestsFilterFormComponent,
+    OffersFilterFormComponent,
     ListUsersComponent
   ],
   imports: [

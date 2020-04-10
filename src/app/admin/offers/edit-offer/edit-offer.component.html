@@ -8,10 +8,10 @@
     </div>
     <div style="padding: 20px;" fxFlex>
       <app-loading-button btnStyle="stroked" [loading]="statusChanging" [matMenuTriggerFor]="statusChange"
-        [label]="dataService.getMetadataLabel('request_status_types', sessionData.currentOffer.status)">
+        [label]="dataService.getMetadataLabel('offer_status_types', sessionData.currentOffer.status)">
       </app-loading-button>
       <mat-menu #statusChange="matMenu" xPosition="before">
-        <button (click)="onChangeOfferStatus(k.id)" *ngFor="let k of dataService.metadata['request_status_types']"
+        <button (click)="onChangeOfferStatus(k.id)" *ngFor="let k of dataService.metadata['offer_status_types']"
           mat-menu-item>{{ k.label }}</button>
       </mat-menu>
       <span style="display: inline-block; padding: 0px 5px;">&nbsp;</span>
@@ -21,7 +21,7 @@
         [label]="'Preluată de ' + sessionData.currentOffer.assigned_user.name ">
       </app-loading-button>
       <app-loading-button *ngIf="sessionData.currentOffer.assigned_user===null" (click)="onAssign()" btnStyle="stroked"
-        [loading]="assignChanging" label="Preia cererea">
+        [loading]="assignChanging" label="Preia oferta">
       </app-loading-button>
     </div>
   </div>
@@ -105,7 +105,7 @@
         <div class="item">
           <div class="label">Persoană: </div>
           <div class="value">{{ sessionData.currentOffer.name }}</div>
-          <div class="value">{{ sessionData.currentOffer.job_title }}</div>
+          <div class="value">{{ sessionData.currentOffer.job_title }} la {{ sessionData.currentOffer.organization_name }}</div>
           <div class="value">{{ sessionData.currentOffer.phone_number }}</div>
         </div> 
       </mat-expansion-panel>
@@ -124,7 +124,7 @@
           <li>Am primit oferta dvs</li>
           <li>
             Ati scris la noi pe site (azi) ca puteți oferi <a href="javascript:void"
-              (click)="showScriptNeeds=!showScriptNeeds">{{ showScriptNeeds ? 'ascunde' : 'arată' }} cererea</a>.
+              (click)="showScriptNeeds=!showScriptNeeds">{{ showScriptNeeds ? 'ascunde' : 'arată' }} oferta</a>.
             <p class="script-needs" *ngIf="showScriptNeeds" [innerHTML]="sessionData.currentOffer.needs_text | nl2br">
             </p>
           </li>

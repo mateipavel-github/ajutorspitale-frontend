@@ -1,14 +1,14 @@
 <nav mat-tab-nav-bar>
   <a mat-tab-link [routerLink]="['/admin/offers/unassigned']" queryParamsHandling="merge" routerLinkActive
-    #rla="routerLinkActive" [active]="rla.isActive">
+    #rla="routerLinkActive" [active]="flag==='unassigned'">
     Oferte neasignate
   </a>
   <a mat-tab-link [routerLink]="['/admin/offers/mine']" queryParamsHandling="merge" routerLinkActive
-    #rla="routerLinkActive" [active]="rla.isActive">
+    #rla="routerLinkActive" [active]="flag==='mine'">
     Ofertele mele
   </a>
   <a mat-tab-link [routerLink]="['/admin/offers/all']" queryParamsHandling="merge" routerLinkActive
-    #rla="routerLinkActive" [active]="rla.isActive">
+    #rla="routerLinkActive" [active]="flag==='all'">
     Oferte nerespinse
   </a>
 </nav>
@@ -20,7 +20,7 @@
       <h1 fxGrow>
         <span *ngIf="flag=='unassigned'">Oferte neasignate</span>
         <span *ngIf="flag=='mine'">Ofertele mele</span>
-        <span *ngIf="flag=='all'">Toate ofertle</span>
+        <span *ngIf="flag=='all'">Toate ofertele</span>
         <span *ngIf="offersLoaded"> ({{ paging.total }})</span>
       </h1>
     </div>
@@ -36,7 +36,7 @@
   </div>
 
   <div style="margin-bottom: 30px;" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
-    <app-request-filter-form></app-request-filter-form>
+    <app-offers-filter-form></app-offers-filter-form>
     <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)" [length]="paging.total"
       [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
     </mat-paginator>
@@ -46,7 +46,7 @@
   <app-loading-status [loaded]="offersLoaded"></app-loading-status>
 
   <div fxLayout="column" fxLayoutGap="20px">
-    <mat-card class="offers-item" *ngFor="let offer of offers">
+    <mat-card class="offer-item" *ngFor="let offer of offers">
       <mat-card-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="50px">
         <div class="item-title">
           <span class="title">oferta #{{ offer.id }}</span>
@@ -55,11 +55,11 @@
         <div>
           <app-loading-button labelPrefix="Status: " btnStyle="stroked" [loading]="statusChanging===offer.id"
             [matMenuTriggerFor]="statusChange"
-            [label]="dataService.getMetadataLabel('request_status_types', offer.status)">
+            [label]="dataService.getMetadataLabel('offer_status_types', offer.status)">
           </app-loading-button>
           <mat-menu #statusChange="matMenu" xPosition="before">
             <button (click)="onChangeOfferStatus(offer.id, k.id)"
-              *ngFor="let k of dataService.metadata['request_status_types']" mat-menu-item>{{ k.label }}</button>
+              *ngFor="let k of dataService.metadata['offer_status_types']" mat-menu-item>{{ k.label }}</button>
           </mat-menu>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
@@ -69,7 +69,7 @@
               icon="close" showIcon="hover"></app-loading-button>
           </ng-container>
           <app-loading-button [loading]="assignChanging===offer.id"
-            *ngIf="offers?.assigned_user?.id!==authService.currentUserValue.id" btnStyle="stroked" color="primary"
+            *ngIf="offer?.assigned_user?.id!==authService.currentUserValue.id" btnStyle="stroked" color="primary"
             (click)="onAssign(offer.id)" label="Preiau eu"></app-loading-button>
         </div>
         <div>
@@ -78,29 +78,35 @@
       </mat-card-title>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="45px">
-          <div class="offers-item-section" fxFlex="20%">
+          <div class="offer-item-section" fxFlex="20%">
             <h3>Persoana</h3>
             <p>
               <strong>Nume: </strong>{{ offer.name }}<br />
               <strong>Funcție: </strong>{{ offer.job_title }}<br />
+              <strong>Organizație: </strong>{{ offer.organization_name }}<br />
               <strong>Telefon: </strong>{{ offer.phone_number }}<br />
             </p>
           </div>
-          <div class="offers-item-section" fxFlex="30%">
-            <h3>Unitatea medicală</h3>
+          <div class="offer-item-section" fxFlex="30%">
+            <h3>Unde vrea / poate să ajute</h3>
             <p>
-              <strong>Nume: </strong>{{ offers?.medical_unit?.name || offer.medical_unit_name }}<br />
-              <strong>Județ: </strong>{{ dataService.getMetadataLabel('counties', offer.county_id) }}<br />
-              <strong>Tip:
-              </strong>{{ dataService.getMetadataLabel('medical_unit_types', offer.medical_unit_type_id) }}
+              <strong>Unitate medicală: </strong>{{ offer?.medical_unit?.name || offer.medical_unit_name || 'nu a menționat' }}<br />
+              <strong>Județe: </strong>{{ dataService.getMetadataLabelsCombined('counties', offer.counties) }}
             </p>
           </div>
-          <div class="offers-item-section no-border" fxFlex>
-            <h3>Nevoi</h3>
-            <p><strong>Procesate: </strong>{{ offer.current_needs?.length || 0 }}</p>
-            <ng-container *ngIf="offers?.other_needs?.length>0">
-              <p>
-              <strong>Alte nevoi: </strong>: {{ offers?.other_needs }}
+          <div class="offer-item-section no-border" fxFlex>
+            <h3>Produse/servicii</h3>
+            <p><strong>Procesate: </strong>
+              <br />
+              <ng-container *ngFor="let p of offer.current_needs">
+              {{ p.quantity | number : '1.0-0' }} x {{ dataService.getMetadataLabel('need_types', p.need_type_id) }}
+              <br />
+              </ng-container>
+            </p>
+            <ng-container *ngIf="offer?.needs_text?.length>0">
+              <p><strong>Alte produse: </strong>
+                <br />
+                {{ offer?.needs_text }}
               </p>
             </ng-container>
           </div>

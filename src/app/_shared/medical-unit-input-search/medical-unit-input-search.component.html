@@ -3,7 +3,7 @@
   <input (blur)="onBlur()" (keydown)="clearValue()" matInput placeholder="Tastează pentru căutare" aria-label="Medical unit" [matAutocomplete]="auto" [formControl]="inputControl">
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChange($event)" [displayWith]="displayFn">
     <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
-    <mat-option *ngIf="!isLoading && filteredOptions.length==0" class="not-found">Fără rezultate în județul selectat</mat-option>
+    <mat-option *ngIf="!isLoading && filteredOptions.length==0" class="not-found">Fără rezultate în județul/județele selectat</mat-option>
     <ng-container *ngIf="!isLoading">
       <mat-option *ngFor="let option of filteredOptions" [value]="option">
         <span><b>{{ dataService.getMetadataLabel('counties', option.county_id) }}</b> {{option.name}}</span>
@@ -11,7 +11,7 @@
     </ng-container>
   </mat-autocomplete>
   <mat-error *ngIf="inputControl.invalid">
-    <span *ngIf="inputControl.hasError('mismatch_county')">Spitalul este în alt județ decât județul selectat</span>
+    <span *ngIf="inputControl.hasError('mismatch_county')">Spitalul este în alt județ decât județul/județele selectat</span>
     <span *ngIf="inputControl.hasError('required_for_state_hospitals')">Spitalul este obligatoriu pentru spitalele de
       stat.</span>
     <span *ngIf="inputControl.hasError('has_value_but_not_selected')">Ai tastat ceva dar nu ai selectat un spital. Poți

@@ -250,6 +250,15 @@ export class DataService {
     }
     return '<metadata not found>';
   }
+
+  public getMetadataLabelsCombined(type, ids) {
+    const list = [];
+    ids.forEach(id => {
+      list.push(this.getMetadataLabel(type, id));
+    });
+    return list.join(', ');
+  }
+
   public getMetadataSlug(type, id) {
     id = parseInt(id, 10);
     for (let i = 0; i < this.metadata[type].length; i++) {

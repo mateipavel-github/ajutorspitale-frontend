@@ -1,5 +1,4 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FilterService } from './../../requests/list-requests/filter-service/filter-service.service';
 import { AuthService } from './../../../_services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../../_services/data.service';
@@ -8,12 +7,14 @@ import { switchMap } from 'rxjs/operators';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { OffersFilterService } from './filter-form/offers-filter-service';
 
 
 @Component({
   selector: 'app-offers',
   templateUrl: './list-offers.component.html',
-  styleUrls: ['./list-offers.component.css']
+  styleUrls: ['./list-offers.component.css'],
+  providers: [ OffersFilterService ]
 })
 export class ListOffersComponent implements OnInit {
 
@@ -27,7 +28,8 @@ export class ListOffersComponent implements OnInit {
   assignChanging = 0;
 
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
-    public authService: AuthService, private filterService: FilterService, private snackBar: MatSnackBar, private titleService: Title) {
+    public authService: AuthService, private filterService: OffersFilterService,
+    private snackBar: MatSnackBar, private titleService: Title) {
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);
