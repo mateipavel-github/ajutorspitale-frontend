@@ -42,6 +42,7 @@ export class EditDeliveryComponent implements OnInit, AfterViewInit {
       'name': new FormControl(null, [Validators.required]),
       'phone_number': new FormControl(null, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
       'address': new FormControl(null, [Validators.required]),
+      'description': new FormControl(null),
       'county_id': new FormControl(null, [Validators.required]),
       'needs': new FormControl([]),
       'requests': new FormControl([]),
@@ -82,6 +83,7 @@ export class EditDeliveryComponent implements OnInit, AfterViewInit {
       this.sessionData.currentDelivery = sr;
       this.setSelectedRequests(sr['requests']);
       this.editForm.get('address').setValue(sr['destination_address']);
+      this.editForm.get('description').setValue(sr['description']);
       this.editForm.get('county_id').setValue(sr['county_id']);
       this.editForm.get('name').setValue(sr['contact_name']);
       this.editForm.get('phone_number').setValue(sr['contact_phone_number']);

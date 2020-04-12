@@ -136,12 +136,20 @@
                 placeholder="" class="form-control-plaintext">
             </mat-form-field>
 
-            <mat-form-field matPrefix="+40-" style="width: 100%;" appearance="outline">
+            <mat-form-field style="width: 100%;" appearance="outline">
               <mat-label>Telefon persoană contact</mat-label>
               <input required matInput formControlName="phone_number" type="text" class="form-control"
                 aria-describedby="phoneNumber" placeholder="" class="form-control-plaintext">
               <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}
               </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field style="width: 100%;" appearance="outline">
+              <mat-label>Descriere / alte detalii</mat-label>
+              <textarea matInput formControlName="description" type="text"
+                aria-describedby="description" placeholder=""></textarea>
             </mat-form-field>
           </div>
 
