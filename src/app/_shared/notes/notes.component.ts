@@ -54,7 +54,7 @@ export class NotesComponent implements OnInit, OnChanges {
     if (this.itemType.length === 0) {
       console.warn('<app-notes> component requires itemType to be set');
     }
-    this.itemId = typeof (this.itemId) === 'string' ? 0 : this.itemId;
+    this.itemId = typeof (this.itemId) === 'string' ? ( parseInt(this.itemId, 10) || 0 ) : this.itemId;
     if (this.itemId === 0) {
       this.newNote.disable();
     } else {
