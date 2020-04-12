@@ -1,6 +1,6 @@
 <form [formGroup]="filterForm" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="25px">
 
-  <div>
+  <div *ngIf="canShow('medical_unit_type_id')">
   <mat-form-field>
     <mat-label>Tip unitate medicală</mat-label>
     <mat-select placeholder="Alege tip" formControlName="medical_unit_type_id">
@@ -12,7 +12,7 @@
   </button>
   </div>
 
-  <div>
+  <div *ngIf="canShow('county')">
     <mat-form-field>
       <mat-label>Județ</mat-label>
       <mat-select multiple placeholder="Alege județ" formControlName="county">
@@ -24,7 +24,7 @@
     </button>
   </div>
 
-  <div>
+  <div *ngIf="canShow('status')">
     <mat-form-field>
       <mat-label>Status</mat-label>
       <mat-select multiple placeholder="Alege status" formControlName="status">
@@ -32,6 +32,16 @@
       </mat-select>
     </mat-form-field>
     <button color="primary" mat-button mat-icon-button (click)="onClearFilter('status')">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="canShow('keyword')">
+    <mat-form-field>
+      <mat-label>Keyword sau ID</mat-label>
+      <input matInput type="text" placeholder="ID, Nume spital, persoană sau telefon" formControlName="keyword" />
+    </mat-form-field>
+    <button color="primary" mat-button mat-icon-button (click)="onClearFilter('keyword')">
       <mat-icon>close</mat-icon>
     </button>
   </div>

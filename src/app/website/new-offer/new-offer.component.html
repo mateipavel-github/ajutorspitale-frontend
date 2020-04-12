@@ -78,7 +78,7 @@
       <mat-card-content>
         <app-needs-editor #needsEditor (needsUpdated)="onNeedsUpdated($event)"></app-needs-editor>
       </mat-card-content>
-    </mat-card>
+    </mat-card> 
 
     <mat-card>
       <mat-card-title>Alte produse & servicii care nu se regăsesc în listă</mat-card-title>
@@ -94,7 +94,7 @@
       <mat-card-title>Alte informații importante</mat-card-title>
       <mat-card-content>
         <mat-form-field style="width: 100%;" appearance="outline">
-          <textarea style="height: 300px;" matInput formControlName="extra_info" type="text"
+          <textarea required style="height: 300px;" matInput formControlName="extra_info" type="text"
             aria-describedby="extraInfo" placeholder=""></textarea>
         </mat-form-field>
       </mat-card-content>

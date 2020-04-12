@@ -1,39 +1,80 @@
-<form [formGroup]="editForm">
-  <mat-tab-group>
-    <mat-tab *ngFor="let metadataType of metadataTypes" label="{{ metadataType }}">
-      <ng-template matTabContent>
-        <div class="tab-content" formArrayName="{{ metadataType }}">
-          <div fxLayout="row" fxLayoutGap="10px" *ngFor="let item of getAsFormArray(metadataType).controls; let i=index" [formGroupName]="i">
-            <mat-form-field appearance="outline" style="width: 50px">
-              <mat-label>ID</mat-label>
-              <input matInput formControlName="id" type="text" class="form-control"
-                placeholder="" class="form-control-plaintext">
+<nav mat-tab-nav-bar>
+  <a mat-tab-link *ngFor="let metadataType of metadataTypes" [routerLink]="['/admin/metadata/', metadataType]"
+    queryParamsHandling="merge" routerLinkActive #rla="routerLinkActive" [active]="selectedMetadata===metadataType">
+    {{ metadataType }}
+  </a>
+</nav>
+
+<div class="page-content centered">
+  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="25px">
+
+    <form *ngIf="selectedMetadata" [formGroup]="editForm">
+      <div formArrayName="items">
+        <div fxLayout="row" fxLayoutGap="10px" *ngFor="let item of getAsFormArray('items').controls; let i=index"
+          [formGroupName]="i">
+          <mat-form-field appearance="outline" style="width: 50px">
+            <mat-label>ID</mat-label>
+            <input matInput formControlName="id" type="text" class="form-control" placeholder=""
+              class="form-control-plaintext">
+          </mat-form-field>
+          <div fxFlex>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-label>Label</mat-label>
+              <input matInput formControlName="label" type="text" class="form-control" placeholder=""
+                class="form-control-plaintext" (blur)="onSaveItem(i);">
             </mat-form-field>
-            <div fxFlex>
-              <mat-form-field appearance="outline" style="width: 100%">
-                <mat-label>Label</mat-label>
-                <input matInput formControlName="label" type="text" class="form-control"
-                  placeholder="" class="form-control-plaintext" (blur)="onSaveItem(metadataType, i);">
-              </mat-form-field>
-            </div>
-            <div fxFlex>
-              <mat-form-field appearance="outline" style="width: 100%">
-                <mat-label>Identificator cod</mat-label>
-                <input matInput formControlName="slug" type="text" class="form-control" placeholder=""
-                  class="form-control-plaintext" (blur)="onSaveItem(metadataType, i);">
-              </mat-form-field>
-            </div>
-            <div>
-              <button mat-button (click)="onRemoveItem(metadataType, i)"><mat-icon>delete</mat-icon></button>
-            </div>
           </div>
-
-          <div style="text-align: center">
-            <button mat-button (click)="onAddItem(metadataType)">+</button>
+          <div fxFlex>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-label>Identificator cod</mat-label>
+              <input matInput formControlName="slug" type="text" class="form-control" placeholder=""
+                class="form-control-plaintext" (blur)="onSaveItem(i);">
+            </mat-form-field>
           </div>
+          <div>
+            <button mat-button (click)="onRemoveItem(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div style="text-align: center">
+          <button mat-button (click)="onAddItem()">+</button>
+        </div>
+      </div>
+    </form>
 
-        </div> 
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
-</form>
+    <div fxFlex>
+      <mat-card *ngIf="deletable" style="position: sticky; width: 100%; max-width: 450px; margin: 0 auto;">
+        <form [formGroup]="deleteForm">
+
+          <h3>Delete {{ selectedMetadata }}</h3>
+          <p>
+            <button style="margin-right: 5px; margin-bottom: 5px;" mat-button mat-stroked-button>
+              <strong>Type: </strong>{{ selectedMetadata }}</button>
+            <button style="margin-right: 5px; margin-bottom: 5px;" mat-button mat-stroked-button>
+              <strong>ID: </strong>{{ deletable.id }}</button>
+            <button style="margin-right: 5px; margin-bottom: 5px;" mat-button mat-stroked-button>
+              <strong>Label: </strong>{{ deletable.label }}</button>
+            <button style="margin-right: 5px; margin-bottom: 5px;" mat-button mat-stroked-button>
+              <strong>Slug: </strong>{{ deletable.slug }}</button>
+          </p>
+
+          <h3>Move connected items to: </h3>
+          <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-label>{{ selectedMetadata }}</mat-label>
+            <mat-select required placeholder="Alege" formControlName="merge_into_id">
+              <mat-option *ngFor="let t of dataService.metadata[selectedMetadata]" [value]="t.id">
+                {{ t.label }} ({{ t.slug }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <app-loading-button color="primary" label="Șterge" [loading]="deleting" (click)="onDelete()">Șterge
+          </app-loading-button>
+        </form>
+      </mat-card>
+
+    </div>
+
+  </div>
+</div>

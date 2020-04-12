@@ -11,5 +11,8 @@ export class SessionDataService {
   currentOfferId;
   currentOffer;
 
+  currentDeliveryId;
+  currentDelivery;
+
   constructor() { }
 }

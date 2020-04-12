@@ -1,0 +1,15 @@
+.notes {
+  list-style-type: none;
+  padding: 0;
+}
+
+.notes > li {
+  padding: 5px 0px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.notes > li > span.date {
+  font-size: 11px;
+  display: block;
+  color: rgba(0, 0, 0, 0.4);
+}

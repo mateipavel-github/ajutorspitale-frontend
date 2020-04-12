@@ -1,3 +1,6 @@
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NotesComponent } from './../notes/notes.component';
+import { NeedsShortlistComponent } from './../needs-shortlist/needs-shortlist.component';
 import { NeedsEditorComponent } from './../needs-editor/needs-editor.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -13,18 +16,19 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
-
-const componentsAndPipes = [
-  LoadingStatusComponent,
-  LoadingButtonComponent,
-  MedicalUnitInputSearchComponent,
-  NeedsEditorComponent,
-  Nl2BrPipe
-];
+import { SponsorAutocompleteComponent } from '../sponsor-autocomplete/sponsor-autocomplete.component';
 
 @NgModule({
-  declarations: componentsAndPipes,
+  declarations: [
+    LoadingStatusComponent,
+    LoadingButtonComponent,
+    MedicalUnitInputSearchComponent,
+    NeedsEditorComponent,
+    NeedsShortlistComponent,
+    Nl2BrPipe,
+    SponsorAutocompleteComponent,
+    NotesComponent
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -33,11 +37,21 @@ const componentsAndPipes = [
     MatProgressSpinnerModule,
     MatInputModule,
     MatAutocompleteModule,
+    MatExpansionModule,
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule
   ],
-  exports: componentsAndPipes
+  exports: [
+    LoadingStatusComponent,
+    LoadingButtonComponent,
+    MedicalUnitInputSearchComponent,
+    NeedsEditorComponent,
+    NeedsShortlistComponent,
+    Nl2BrPipe,
+    SponsorAutocompleteComponent,
+    NotesComponent
+  ]
 })
 
 export class WidgetModule { }

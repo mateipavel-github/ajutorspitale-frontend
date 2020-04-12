@@ -1,19 +1,73 @@
-<div class="page-content">
+<div class="page-content centered">
 
-  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="gappx">
-    <h1 fxGrow>Listă livrări </h1>
-    <div class="list-flags" style="width: 400px; text-align: right;">
-      <a [ngClass]="{'active': filters.flag==='all'}" mat-button routerLink="/admin/deliveries/all"
-        queryParamsHandling="merge">Toate</a>
-      <a [ngClass]="{'active': filters.flag==='unassigned'}" mat-button routerLink="/admin/deliveries/inprogress"
-        queryParamsHandling="merge">În curs de livrare</a>
-      <a mat-stroked-button routerLink="/admin/delivery/new">Livrare nouă</a>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+    <div>
+      <h1 class="with-subtitle">
+        <span *ngIf="flag=='all'">Toate livrările</span>
+        <span *ngIf="listLoaded"> ({{ paging.total }})</span>
+      </h1>
+    </div>
+    <div class="list-flags">
+      <a mat-stroked-button [routerLink]="['/admin/delivery/new']">Livrare nouă</a>
     </div>
   </div>
 
-  <app-loading-status [loaded]="deliveriesLoaded"></app-loading-status>
+  <div style="margin-bottom: 30px;" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="50px">
+    <!-- <app-requests-filter-form></app-requests-filter-form> -->
+    <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)"
+      [length]="paging.total" [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
+    </mat-paginator>
+  </div>
+
+  <app-loading-status [loaded]="listLoaded"></app-loading-status>
+
   <div fxLayout="column" fxLayoutGap="20px">
-    <mat-card *ngFor="let delivery of deliveries">
+    <mat-card class="list-item" *ngFor="let item of items">
+      <mat-card-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="50px">
+        <div class="item-title">
+          <span class="title">Livrarea #{{ item.id }}</span>
+          <span class="date">
+            <strong *ngIf="item.owner">{{ item.owner.name }}</strong> @ {{ item.created_at | date : 'short' }}
+          </span>
+        </div>
+        <div>
+          <app-loading-button labelPrefix="Status: " btnStyle="stroked" [loading]="statusChanging===item.id"
+            [matMenuTriggerFor]="statusChange"
+            [label]="dataService.getMetadataLabel('delivery_status_types', item.status)">
+          </app-loading-button>
+          <mat-menu #statusChange="matMenu" xPosition="before">
+            <button (click)="onChangeItemStatus(item.id, k.id)"
+              *ngFor="let k of dataService.metadata['delivery_status_types']" mat-menu-item>{{ k.label }}</button>
+          </mat-menu>
+        </div>
+        <div>
+          <a mat-stroked-button color="primary" [routerLink]="['/', 'admin', 'delivery', item.id]">edit</a>
+        </div>
+      </mat-card-title>
+      <mat-card-content>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="45px">
+          <div class="vertical-section" fxFlex="20%">
+            <h3>Destinatar</h3>
+            <p>
+              <strong>Spital: </strong>{{ item.medical_unit?.name }}<br />
+              <strong>Nume: </strong>{{ item.contact_name }}<br />
+              <strong>Telefon: </strong>{{ item.contact_phone_number }}<br />
+              <strong>Adresă: </strong>{{ item.destination_address }}<br />
+            </p>
+          </div>
+          <div class="vertical-section" fxFlex>
+            <h3>Produse livrate</h3>
+            <app-needs-shortlist [needs]="item.needs"></app-needs-shortlist>
+          </div>
+          <div class="vertical-section" fxFlex="30%">
+            <h3>Detalii</h3>
+            <p>
+              {{ item.description }}
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
     </mat-card>
-  </div>  
+  </div>
+
 </div>

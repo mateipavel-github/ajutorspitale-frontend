@@ -5,7 +5,7 @@
     <span class="links">
         <a mat-button routerLink="/admin/requests/all">Cereri</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/offers/all">Oferte</a>
-        <!-- <a mat-button routerLink="/admin/deliveries">Livrări</a> -->
+        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/deliveries/all">Livrări</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/metadata">Metadata</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/users">Utilizatori</a>
         <a mat-button target="_blank" routerLink="/new-request">Adaugă cerere</a>

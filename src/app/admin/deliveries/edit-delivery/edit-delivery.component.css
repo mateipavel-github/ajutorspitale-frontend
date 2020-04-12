@@ -1,0 +1,54 @@
+.matching-requests-list {
+    height: 300px;
+    padding: 5px;
+}
+
+.page-content.full-width {
+    max-width: none;
+}
+
+.matching-request {
+    margin: 0px 2px 15px 2px;
+    position: relative;
+}
+
+.options {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 200px;
+}
+.on-hover {
+    visibility: hidden;
+}
+.matching-request:hover .on-hover {
+    visibility: visible;
+}
+
+.mr-title {
+    font-size: 16px;
+    font-weight: 400;
+}
+.mr-title > div {
+    border-right: 1px solid rgba(0,0,0,0.07);
+    overflow: hidden;
+    padding: 10px;
+}
+.mr-title > div:last-child {
+    border-right: 0;
+}
+
+.need-item {
+    display: flex;
+    flex-direction: row;
+}
+.need-item .label {
+    flex-grow: 0;
+}
+.need-item .separator {
+    border-bottom: 1px dotted rgba(0,0,0);
+    flex-grow: 1;
+}
+.need-item .quantity {
+    flex-grow: 0;
+}

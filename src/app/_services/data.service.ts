@@ -28,6 +28,35 @@ export class DataService {
 
   }
 
+  public getMedicalUnits(filterString, countyId?) {
+    let queryParams = new HttpParams();
+    queryParams = queryParams.set('filter', filterString);
+    if (countyId) {
+      queryParams = queryParams.set('county_id', countyId);
+    }
+    return this.api.get(environment.api.url + '/metadata/medical-units', { params: queryParams });
+  }
+
+  /*
+  * Sponsor API calls
+  */
+  public getSponsors(params?) {
+    let queryParams = new HttpParams();
+    const paramKeys = Object.getOwnPropertyNames(params);
+    paramKeys.forEach(key => {
+      queryParams = queryParams.set(key, params[key]);
+    });
+    return this.api.get(environment.api.url + '/sponsors', { params: queryParams });
+  }
+
+  public storeSponsor(data) {
+    data._method = 'PUT';
+    return this.api.post(environment.api.url + '/sponsors', data);
+  }
+
+  /*
+   * Delivery API calls
+   */
   public getDeliveries(params?) {
     let queryParams = new HttpParams();
     const paramKeys = Object.getOwnPropertyNames(params);
@@ -37,14 +66,37 @@ export class DataService {
     return this.api.get(environment.api.url + '/deliveries', { params: queryParams });
   }
 
-  public getMedicalUnits(filterString, countyId?) {
-    let queryParams = new HttpParams();
-    queryParams = queryParams.set('filter', filterString);
-    if (countyId) {
-      queryParams = queryParams.set('county_id', countyId);
-    }
-    return this.api.get(environment.api.url + '/metadata/medical-units', { params: queryParams });
+  public addDeliveryNote(data) {
+    data['_method'] = 'PUT';
+    return this.api.post(environment.api.url + '/deliveries/' + data.item_id + '/add-note', data);
   }
+
+  public storeDelivery(data) {
+    console.log(data);
+    data._method = 'PUT';
+    return this.api.post(environment.api.url + '/deliveries', data);
+  }
+
+  public updateDelivery(id, data, action?) {
+    const options = { params: null };
+    if (action) {
+      let queryParams = new HttpParams();
+      queryParams = queryParams.set('action', action);
+      options.params = queryParams;
+    }
+
+    data['_method'] = 'PATCH';
+    return this.api.post(environment.api.url + '/deliveries/' + id, data, options);
+  }
+
+  public changeDeliveryStatus(id, status) {
+    return this.updateDelivery(id, { 'status': status }, 'changeStatus');
+  }
+
+  public getDelivery(id) {
+    return this.api.get(environment.api.url + '/deliveries/' + id);
+  }
+
 
   /*
    * Requests API calls
@@ -219,8 +271,11 @@ export class DataService {
     data['_method'] = 'PUT';
     return this.api.post(environment.api.url + '/metadata', data);
   }
-  public removeMetadataItem(type, id) {
-    return this.api.post(environment.api.url + '/metadata', { 'metadata_type': type, 'id': id, '_method': 'DELETE' });
+  public removeMetadataItem(type, id, merge_into_id) {
+    return this.api.post(environment.api.url + '/metadata/' + type + '/' + id, {
+      'merge_into_id': merge_into_id,
+      '_method': 'DELETE'
+    });
   }
   public getMetadataFiltered(metadata_type, options) {
     let filterType, slugs;

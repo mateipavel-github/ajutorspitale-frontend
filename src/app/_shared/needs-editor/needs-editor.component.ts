@@ -21,6 +21,7 @@ export class NeedsEditorComponent implements OnInit {
   currentNeedIndex = 0;
 
   @Input() canAdd = false;
+  @Input() needs = [];
 
   @Output() eventAddNew: EventEmitter<any> = new EventEmitter();
   @Output() eventAddNewError: EventEmitter<any> = new EventEmitter();
@@ -45,6 +46,10 @@ export class NeedsEditorComponent implements OnInit {
       map(value => typeof value === 'string' ? value : value['label']),
       map(label => label ? this._filter(label) : this.dataService.metadata['need_types'])
     );
+
+    if (this.needs.length > 0) {
+      this.setNeeds(this.needs);
+    }
   }
 
   removeDiacritice(str) {
@@ -81,7 +86,6 @@ export class NeedsEditorComponent implements OnInit {
 
   public needTypeSelected($event) {
     const ctrl = (<FormArray>this.needsForm.get('needs')).controls[this.currentNeedIndex].get('need_type');
-    console.log('Need Type Selected', $event.option);
     if ($event.option.value.id === 0) {
       if (this.canAdd) {
         this.dataService.storeMetadataType({ metadata_type: 'need_types', label: $event.option.value.label })
@@ -114,9 +118,13 @@ export class NeedsEditorComponent implements OnInit {
   }
 
   setNeeds(needs) {
-    console.log('Set needs: ', needs);
+
     this.clearNeeds();
     needs.forEach(need => {
+      if (need?.need_type_id) {
+        need.need_type = { id: need?.need_type_id, label: this.dataService.getMetadataLabel('need_types', need?.need_type_id) };
+      }
+
       this.onAddNeed(need);
     });
   }

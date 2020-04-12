@@ -9,4 +9,16 @@ export const validateAllFormFields = function (formGroup: FormGroup) {
             validateAllFormFields(control);
         }
     });
-}
+};
+
+export const sanitizeNeeds = function (needs) {
+    return needs.map(need => {
+        if (need?.need_type) {
+            need.need_type_id = need.need_type?.id || 0;
+            delete need.need_type;
+        }
+        return need;
+    });
+};
+
+

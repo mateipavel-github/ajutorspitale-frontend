@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { DataService } from 'src/app/_services/data.service';
@@ -12,65 +13,116 @@ import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 export class MetadataEditorComponent implements OnInit {
 
   metadataTypes;
+  selectedMetadata;
   metadata;
   editForm: FormGroup;
+  deleteForm: FormGroup;
+  typeSelector: FormControl = new FormControl();
+  deletable;
+  deleting = false;
 
-  constructor(public dataService: DataService, private snackBar: MatSnackBar) {
+  constructor(public dataService: DataService, private route: ActivatedRoute, private snackBar: MatSnackBar) {
     this.metadataTypes = Object.keys(this.dataService.metadata);
     this.metadata = this.dataService.metadata;
-  }
 
-  ngOnInit(): void {
-    let items;
-    this.editForm = new FormGroup({});
-    this.metadataTypes.forEach(metadataType => {
-      items = [];
-      this.metadata[metadataType].forEach(item => {
-        // tslint:disable-next-line:max-line-length
-        items.push(new FormGroup({ 'id': new FormControl(item.id), 'label': new FormControl(item.label), 'slug': new FormControl(item.slug) }));
+    this.editForm = new FormGroup({
+      'items': new FormArray([])
+    });
+
+    this.deleteForm = new FormGroup({
+      'merge_into_id': new FormControl()
+    });
+
+    this.route.paramMap.subscribe(params => {
+      this.selectedMetadata = params.get('type');
+      this.clearPrevious();
+      this.metadata[this.selectedMetadata].forEach(item => {
+        const f = new FormGroup({
+          'id': new FormControl(item.id),
+          'label': new FormControl(item.label),
+          'slug': new FormControl(item.slug)
+        });
+        (<FormArray>this.editForm.get('items')).controls.push(f);
       });
-      this.editForm.addControl(metadataType, new FormArray(items));
     });
   }
 
-  onAddItem(metadataType) {
-    const f = new FormGroup({ 'id': new FormControl(), 'label': new FormControl(), 'slug': new FormControl() });
-    this.getAsFormArray(metadataType).push(f);
+  clearPrevious() {
+    this.getAsFormArray('items').controls.splice(0, this.getAsFormArray('items').length);
   }
 
-  onRemoveItem(metadataType, index) {
-    alert('Not implemented');
-    return;
-    // remove from server
-    const item = this.getAsFormArray(metadataType).controls[index].value;
+  ngOnInit(): void { }
+
+  onAddItem() {
+    const f = new FormGroup({ 'id': new FormControl(), 'label': new FormControl(), 'slug': new FormControl() });
+    this.getAsFormArray('items').push(f);
+  }
+
+
+  onRemoveItem(index) {
+    const item = this.getAsFormArray('items').controls[index].value;
     if (item.id) {
-      this.dataService.removeMetadataItem(metadataType, this.metadata[metadataType][index].id).subscribe(serverResponse => {
-        if (serverResponse['success']) {
-          // remove from UI
-          this.getAsFormArray(metadataType).removeAt(index);
-        } else {
-          alert(serverResponse['error']);
-        }
-      });
+      this.deletable = item;
     } else {
-      this.getAsFormArray(metadataType).removeAt(index);
+      this.getAsFormArray('items').removeAt(index);
     }
   }
 
-  onSaveItem(metadataType, index) {
+  findIndexById(id) {
+    let found = 0;
+    this.getAsFormArray('items').controls.some((control, index) => {
+      if (control.value.id === id) {
+        found = index;
+        return true;
+      }
+    });
+    return found;
+  }
+
+  onDelete() {
+
+    if (this.deleteForm.valid) {
+      this.deleting = true;
+      this.dataService.removeMetadataItem(this.selectedMetadata,
+        this.deletable.id, this.deleteForm.get('merge_into_id').value).subscribe(serverResponse => {
+          this.deleting = false;
+          if (serverResponse['success']) {
+            // remove from UI
+            this.getAsFormArray('items').removeAt(this.findIndexById(this.deletable.id));
+          } else {
+            alert(serverResponse['error']);
+          }
+        }, error => {
+          this.deleting = false;
+          alert(error);
+        });
+    }
+  }
+
+  onSaveItem(index) {
     // tslint:disable-next-line:max-line-length
-    const item = this.getAsFormArray(metadataType).controls[index].value;
+
+    const ctrl = this.getAsFormArray('items').controls[index];
+    ctrl.disable();
+
+    const item = ctrl.value;
     // is this an ID change?
-    if (this.metadata[metadataType][index] && this.metadata[metadataType][index].id !== item.id) {
+    if (this.metadata[this.selectedMetadata][index] && this.metadata[this.selectedMetadata][index].id !== item.id) {
       item.new_id = item.id;
-      item.id = this.metadata[metadataType][index].id;
+      item.id = this.metadata[this.selectedMetadata][index].id;
     }
 
     if (item.label && item.label.length > 0) {
-      this.dataService.saveMetadataItem({ ...{ 'metadata_type': metadataType }, ...item }).subscribe(serverResponse => {
+      this.dataService.saveMetadataItem({ ...{ 'metadata_type': this.selectedMetadata }, ...item }).subscribe(serverResponse => {
+        ctrl.enable();
         if (serverResponse['success']) {
+          if (!ctrl.value.id) {
+            this.dataService.metadata[this.selectedMetadata].push(serverResponse['data']['new_item']);
+          } else {
+            this.dataService.metadata[this.selectedMetadata][index] = serverResponse['data']['new_item'];
+          }
           // update ID if necessary
-          this.getAsFormArray(metadataType).controls[index].setValue(serverResponse['data']['new_item']);
+          ctrl.setValue(serverResponse['data']['new_item']);
           this.snackBar.openFromComponent(SnackbarComponent, {
             data: { message: 'Succes' },
             panelClass: 'snackbar-success'
@@ -81,6 +133,9 @@ export class MetadataEditorComponent implements OnInit {
             panelClass: 'snackbar-error'
           });
         }
+      }, error => {
+        ctrl.enable();
+        alert(error);
       });
     }
   }

@@ -1,0 +1,7 @@
+<ng-container *ngFor="let n of needs">
+<div class="needs-item" *ngIf="shouldShow(n?.need_type?.id || n?.need_type_id)">
+    <div>{{ getLabel( n?.need_type?.id || n?.need_type_id ) }}</div>
+    <div class="spacer"></div>
+    <div>{{ n.quantity | number : '1.0-0'}}</div>
+</div>
+</ng-container>

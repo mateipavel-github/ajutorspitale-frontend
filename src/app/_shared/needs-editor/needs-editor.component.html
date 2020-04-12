@@ -15,14 +15,13 @@
           <mat-form-field appearance="outline" style="width: 100%;">
             <mat-label>Produs</mat-label>
             <input (focus)="setCurrentNeed(i)" matInput formControlName="need_type" type="text" class="form-control"
-              class="form-control-plaintext" id="quantity-{{i}}" [matAutocomplete]="needTypesAutocomplete">
+              class="form-control-plaintext" [matAutocomplete]="needTypesAutocomplete">
           </mat-form-field>
         </div>
         <div fxFlex="60px">
           <mat-form-field appearance="outline" style="width: 60px;">
             <mat-label>Cantitate</mat-label>
-            <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext"
-              id="quantity-{{i}}">
+            <input matInput formControlName="quantity" type="text" class="form-control" class="form-control-plaintext">
           </mat-form-field>
         </div>
         <div fxFlex="nogrow" class="deleteItem">
@@ -33,7 +32,7 @@
       </div>
     </div>
     <div style="text-align: center;">
-      <button mat-button mat-button-stroked (click)="onAddNeed('add')"><mat-icon>library_add</mat-icon> Adaugă produs/serviciu</button>
+      <button mat-button (click)="onAddNeed('add')"><mat-icon>library_add</mat-icon> Adaugă produs/serviciu</button>
     </div>
   </div>
 </form>

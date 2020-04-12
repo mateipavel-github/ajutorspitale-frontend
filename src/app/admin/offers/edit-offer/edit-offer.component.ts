@@ -19,7 +19,6 @@ export class EditOfferComponent implements OnInit {
   showNeedsText = true;
   statusChanging = false;
   assignChanging = false;
-  newNote = new FormControl();
   showScriptNeeds = false;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
@@ -34,26 +33,6 @@ export class EditOfferComponent implements OnInit {
       this.showNeedsText = !(this.sessionData.currentOffer.needs && this.sessionData.currentOffer.needs.length > 0);
     });
 
-  }
-
-  onSaveNote() {
-    this.newNote.disable();
-    const data = { item_id: this.sessionData.currentOfferId, content: this.newNote.value };
-    this.dataService.addOfferNote(data).subscribe(serverResponse => {
-      this.newNote.enable();
-      this.newNote.setValue('');
-      if (serverResponse['success']) {
-        this.sessionData.currentOffer.notes.push(serverResponse['data']['new_note']);
-      }
-    }, error => {
-        this.newNote.enable();
-        this.newNote.setValue('');
-        this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: error['message'] },
-          panelClass: 'snackbar-error',
-          duration: 5000
-        });
-    });
   }
 
   onUnassign() {

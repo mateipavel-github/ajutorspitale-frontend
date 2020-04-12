@@ -2,3 +2,12 @@
     padding: 20px;
     width: 600px;
 }
+
+.selector {
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    padding: 10px 0px 5px 0px;
+    text-align: center;
+}
+.selector-control {
+    margin: 0 auto;
+}

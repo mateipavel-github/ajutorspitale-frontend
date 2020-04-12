@@ -1,1 +1,190 @@
-<p>edit-delivery works!</p>
+<div *ngIf="!dataLoaded">Se încarcă...</div>
+<div *ngIf="dataLoaded" class="page-content full-width">
+  <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between start">
+    <form [formGroup]="editForm" fxFlex>
+
+      <div class="title-bar" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <div>
+          <h1 class="with-subtitle" *ngIf="editMode==='new'">Livrare nouă</h1>
+          <h1 class="with-subtitle" *ngIf="editMode==='update'">Livrarea #{{ sessionData.currentDeliveryId }}</h1>
+          <div class="subtitle" *ngIf="editMode==='update'">Creată de {{ sessionData.currentDelivery.owner.name }} la
+            {{ sessionData.currentDelivery.created_at | date : 'short'}} </div>
+        </div>
+        <div fxFlex *ngIf="editMode==='update'">
+          <app-loading-button btnStyle="stroked" [loading]="statusChanging" [matMenuTriggerFor]="statusChange"
+            [label]="dataService.getMetadataLabel('delivery_status_types', sessionData.currentDelivery?.status || 0)">
+          </app-loading-button>
+          <mat-menu #statusChange="matMenu" xPosition="before">
+            <button (click)="onChangeStatus(k.id)" *ngFor="let k of dataService.metadata['delivery_status_types']"
+              mat-menu-item>{{ k.label }}</button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between stretch">
+        <div fxFlex="50%" class="vertical-section">
+
+          <h2>Produse de livrat</h2>
+          <app-needs-editor [needs]="this.sessionData?.currentDelivery?.needs || []" (needsUpdated)="onUpdateNeeds($event)">
+          </app-needs-editor>
+
+          <h2>Cereri</h2>
+          <mat-tab-group class="edit-tabs">
+            <mat-tab [label]="'Cereri relevante (' + (matchingRequestsLoading ? '...' : paging.total) + ')'">
+              <div style="height: 100%;" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
+                <app-requests-filter-form [show]="['county','keyword']"></app-requests-filter-form> 
+                <div>
+                  <app-loading-status [loaded]="!matchingRequestsLoading"></app-loading-status>
+                  <cdk-virtual-scroll-viewport itemSize="3" class="matching-requests-list"
+                    *ngIf="!matchingRequestsLoading">
+                    <ng-container *cdkVirtualFor="let r of matchingRequests">
+                      <ng-container
+                        *ngTemplateOutlet="matchedRequestTemplate; context: {r:r, showOptions: true, expanded: false}">
+                      </ng-container>
+                    </ng-container>
+                  </cdk-virtual-scroll-viewport>
+                </div>
+                <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)"
+                  [length]="paging.total" [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
+                </mat-paginator>
+              </div>
+            </mat-tab>
+            <mat-tab [label]="'Cereri selectate (' + getSelectedRequests().length + ')'">
+              <ng-container *ngFor="let r of getSelectedRequests()">
+                <ng-container
+                  *ngTemplateOutlet="matchedRequestTemplate; context: {r:r, showOptions: false, expanded: true}">
+                </ng-container>
+              </ng-container>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <div fxFlex="50%" class="vertical-section">
+
+          <div class="form-section">
+            <h2>Sumar livrare</h2>
+            <div *ngIf="editForm.value.needs.length===0" style="font-style: italic;">Nu ai adăugat niciun produs.</div>
+            <app-needs-shortlist [needs]="editForm.value.needs"></app-needs-shortlist>
+
+            <h2 style="margin-top: 10px">Cereri selectate</h2>
+            <div *ngIf="getSelectedRequests().length===0" style="font-style: italic;">Nu ai selectat nicio cerere.</div>
+            <mat-chip-list>
+              <mat-chip *ngFor="let sr of getSelectedRequests()" (click)="onRemoveSelectedRequest(sr)">
+                Cererea #{{ sr.id}}
+                <mat-icon
+                  class="mat-icon notranslate mat-chip-remove mat-chip-trailing-icon material-icons mat-icon-no-color ng-star-inserted">
+                  cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+
+            <mat-error *ngIf="editForm.get('requests').invalid">
+              <span *ngIf="editForm.get('requests').hasError('multiple_counties')">Cererile sunt din
+                județe diferite</span>
+              <span *ngIf="editForm.get('requests').hasError('multiple_people')">Cererile sunt de la
+                oameni diferiți</span>
+            </mat-error>
+            <ul style="font-size: 14px; padding: 0; color: rgba(0,0,0,0.4)">
+              <li>Produsele livrate vor fi scăzute din listele de nevoi ale cererii/cererilor selectate în ordinea în
+                care
+                au fost selectate.</li>
+              <li>Dacă livrezi toate produsele unei cereri, ea va fi marcată automat ca finalizată.</li>
+              <li>Aceste ajustări la cereri se fac doar la momentul la care livrarea este marcată cu statusul "Livrată".
+              </li>
+            </ul>
+          </div>
+
+          <h2>Sponsori</h2>
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+            <app-sponsor-autocomplete (selected)="setMainSponsor($event)" label="Sponsor produse"
+              [inputControl]="editForm.get('main_sponsor')">
+            </app-sponsor-autocomplete>
+            <app-sponsor-autocomplete (selected)="setDeliverySponsor($event)" label="Sponsor livrare"
+              [inputControl]="editForm.get('delivery_sponsor')">
+            </app-sponsor-autocomplete>
+          </div>
+
+          <h2>Livrezi la un spital de stat?</h2>
+          <app-medical-unit-input-search [inputControl]="editForm.get('medical_unit')"></app-medical-unit-input-search>
+
+          <h2>Detalii destinație</h2>
+          <div>
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+              <mat-form-field fxFlex appearance="outline">
+                <mat-label>Adresă</mat-label>
+                <input required matInput formControlName="address" type="text" class="form-control"
+                  aria-describedby="name" placeholder="" class="form-control-plaintext">
+              </mat-form-field>
+
+              <mat-form-field fxFlex="150px" appearance="outline">
+                <mat-label>Județ</mat-label>
+                <mat-select placeholder="Alege județ" formControlName="county_id" appearance="outline">
+                  <mat-option *ngFor="let c of dataService.metadata['counties']" [value]="c.id">{{ c.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="editForm.get('county_id').invalid">
+                  <span *ngIf="editForm.get('county_id').hasError('mismatch_with_medical_unit')">Județul este diferit
+                    de județul spitalului de stat selectat</span>
+                  <span *ngIf="editForm.get('county_id').hasError('mismatch_with_requests')">Județul este diferit de
+                    județul cererilor selectate</span>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+            <mat-form-field style="width: 100%;" appearance="outline">
+              <mat-label>Nume persoana contact</mat-label>
+              <input required matInput formControlName="name" type="text" class="form-control" aria-describedby="name"
+                placeholder="" class="form-control-plaintext">
+            </mat-form-field>
+
+            <mat-form-field matPrefix="+40-" style="width: 100%;" appearance="outline">
+              <mat-label>Telefon persoană contact</mat-label>
+              <input required matInput formControlName="phone_number" type="text" class="form-control"
+                aria-describedby="phoneNumber" placeholder="" class="form-control-plaintext">
+              <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-error *ngIf="!editForm.valid && editForm.touched">Formularul are erori.</mat-error>
+
+          <app-loading-button label="Salvează" type="submit" btnStyle="flat" color="primary" (btnClick)="onSave()"
+            [loading]="formLoading"></app-loading-button>
+        </div>
+      </div>
+    </form>
+    <div class="sidebar" fxFlex="300px">
+      <app-notes itemType="delivery" [itemId]="sessionData.currentDeliveryId"
+        [notes]="sessionData.currentDelivery?.notes || []"></app-notes>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #matchedRequestTemplate let-r="r" let-showOptions="showOptions" let-expanded="expanded">
+  <mat-card class="matching-request">
+    <mat-card-title class="mr-title" fxLayoutAlign="space-between center">
+      <div fxFlex="50px">#{{ r.id }}</div>
+      <div fxFlex>{{ r.medical_unit?.name || r.medical_unit_name}}</div>
+      <div>{{ dataService.getMetadataLabel('counties', r.county_id) }}</div>
+    </mat-card-title>
+    <mat-card-content>
+      <div *ngIf="r?.expanded || expanded" class="person">
+        {{ r.name }} | {{ r.phone_number }} | {{ r.job_title }}
+      </div>
+      <app-needs-shortlist *ngIf="r?.expanded || expanded" [needs]="r.current_needs"></app-needs-shortlist>
+      <app-needs-shortlist *ngIf="!r?.expanded && !expanded" [needs]="r.current_needs"
+        [showOnlyTypes]="getRelevantNeedTypes()"></app-needs-shortlist>
+
+    </mat-card-content>
+    <div *ngIf="showOptions" class="options on-hover" fx-layout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+      <button color="primary" mat-flat-button (click)="onSelectRequest(r)">
+        Alege
+      </button>
+      <button color="primary" mat-flat-button mat-icon-button (click)="r.expanded=!r?.expanded">
+        <mat-icon *ngIf="r?.expanded">expand_less</mat-icon>
+        <mat-icon *ngIf="!r?.expanded">expand_more</mat-icon>
+      </button>
+    </div>
+  </mat-card>
+</ng-template>

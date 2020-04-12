@@ -29,43 +29,21 @@
     <div class="edit-side">
       <mat-tab-group class="edit-tabs">
         <mat-tab label="Date ofertă">
-            <div class="tab-content">
-              <app-edit-offer-data></app-edit-offer-data>
-            </div>
+          <div class="tab-content">
+            <app-edit-offer-data></app-edit-offer-data>
+          </div>
         </mat-tab>
         <mat-tab label="Produse & servicii">
-            <app-edit-offer-needs></app-edit-offer-needs>
+          <app-edit-offer-needs></app-edit-offer-needs>
         </mat-tab>
       </mat-tab-group>
     </div>
     <div class="preview-side">
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Notițe ({{ sessionData.currentOffer?.notes?.length || 0}})
-          </mat-panel-title>
-        </mat-expansion-panel-header>
+      <app-notes itemType="offer" [itemId]="sessionData.currentOfferId" [notes]="sessionData.currentOffer?.notes || []">
+      </app-notes>
 
-        <div>
-          <ul class="notes">
-            <li *ngFor="let n of sessionData.currentOffer?.notes">
-              <span class="date">{{ n.created_at | date : 'short' }} by <strong>{{ n.user?.name }}</strong></span>
-              {{ n.content }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <mat-form-field fxFlex appearance="outline">
-            <mat-label>Adaugă</mat-label>
-            <input placeholder="Notițe..." (keydown.enter)="onSaveNote()" matInput [formControl]="newNote" type="text"
-              class="form-control" class="form-control-plaintext">
-          </mat-form-field>
-        </div>
-
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
+      <mat-expansion-panel style="margin-top: 10px;">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Sumar ofertă
@@ -75,12 +53,7 @@
         <div class="item">
           <div class="label">Produse de oferit (agregate): </div>
           <div class="value">
-            <div class="change-need-row" *ngFor="let n of sessionData.currentOffer.current_needs" fxLayout="row"
-              fxLayoutAlign="space-between start" fxLayoutGap="5px">
-              <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
-              <div class="bottom-dots" fxFlex>&nbsp;</div>
-              <div>{{ n.quantity | number : '1.0-0' }}</div>
-            </div>
+            <app-needs-shortlist [needs]="sessionData.currentOffer.current_needs"></app-needs-shortlist>
           </div>
         </div>
         <div class="item">
@@ -105,9 +78,10 @@
         <div class="item">
           <div class="label">Persoană: </div>
           <div class="value">{{ sessionData.currentOffer.name }}</div>
-          <div class="value">{{ sessionData.currentOffer.job_title }} la {{ sessionData.currentOffer.organization_name }}</div>
+          <div class="value">{{ sessionData.currentOffer.job_title }} la
+            {{ sessionData.currentOffer.organization_name }}</div>
           <div class="value">{{ sessionData.currentOffer.phone_number }}</div>
-        </div> 
+        </div>
       </mat-expansion-panel>
 
       <mat-expansion-panel>

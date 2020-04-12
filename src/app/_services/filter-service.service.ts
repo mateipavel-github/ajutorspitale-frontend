@@ -15,6 +15,13 @@ export class FilterService {
   }
 
   public setFilter(filter, value, sendUpdates = false) {
+
+    if (filter === 'needs') {
+      value = value.map(need => {
+        return need?.need_type?.id + ':' + need.quantity;
+      });
+    }
+
     this.filters[filter] = value;
     if (sendUpdates) {
       this.sendUpdates();

@@ -12,6 +12,7 @@ export class RequestsFilterFormComponent implements OnInit {
 
   filterForm: FormGroup;
   statusOptions = [];
+  @Input() show = ['status', 'county', 'medical_unit_type_id'];
 
   constructor(public dataService: DataService, private filterService: RequestsFilterService) {
 
@@ -20,7 +21,8 @@ export class RequestsFilterFormComponent implements OnInit {
     this.filterForm = new FormGroup({
       'status': new FormControl(),
       'county': new FormControl(),
-      'medical_unit_type_id': new FormControl()
+      'medical_unit_type_id': new FormControl(),
+      'keyword': new FormControl()
     });
 
     this.filterForm.valueChanges.subscribe(changes => {
@@ -45,6 +47,10 @@ export class RequestsFilterFormComponent implements OnInit {
 
   onClearFilter(key) {
     this.filterForm.get(key).reset();
+  }
+
+  canShow(key) {
+    return this.show.indexOf(key) > -1;
   }
 
   ngOnInit(): void {

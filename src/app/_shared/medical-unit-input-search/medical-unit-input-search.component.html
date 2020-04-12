@@ -16,5 +16,8 @@
       stat.</span>
     <span *ngIf="inputControl.hasError('has_value_but_not_selected')">Ai tastat ceva dar nu ai selectat un spital. Poți
       lăsa liber.</span>
+
+    <span *ngIf="inputControl.hasError('medical_unit_county_mismatch_requests')">Spitalul este în alt județ decât
+      cererile selectate</span>
   </mat-error>
 </mat-form-field>

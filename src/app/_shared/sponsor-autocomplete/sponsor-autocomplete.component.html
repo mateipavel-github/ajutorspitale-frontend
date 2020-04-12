@@ -1,0 +1,17 @@
+<mat-form-field style="width: 100%" appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput placeholder="Tastează pentru căutare" [matAutocomplete]="auto" [formControl]="inputControl">
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChange($event)" [displayWith]="displayFn">
+    <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
+    <mat-option *ngIf="!isLoading && filteredOptions.length==0" [value]="inputControl.value">Adaugă
+      <strong>{{ inputControl.value }}</strong></mat-option>
+    <ng-container *ngIf="!isLoading">
+      <mat-option *ngFor="let option of filteredOptions" [value]="option">
+        {{option.name}}
+      </mat-option>
+    </ng-container>
+  </mat-autocomplete>
+  <mat-error *ngIf="inputControl.invalid">
+    Eroare
+  </mat-error>
+</mat-form-field>

@@ -19,7 +19,6 @@ export class EditRequestComponent implements OnInit {
   showNeedsText = true;
   statusChanging = false;
   assignChanging = false;
-  newNote = new FormControl();
   showScriptNeeds = false;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
@@ -34,26 +33,6 @@ export class EditRequestComponent implements OnInit {
       this.showNeedsText = !(this.sessionData.currentRequest.needs && this.sessionData.currentRequest.needs.length > 0);
     });
 
-  }
-
-  onSaveNote() {
-    this.newNote.disable();
-    const data = { item_id: this.sessionData.currentRequestId, content: this.newNote.value };
-    this.dataService.addRequestNote(data).subscribe(serverResponse => {
-      this.newNote.enable();
-      this.newNote.setValue('');
-      if (serverResponse['success']) {
-        this.sessionData.currentRequest.notes.push(serverResponse['data']['new_note']);
-      }
-    }, error => {
-        this.newNote.enable();
-        this.newNote.setValue('');
-        this.snackBar.openFromComponent(SnackbarComponent, {
-          data: { message: error['message'] },
-          panelClass: 'snackbar-error',
-          duration: 5000
-        });
-    });
   }
 
   onUnassign() {

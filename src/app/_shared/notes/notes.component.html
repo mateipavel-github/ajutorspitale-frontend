@@ -1,0 +1,25 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Notițe ({{ notes.length || 0}})
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <div>
+    <ul class="notes">
+      <li *ngFor="let n of notes">
+        <span class="date">{{ n.created_at | date : 'short' }} by <strong>{{ n.user?.name }}</strong></span>
+        {{ n.content }}
+      </li>
+    </ul>
+  </div>
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Adaugă</mat-label>
+      <input placeholder="Notițe..." (keydown.enter)="onSaveNote()" matInput [formControl]="newNote" type="text"
+        class="form-control" class="form-control-plaintext">
+    </mat-form-field>
+    <div class="error" *ngIf="itemId===0">Salvează {{ getTypeLabel() }} înainte să poți salva notițe.</div>
+  </div>
+
+</mat-expansion-panel>

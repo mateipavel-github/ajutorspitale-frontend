@@ -20,6 +20,7 @@ import { ListUsersComponent } from './users/list-users/list-users.component';
 import { MatTableModule } from '@angular/material/table';
 import { EditOfferNeedsComponent } from './offers/edit-offer/edit-offer-needs/edit-offer-needs.component';
 import { EditOfferDataComponent } from './offers/edit-offer/edit-offer-data/edit-offer-data.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 
@@ -45,6 +46,7 @@ import { EditOfferDataComponent } from './offers/edit-offer/edit-offer-data/edit
   ],
   imports: [
     CommonModule,
+    ScrollingModule,
     WidgetModule,
     BootstrapInterfaceModule,
     MatTableModule,

@@ -18,6 +18,7 @@ import { SnackbarComponent } from './_shared/snackbar/snackbar.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SponsorAutocompleteComponent } from './_shared/sponsor-autocomplete/sponsor-autocomplete.component';
 
 // the second parameter 'fr-FR' is optional
 registerLocaleData(localeRo, 'ro-RO');

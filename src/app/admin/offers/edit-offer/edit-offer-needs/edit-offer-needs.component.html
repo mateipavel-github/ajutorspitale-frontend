@@ -2,12 +2,7 @@
 
   <div class="current-needs" *ngIf="!showChangeForm">
     <h2>Stoc curent</h2>
-    <div class="change-need-row" *ngFor="let n of sessionData.currentOffer.current_needs" fxLayout="row"
-      fxLayoutAlign="space-between start" fxLayoutGap="5px">
-      <div>{{ dataService.getMetadataLabel('need_types', n.need_type_id) }}</div>
-      <div class="bottom-dots" fxFlex>&nbsp;</div>
-      <div>{{ n.quantity | number : '1.0-0' }}</div>
-    </div>
+    <app-needs-shortlist [needs]="sessionData.currentOffer.current_needs"></app-needs-shortlist>
   </div>
 
   <form class="changeForm" *ngIf="showChangeForm" [formGroup]="changeForm" #changeFormElementRef>

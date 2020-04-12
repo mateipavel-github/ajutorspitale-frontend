@@ -25,13 +25,12 @@ const routes: Routes = [
       { path: 'offers/:flag', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
       { path: 'offer/:id', component: EditOfferComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
 
-
-      { path: 'deliveries', component: ListDeliveriesComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
       { path: 'deliveries/:flag', component: ListDeliveriesComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
       { path: 'delivery/:id', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] }  },
       { path: 'delivery/new', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
 
       { path: 'metadata', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
+      { path: 'metadata/:type', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
       { path: 'users', component: ListUsersComponent, data: { expectedRoles: ['admin'] } }
     ]
   }
