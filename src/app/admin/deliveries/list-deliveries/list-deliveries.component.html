@@ -46,7 +46,7 @@
       </mat-card-title>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="45px">
-          <div class="vertical-section" fxFlex="20%">
+          <div class="vertical-section breathe" fxFlex="30%">
             <h3>Destinatar</h3>
             <p>
               <strong>Spital: </strong>{{ item.medical_unit?.name }}<br />
@@ -55,11 +55,17 @@
               <strong>Adresă: </strong>{{ item.destination_address }}<br />
             </p>
           </div>
-          <div class="vertical-section" fxFlex>
+          <div class="vertical-section breathe" fxFlex>
             <h3>Produse livrate</h3>
             <app-needs-shortlist [needs]="item.needs"></app-needs-shortlist>
+
+            <h3>Sponsori</h3>
+            <p>
+              <strong>Produse: </strong>{{ item?.main_sponsor?.name }}<br />
+              <strong>Livrare: </strong>{{ item?.delivery_sponsor?.name }}<br />
+            </p>
           </div>
-          <div class="vertical-section" fxFlex="30%">
+          <div class="vertical-section breathe" fxFlex="25%">
             <h3>Detalii</h3>
             <p>
               {{ item.description }}

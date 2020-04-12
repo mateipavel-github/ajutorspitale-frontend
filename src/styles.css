@@ -75,6 +75,15 @@ h1.with-subtitle {
   padding-left: 0px;
 }
 
+.vertical-section.breathe {
+  padding-right: 45px;
+  margin-right: 45px;
+}
+.vertical-section.breathe:last-child {
+  padding-right: 0;
+  margin-right: 0;
+}
+
 .border-right {
   border-right-width: 1px;
   border-right-style: solid;
