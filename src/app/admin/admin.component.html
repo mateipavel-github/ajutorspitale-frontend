@@ -8,6 +8,7 @@
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/deliveries/all">Livrări</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/metadata">Metadata</a>
         <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/users">Utilizatori</a>
+        <a *ngIf="hasAccess('volunteer') || hasAccess('admin')" mat-button routerLink="/admin/reports">Exports</a>
         <a mat-button target="_blank" routerLink="/new-request">Adaugă cerere</a>
         <a mat-button target="_blank" routerLink="/new-offer">Adaugă ofertă</a>
 

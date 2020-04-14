@@ -1,0 +1,11 @@
+<div class="page-content centered">
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="45px">
+    <mat-card *ngFor="let e of reports" fxFlex="33%">
+      <mat-card-title>{{ e.name }}</mat-card-title>
+      <mat-card-content>{{ e.description }}</mat-card-content>
+      <mat-card-options>
+        <app-loading-button (btnClick)="onDownload(e)" btnStyle="stroked" label="Descarcă" [loading]="e.loading">Descarcă</app-loading-button>
+      </mat-card-options>
+    </mat-card>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 import { forkJoin, Subject } from 'rxjs';
 
@@ -13,6 +13,16 @@ export class DataService {
   authError = false;
 
   constructor(private api: HttpClient) {
+  }
+
+  public downloadCSV(url) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'text/csv'
+      }),
+      responseType: 'text'
+    };
+    return this.api.get(environment.api.url + url, httpOptions);
   }
 
   public bootstrap() {

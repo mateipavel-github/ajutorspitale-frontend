@@ -10,6 +10,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ListRequestsComponent } from './requests/list-requests/list-requests.component';
 import { AdminComponent } from './admin.component';
+import { ReportsComponent } from './reports/reports.component';
 
 
 
@@ -31,7 +32,9 @@ const routes: Routes = [
 
       { path: 'metadata', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
       { path: 'metadata/:type', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
-      { path: 'users', component: ListUsersComponent, data: { expectedRoles: ['admin'] } }
+      { path: 'users', component: ListUsersComponent, data: { expectedRoles: ['admin'] } },
+
+      { path: 'reports', component: ReportsComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
     ]
   }
 ];

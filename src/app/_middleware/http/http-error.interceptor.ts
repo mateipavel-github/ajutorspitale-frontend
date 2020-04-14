@@ -19,7 +19,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             if (err.status === 500) {
                 alert('Server error');
             }
-
+            console.log(err);
             const error = err.error.message || err.statusText;
             return throwError(err.error);
         }));
