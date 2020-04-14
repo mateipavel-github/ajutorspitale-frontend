@@ -20,7 +20,7 @@ export class DataService {
       headers: new HttpHeaders({
         'Accept': 'text/csv'
       }),
-      responseType: 'text'
+      responseType: 'text' as 'json'
     };
     return this.api.get(environment.api.url + url, httpOptions);
   }
