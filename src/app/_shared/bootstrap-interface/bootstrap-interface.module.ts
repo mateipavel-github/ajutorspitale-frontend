@@ -26,6 +26,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatExpansionModule,
+    DragDropModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -87,6 +89,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatExpansionModule,
+    DragDropModule,
 
     ReactiveFormsModule,
     FormsModule

@@ -1,7 +1,11 @@
-<form [formGroup]="filterForm" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="25px">
+<form [formGroup]="filterForm" fxLayout="{{ layout==='vertical' ? 'column' : 'row' }}" fxLayoutAlign="start center" fxLayoutGap="25px">
 
-  <div *ngIf="canShow('medical_unit_type_id')">
-  <mat-form-field>
+  <div *ngIf="canShow('needs')">
+    <app-needs-editor #filterByNeeds (needsUpdated)="needsEditor_onNeedsUpdated($event)" [canAdd]="false" [canSuggest]="false"></app-needs-editor>
+  </div>
+
+  <div *ngIf="canShow('medical_unit_type_id')" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <mat-form-field style="width: 100%;">
     <mat-label>Tip unitate medicală</mat-label>
     <mat-select placeholder="Alege tip" formControlName="medical_unit_type_id">
       <mat-option *ngFor="let s of dataService.metadata.medical_unit_types" [value]="s.id">{{ s.label }}</mat-option>
@@ -12,8 +16,8 @@
   </button>
   </div>
 
-  <div *ngIf="canShow('county')">
-    <mat-form-field>
+  <div *ngIf="canShow('county')" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <mat-form-field style="width: 100%;">
       <mat-label>Județ</mat-label>
       <mat-select multiple placeholder="Alege județ" formControlName="county">
         <mat-option *ngFor="let s of dataService.metadata.counties" [value]="s.id">{{ s.label }}</mat-option>
@@ -24,8 +28,8 @@
     </button>
   </div>
 
-  <div *ngIf="canShow('status')">
-    <mat-form-field>
+  <div *ngIf="canShow('status')" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <mat-form-field style="width: 100%;">
       <mat-label>Status</mat-label>
       <mat-select multiple placeholder="Alege status" formControlName="status">
         <mat-option *ngFor="let s of statusOptions" [value]="s.slug">{{ s.label }}</mat-option>
@@ -36,8 +40,8 @@
     </button>
   </div>
 
-  <div *ngIf="canShow('keyword')">
-    <mat-form-field>
+  <div *ngIf="canShow('keyword')" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <mat-form-field fxFlex>
       <mat-label>Keyword sau ID</mat-label>
       <input matInput type="text" placeholder="ID, Nume spital, persoană sau telefon" formControlName="keyword" />
     </mat-form-field>

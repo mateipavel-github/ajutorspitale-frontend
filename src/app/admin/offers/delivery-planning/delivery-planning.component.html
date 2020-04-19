@@ -1,0 +1,171 @@
+<ng-container *ngIf="!planLoaded">
+  <app-loading-status *ngIf="!planLoaded" [loaded]="planLoaded"></app-loading-status>
+</ng-container>
+
+<ng-container *ngIf="planLoaded">
+  <mat-tab-group class="tab-custom-overflow" animationDuration="0ms" (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="Caută cereri"></mat-tab>
+    <mat-tab label="Planificare"></mat-tab>
+  </mat-tab-group>
+
+  <div *ngIf="currentTab==='search'" fxLayout="row" fxLayoutAlign="start stretch">
+    <div class="vertical-section" fxFlex="400px" style="position: sticky; top: 0; padding: 20px;">
+
+      <h2>Ce livrezi?</h2>
+      <app-loading-status *ngIf="!planLoaded" [loaded]="planLoaded"></app-loading-status>
+      <app-needs-editor *ngIf="planLoaded" #deliveryNeedsEditor [needs]="deliveryNeeds$.value"
+        (needsUpdated)="deliveryNeedsUpdated($event)"></app-needs-editor>
+
+      <h2>Restricții</h2>
+      <app-requests-filter-form #filterForm layout="vertical" [show]="['status', 'county', 'medical_unit_type_id']">
+      </app-requests-filter-form>
+
+    </div>
+    <div fxFlex class="vertical-section" style="padding: 20px;">
+      <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+        <div fxFlex>
+          <h1 class="with-subtitle">Rezultate căutare ({{ searchRequestsList.length }})</h1>
+          <h2 class="subtitle">Selectează cererile relevante și adaugă-le la plan. Apoi mergi în tab-ul "Plan curent"
+            unde
+            le poți ordona și grupa pe culori.</h2>
+        </div>
+        <div>
+          <div>
+            <button mat-stroked-button color="primary" (click)="onAddToPlan()">Add selected to plan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row header" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+        <div class="column-id">ID</div>
+        <div class="column-medical-unit">Unitate medicală</div>
+        <div class="column-medical-unit-type">Tip unitate</div>
+        <div class="column-county">Județ</div>
+        <div class="column-needs">Nevoi</div>
+        <div class="column-name">Nume</div>
+        <div class="column-phone-number">Telefon</div>
+      </div>
+
+      <app-loading-status *ngIf="!searchResultsLoaded" [loaded]="searchResultsLoaded"></app-loading-status>
+      <ng-container *ngIf="searchResultsLoaded">
+        <app-multi-drag-drop [disableDragDrop]="true" style="width: 100%;" #searchList [items]="searchRequestsList"
+          (itemsRemoved)="itemsRemoved($event, 1)" (itemsAdded)="itemsAdded($event, 1)"
+          (itemsUpdated)="itemsUpdated($event, 1)" (selectionChanged)="selectionChanged($event, 1)">
+          <ng-template let-item>
+            <div class="row priority-{{ item.priority_group || 0 }}" fxLayout="row" fxLayoutAlign="start stretch"
+              fxLayoutGap="10px">
+              <div class="column-id">{{ item.id }}</div>
+              <div class="column-medical-unit">{{ item.medical_unit?.name }}</div>
+              <div class="column-medical-unit-type">{{ getLabel('medical_unit_types', item.medical_unit_type_id) }}
+              </div>
+              <div class="column-county">{{ getLabel('counties', item.county_id) }}</div>
+              <div class="column-needs">
+                <app-needs-shortlist [needs]="item.current_needs" [showOnlyTypes]="relevantNeedTypes">
+                </app-needs-shortlist>
+              </div>
+              <div class="column-name">{{ item.name }}</div>
+              <div class="column-phone-number">{{ item.phone_number }}</div>
+            </div>
+          </ng-template>
+        </app-multi-drag-drop>
+      </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="currentTab==='plan'" fxLayout="row" fxLayoutAlign="start stretch">
+    <div class="vertical-section" fxFlex="300px" style="padding: 20px;">
+
+      <h1>Sumar</h1>
+
+      <div class="horizontal-section">
+        <h2>De livrat</h2>
+        <app-needs-shortlist [needs]="deliveryNeeds$.value"></app-needs-shortlist>
+      </div>
+      <div class="horizontal-section">
+      <h2>Total nevoi din cererile alese</h2>
+      <div id="plan-summary">
+        <app-needs-shortlist [needs]="planRequestsTotals?.needs || []" [showOnlyTypes]="relevantNeedTypes">
+        </app-needs-shortlist>
+      </div>
+      </div>
+
+    </div>
+
+    <!-- List of requests part of this delivery plan -->
+    <div class="vertical-section" fxFlex style="padding: 20px;">
+
+      <h1>Cereri planificate pentru livrare</h1>
+
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="40px" style="margin-bottom: 20px;">
+
+        <div>
+          <mat-form-field>
+            <mat-label>Sortează după</mat-label>
+            <mat-select multiple [formControl]="sortControl" placeholder="Adaugă sortare"
+              (openedChange)="sortPlan($event)" (selectionChange)="onSortChange($event)">
+              <mat-option *ngFor="let so of sortOptions" [value]="so">
+                <span *ngIf="so.position">({{ so.position }}) </span>
+                <mat-icon *ngIf="so.direction==='asc'">trending_up</mat-icon>
+                <mat-icon *ngIf="so.direction==='desc'">trending_down</mat-icon>
+                {{ so.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="600px" fxLayoutGap="20px" fxLayout="row" fxLayoutAlign="end center"
+          [ngClass]="{ 'actions-inactive': planList.selections.length===0 }">
+          <div class="action-label">
+            <strong>Cereri<br />selectate:</strong> {{ planList.selections.length }}
+          </div>
+          <div>
+            <button mat-stroked-button color="primary">Scoate din plan</button>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div class="action-label">Alege<br />prioritate:</div>
+            <div (click)="setPriorityGroup(1)" class="color-selector priority-1">1</div>
+            <div (click)="setPriorityGroup(2)" class="color-selector priority-2">2</div>
+            <div (click)="setPriorityGroup(3)" class="color-selector priority-3">3</div>
+            <div (click)="setPriorityGroup(4)" class="color-selector priority-4">4</div>
+            <div (click)="setPriorityGroup(100)" class="color-selector priority-0">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row header" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+        <div class="column-id">ID</div>
+        <div class="column-medical-unit">Unitate medicală</div>
+        <div class="column-medical-unit-type">Tip unitate</div>
+        <div class="column-county">Județ</div>
+        <div class="column-needs">Nevoi</div>
+        <div class="column-name">Nume</div>
+        <div class="column-phone-number">Telefon</div>
+        <div class="column-actions">Acțiuni</div>
+      </div>
+      <app-multi-drag-drop style="width: 100%;" #planList [items]="planRequestsList"
+        (itemsRemoved)="itemsRemoved($event, 1)" (itemsAdded)="itemsAdded($event, 1)"
+        (itemsUpdated)="itemsUpdated($event, 1)" (selectionChanged)="selectionChanged($event, 1)">
+        <ng-template let-item let-index>
+          <div class="row priority-{{ item.priority_group || 0 }}" fxLayout="row" fxLayoutAlign="start stretch"
+            fxLayoutGap="10px">
+            <div class="column-id">{{ item.id }}</div>
+            <div class="column-medical-unit">{{ item.medical_unit?.name }}</div>
+            <div class="column-medical-unit-type">{{ getLabel('medical_unit_types', item.medical_unit_type_id) }}</div>
+            <div class="column-county">{{ getLabel('counties', item.county_id) }}</div>
+            <div class="column-needs">
+              <app-needs-shortlist [needs]="item.delivery_needs" [showOnlyTypes]="relevantNeedTypes"></app-needs-shortlist>
+            </div>
+            <div class="column-name">{{ item.name }}</div>
+            <div class="column-phone-number">{{ item.phone_number }}</div>
+            <div class="column-actions">
+              <button matTooltip="Editează cererea" mat-icon-button (click)="onEditRequest(r, index)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </app-multi-drag-drop>
+
+    </div>
+  </div>
+</ng-container>

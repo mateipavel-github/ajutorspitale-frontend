@@ -11,6 +11,9 @@ export class SessionDataService {
   currentOfferId;
   currentOffer;
 
+  currentDeliveryPlanId;
+  currentDeliveryPlan;
+
   currentDeliveryId;
   currentDelivery;
 

@@ -48,6 +48,25 @@ export class DataService {
   }
 
   /*
+   * Delivery Planning
+   */
+
+  public createDeliveryPlan(data?) {
+    data._method = 'PUT';
+    return this.api.post(environment.api.url + '/delivery-plans', data);
+  }
+
+  public loadDeliveryPlan(id) {
+    return this.api.get(environment.api.url + '/delivery-plans/' + id);
+  }
+
+  public updateDeliveryPlan(id, data) {
+    data._method = 'PATCH';
+    return this.api.post(environment.api.url + '/delivery-plans/' + id, data);
+  }
+  
+  
+  /*
   * Sponsor API calls
   */
   public getSponsors(params?) {
@@ -332,6 +351,22 @@ export class DataService {
       }
     }
     return null;
+  }
+
+  public getCountyById(id) {
+    return this.getMetadataById('counties', id);
+  }
+  public getMedicalUnitTypeById(id) {
+    return this.getMetadataById('medical_unit_types', id);
+  }
+
+  public getMetadataById(type, id) {
+    for (let i = 0; i < this.metadata[type].length; i++) {
+      if (this.metadata[type][i]['id'] === id) {
+        return this.metadata[type][i];
+      }
+    }
+    return undefined;
   }
 
 }

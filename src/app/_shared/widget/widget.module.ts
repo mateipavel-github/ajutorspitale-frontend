@@ -1,3 +1,5 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MultiDragDropComponent } from './../multi-drag-drop/multi-drag-drop.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NotesComponent } from './../notes/notes.component';
 import { NeedsShortlistComponent } from './../needs-shortlist/needs-shortlist.component';
@@ -17,6 +19,7 @@ import { RouterModule } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SponsorAutocompleteComponent } from '../sponsor-autocomplete/sponsor-autocomplete.component';
+import { EditRequestDialogComponent } from '../edit-request-dialog/edit-request-dialog.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,9 @@ import { SponsorAutocompleteComponent } from '../sponsor-autocomplete/sponsor-au
     NeedsShortlistComponent,
     Nl2BrPipe,
     SponsorAutocompleteComponent,
-    NotesComponent
+    MultiDragDropComponent,
+    NotesComponent,
+    EditRequestDialogComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +45,8 @@ import { SponsorAutocompleteComponent } from '../sponsor-autocomplete/sponsor-au
     MatExpansionModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    DragDropModule
   ],
   exports: [
     LoadingStatusComponent,
@@ -50,7 +56,9 @@ import { SponsorAutocompleteComponent } from '../sponsor-autocomplete/sponsor-au
     NeedsShortlistComponent,
     Nl2BrPipe,
     SponsorAutocompleteComponent,
-    NotesComponent
+    MultiDragDropComponent,
+    NotesComponent,
+    EditRequestDialogComponent
   ]
 })
 

@@ -11,6 +11,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ListRequestsComponent } from './requests/list-requests/list-requests.component';
 import { AdminComponent } from './admin.component';
 import { ReportsComponent } from './reports/reports.component';
+import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-planning.component';
 
 
 
@@ -25,6 +26,8 @@ const routes: Routes = [
       { path: 'offers', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
       { path: 'offers/:flag', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
       { path: 'offer/:id', component: EditOfferComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'delivery-plan/:plan_id', component: DeliveryPlanningComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'delivery-plan/:plan_id/:offer_id', component: DeliveryPlanningComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
 
       { path: 'deliveries/:flag', component: ListDeliveriesComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
       { path: 'delivery/:id', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] }  },

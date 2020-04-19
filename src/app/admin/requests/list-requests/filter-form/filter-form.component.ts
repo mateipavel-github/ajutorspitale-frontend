@@ -1,18 +1,25 @@
-import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DataService } from 'src/app/_services/data.service';
 import { RequestsFilterService } from './requests-filter-service';
+import { NeedsEditorComponent } from 'src/app/_shared/needs-editor/needs-editor.component';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-requests-filter-form',
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.css']
 })
-export class RequestsFilterFormComponent implements OnInit {
+export class RequestsFilterFormComponent implements OnInit, AfterViewInit {
 
   filterForm: FormGroup;
   statusOptions = [];
+  componentsReady$: ReplaySubject<any> = new ReplaySubject();
+
   @Input() show = ['status', 'county', 'medical_unit_type_id'];
+  @Input() layout = 'horizontal';
+
+  @ViewChild('filterByNeeds') needsEditor: NeedsEditorComponent;
 
   constructor(public dataService: DataService, private filterService: RequestsFilterService) {
 
@@ -22,7 +29,8 @@ export class RequestsFilterFormComponent implements OnInit {
       'status': new FormControl(),
       'county': new FormControl(),
       'medical_unit_type_id': new FormControl(),
-      'keyword': new FormControl()
+      'keyword': new FormControl(),
+      'needs': new FormControl([])
     });
 
     this.filterForm.valueChanges.subscribe(changes => {
@@ -43,6 +51,17 @@ export class RequestsFilterFormComponent implements OnInit {
         this.filterForm.get(key).setValue(filters[key], { onlySelf: false, emitEvent: false });
       });
     });
+
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.componentsReady$.next();
+    });
+  }
+
+  needsEditor_onNeedsUpdated(needs) {
+    this.filterForm.get('needs').setValue(needs);
   }
 
   onClearFilter(key) {
@@ -56,6 +75,18 @@ export class RequestsFilterFormComponent implements OnInit {
   ngOnInit(): void {
 
   }
+
+  setFilter(key, value) {
+    this.filterForm.get(key).setValue(value, { onlySelf: false, emitEvent: false });
+    if (key === 'needs') {
+      this.componentsReady$.subscribe(() => {
+        if (this.canShow('needs')) {
+          this.needsEditor.setNeeds(value);
+        }
+      });
+    }
+  }
+
 
 }
 

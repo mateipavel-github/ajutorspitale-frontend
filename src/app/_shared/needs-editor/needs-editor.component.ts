@@ -1,10 +1,10 @@
 import { EditRequestValidators } from './../_form-validators/edit-request-validators';
 import { DataService } from 'src/app/_services/data.service';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-needs-editor',
@@ -21,7 +21,9 @@ export class NeedsEditorComponent implements OnInit {
   currentNeedIndex = 0;
 
   @Input() canAdd = false;
+  @Input() canSuggest = false;
   @Input() needs = [];
+  @Input() fakeValue = 0;
 
   @Output() eventAddNew: EventEmitter<any> = new EventEmitter();
   @Output() eventAddNewError: EventEmitter<any> = new EventEmitter();
@@ -37,9 +39,11 @@ export class NeedsEditorComponent implements OnInit {
       'needs': new FormArray([])
     });
 
+    /*
     this.needsForm.valueChanges.subscribe(data => {
       this.needsUpdated.emit(data.needs);
     });
+    */
 
     this.filteredNeedTypes = this.needTypeFilter.pipe(
       startWith(''),
@@ -96,6 +100,7 @@ export class NeedsEditorComponent implements OnInit {
               this.needTypeFilter.next('');
               this.dataService.addMetadata(serverResponse['data']['metadata_type'], newMetadataItem);
               this.eventAddNew.emit(newMetadataItem);
+              this.emitNeeds();
             } else {
               this.eventAddNewError.emit({ 'error': serverResponse['error'] });
             }
@@ -106,6 +111,7 @@ export class NeedsEditorComponent implements OnInit {
       }
     } else {
       this.needTypeFilter.next('');
+      this.emitNeeds();
     }
   }
 
@@ -124,9 +130,9 @@ export class NeedsEditorComponent implements OnInit {
       if (need?.need_type_id) {
         need.need_type = { id: need?.need_type_id, label: this.dataService.getMetadataLabel('need_types', need?.need_type_id) };
       }
-
       this.onAddNeed(need);
     });
+
   }
 
   onAddNeed(data?) {
@@ -135,6 +141,10 @@ export class NeedsEditorComponent implements OnInit {
       need_type: new FormControl(data?.need_type,
         this.canAdd ? [this.editRequestValidators.NeedTypeValidator] : [this.editRequestValidators.NeedTypeSoftValidator]),
       quantity: new FormControl(data?.quantity, Validators.required)
+    });
+
+    f.get('quantity').valueChanges.pipe(debounceTime(300)).subscribe(value => {
+      this.emitNeeds();
     });
 
     this.getAsFormArray('needs').push(f);
@@ -150,10 +160,15 @@ export class NeedsEditorComponent implements OnInit {
 
   onRemoveNeed(action, i) {
     this.getAsFormArray('needs').removeAt(i);
+    this.emitNeeds();
   }
 
   setCurrentNeed(index) {
     this.currentNeedIndex = index;
+  }
+
+  emitNeeds() {
+    this.needsUpdated.emit(this.needsForm.get('needs').value);
   }
 
 }

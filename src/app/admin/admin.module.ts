@@ -22,6 +22,7 @@ import { EditOfferNeedsComponent } from './offers/edit-offer/edit-offer-needs/ed
 import { EditOfferDataComponent } from './offers/edit-offer/edit-offer-data/edit-offer-data.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ReportsComponent } from './reports/reports.component';
+import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-planning.component';
 
 
 
@@ -44,7 +45,8 @@ import { ReportsComponent } from './reports/reports.component';
     RequestsFilterFormComponent,
     OffersFilterFormComponent,
     ListUsersComponent,
-    ReportsComponent
+    ReportsComponent,
+    DeliveryPlanningComponent
   ],
   imports: [
     CommonModule,
@@ -53,6 +55,9 @@ import { ReportsComponent } from './reports/reports.component';
     BootstrapInterfaceModule,
     MatTableModule,
     AdminRoutingModule
+  ],
+  entryComponents: [
+    EditRequestComponent
   ]
 })
 export class AdminModule { }

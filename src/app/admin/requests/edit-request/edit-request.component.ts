@@ -2,11 +2,13 @@ import { AuthService } from './../../../_services/auth.service';
 import { SessionDataService } from './../../../_services/session-data.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from './../../../_services/data.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Inject } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { empty } from 'rxjs';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit-request',
@@ -22,16 +24,30 @@ export class EditRequestComponent implements OnInit {
   showScriptNeeds = false;
 
   constructor(public dataService: DataService, public sessionData: SessionDataService,
-                private route: ActivatedRoute, private snackBar: MatSnackBar, private authService: AuthService) {
+    private route: ActivatedRoute, private snackBar: MatSnackBar, private authService: AuthService,
+    public dialogRef: MatDialogRef<EditRequestComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+
+    console.log('constructor', this.data);
 
     this.route.paramMap.pipe(switchMap((params) => {
-      this.sessionData.currentRequestId = params.get('id');
-      return dataService.getRequest(params.get('id'));
+      const requestId = params.get('id') || data?.id;
+      if (requestId) {
+        this.sessionData.currentRequestId = requestId;
+        return dataService.getRequest(requestId);
+      } else {
+        return empty();
+      }
     })).subscribe(serverResponse => {
       this.dataLoaded = true;
       this.sessionData.currentRequest = serverResponse['data'];
       this.showNeedsText = !(this.sessionData.currentRequest.needs && this.sessionData.currentRequest.needs.length > 0);
     });
+
+    if (this.data && this.data?.id) {
+      // component opened as popup
+
+    }
 
   }
 
@@ -97,6 +113,7 @@ export class EditRequestComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.data);
   }
 
 }
