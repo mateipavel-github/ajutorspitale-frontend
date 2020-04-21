@@ -101,7 +101,6 @@ export class DataService {
   }
 
   public storeDelivery(data) {
-    console.log(data);
     data._method = 'PUT';
     return this.api.post(environment.api.url + '/deliveries', data);
   }

@@ -124,7 +124,9 @@ export class NeedsEditorComponent implements OnInit {
   }
 
   setNeeds(needs) {
-
+    if (needs === undefined) {
+      needs = [];
+    }
     this.clearNeeds();
     needs.forEach(need => {
       if (need?.need_type_id) {
@@ -132,7 +134,6 @@ export class NeedsEditorComponent implements OnInit {
       }
       this.onAddNeed(need);
     });
-
   }
 
   onAddNeed(data?) {

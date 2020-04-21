@@ -28,8 +28,6 @@ export class EditRequestComponent implements OnInit {
     public dialogRef: MatDialogRef<EditRequestComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    console.log('constructor', this.data);
-
     this.route.paramMap.pipe(switchMap((params) => {
       const requestId = params.get('id') || data?.id;
       if (requestId) {
@@ -113,7 +111,7 @@ export class EditRequestComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.data);
+
   }
 
 }

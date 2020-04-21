@@ -10,6 +10,7 @@ export class NeedsShortlistComponent implements OnInit {
 
   @Input() needs;
   @Input() showOnlyTypes = [];
+  @Input() showDeliveryQuantities = false;
 
   constructor(private dataService: DataService) { }
 

@@ -38,6 +38,10 @@ export class MultiDragDropComponent {
   ) {
   }
 
+  render() {
+    this.cdRef.detectChanges();
+  }
+
   dragStarted(ev: CdkDragStart, index: number): void {
     this.dragging = ev.source._dragRef;
     const indices = this.selections.length ? this.selections : [index];
@@ -107,7 +111,7 @@ export class MultiDragDropComponent {
     } else if (event.metaKey || event.ctrlKey) {
       // if holding ctrl / cmd
       const alreadySelected = _.find(this.selections, s => s === index);
-      if (alreadySelected) {
+      if (alreadySelected !== undefined) {
         _.remove(this.selections, s => s === index);
         this.lastSingleSelection = null;
       } else {
@@ -146,12 +150,12 @@ export class MultiDragDropComponent {
     } else {
       // Select only this item or clear selections.
       const alreadySelected = _.find(this.selections, s => s === index);
-      if ((!alreadySelected && !event.shiftKey) ||
-        (alreadySelected && this.selections.length > 1)) {
+      if (( alreadySelected === undefined && !event.shiftKey) ||
+        (alreadySelected !== undefined && this.selections.length > 1)) {
         this.clearSelection();
         this.selections = [index];
         this.lastSingleSelection = index;
-      } else if (alreadySelected) {
+      } else if (alreadySelected !== undefined) {
         this.clearSelection();
       }
     }
@@ -179,6 +183,7 @@ export class MultiDragDropComponent {
       this.currentSelectionSpan = [];
       this.lastSingleSelection = null;
       this.selectionChanged.emit(this.items);
+      console.log(this.selections);
       this.cdRef.detectChanges();
     }
   }

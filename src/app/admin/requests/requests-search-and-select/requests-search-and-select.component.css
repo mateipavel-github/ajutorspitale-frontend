@@ -1,0 +1,56 @@
+:host ::ng-deep .drop-list {
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.row.header {
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  font-weight: bold;
+}
+
+:host ::ng-deep .item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+:host ::ng-deep .item.selected .row {
+  background-color: #929292 !important;
+}
+
+.row>div {
+  overflow: hidden;
+  padding: 5px;
+  border-right: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.column-id {
+  text-align: right;
+  width: 30px;
+}
+
+.column-medical-unit {
+  width: 200px;
+}
+
+.column-medical-unit-type {
+  width: 200px;
+}
+
+.column-county {
+  width: 100px;
+}
+
+.column-needs {
+  flex-grow: 1;
+}
+
+.column-name {
+  width: 150px;
+}
+
+.column-phone-number {
+  width: 100px;
+}
+
+.secondary-row {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 0.9em;
+}

@@ -1,17 +1,17 @@
+import { RequestsSearchAndSelectComponent } from './../../requests/requests-search-and-select/requests-search-and-select.component';
+// tslint:disable-next-line:max-line-length
+import { EditDeliveryQuantitiesComponent } from './../delivery-planning/edit-delivery-quantities/edit-delivery-quantities.component';
 import { EditRequestComponent } from './../../requests/edit-request/edit-request.component';
 import { MultiDragDropComponent } from './../../../_shared/multi-drag-drop/multi-drag-drop.component';
-import { element } from 'protractor';
 import { SessionDataService } from 'src/app/_services/session-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/_services/data.service';
 import { RequestsFilterService } from './../../requests/list-requests/filter-form/requests-filter-service';
 import { Component, OnInit, ViewChild, AfterViewInit, HostListener } from '@angular/core';
-import { SelectionModel } from '@angular/cdk/collections';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
 import { switchMap } from 'rxjs/operators';
 import { empty, Subject, ReplaySubject, Observable, BehaviorSubject } from 'rxjs';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import * as _ from 'lodash';
 import { FormGroup, FormControl } from '@angular/forms';
 import { RequestsFilterFormComponent } from '../../requests/list-requests/filter-form/filter-form.component';
@@ -28,40 +28,25 @@ import { MatDialog } from '@angular/material/dialog';
 export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
 
   planLoaded = false;
-  searchResultsLoaded = false;
-  saving = false;
 
   deliveryNeeds$ = new BehaviorSubject<[]>([]);
   componentsReady$: ReplaySubject<any> = new ReplaySubject();
 
-  currentTab = 'search';
-
-  @ViewChild('filterForm') filterForm: RequestsFilterFormComponent;
   @ViewChild('deliveryNeedsEditor') deliveryNeedsEditor: NeedsEditorComponent;
-
   @ViewChild('planList') planList: MultiDragDropComponent;
-  @ViewChild('searchList') searchList: MultiDragDropComponent;
 
   protected relevantNeedTypes = [];
 
-  protected searchRequestsList = [];
-  protected searchSummary = { needs: [] };
-
   protected planRequestsList = [];
   protected planSummary = { count: 0, needs: [] };
+  protected planSummarySelected = { count: 0, needs: [] };
 
   protected editForm: FormGroup;
+  planDirty = false;
+  planIsSaving = false;
 
-  constructor(public dialog: MatDialog, private requestsFilterService: RequestsFilterService, private dataService: DataService,
+  constructor(public dialog: MatDialog, private dataService: DataService,
     private snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router, public sessionData: SessionDataService) {
-
-    
-    // initialize request search filters
-    this.requestsFilterService.init();
-    this.requestsFilterService.items$.subscribe(list => {
-      this.searchResultsLoaded = true;
-      this.searchRequestsList = list;
-    });
 
     // initialize form
     this.editForm = new FormGroup({
@@ -78,20 +63,17 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
 
       //
       this.deliveryNeeds$.subscribe(needs => {
-        if (this.deliveryNeedsEditor) {
-          this.deliveryNeedsEditor.setNeeds(needs);
-        }
         this.setPlanDetails('needs', needs);
-        this.requestsFilterService.setFilter('needs', needs, true);
         this.relevantNeedTypes = this.getRelevantNeedTypes(needs);
         this.setDeliveryNeedsSorting();
+        this.prepareList(this.planRequestsList);
       });
 
       // create new delivery plan
       this.route.paramMap.pipe(switchMap((params) => {
         if (params.get('plan_id') === 'new') {
           // tslint:disable-next-line:max-line-length
-          this.dataService.createDeliveryPlan(params.get('order_id') ? { fromOffer: params.get('offer_id') } : {}).subscribe(serverResponse => {
+          this.dataService.createDeliveryPlan(params.get('offer_id') ? { fromOffer: params.get('offer_id') } : {}).subscribe(serverResponse => {
             this.router.navigate(['/admin', 'delivery-plan', serverResponse['data']['id']]);
           });
           return empty();
@@ -104,9 +86,15 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         this.sessionData.currentDeliveryPlan = serverResponse['data'];
 
         // set title
-        this.editForm.get('title').setValue(this.sessionData.currentDeliveryPlan.title);
+        this.setPlanTitle(this.sessionData.currentDeliveryPlan.title);
 
         this.deliveryNeeds$.next(this.getDeliveryNeeds());
+
+        this.componentsReady$.subscribe(() => {
+          if (this.deliveryNeedsEditor) {
+            this.deliveryNeedsEditor.setNeeds(this.deliveryNeeds$.value);
+          }
+        });
 
         // set requests
         this.planRequestsList = [];
@@ -120,10 +108,11 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
           r.details = r.pivot.details;
         });
 
-        this.prepareForSorting(sortedList);
+        this.prepareList(sortedList);
 
         this.planRequestsList = sortedList;
-        this.updatePlanRequestsTotals();
+        this.updatePlanSummary();
+        this.setPlanRequests();
 
         // set offers @todo
 
@@ -134,23 +123,8 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  toggleEditInline(r, i?) {
-    Object.assign(r, { editInline: !r?.editInline });
-  }
-
-  setRequestDeliveryQuantity($event, r, needTypeId) {
-    const q = $event.target.value;
-    const needIndex = _.findIndex(r.details.need_deliveries, (n, i) => n['need_type_id'] === needTypeId);
-    if (needIndex !== -1) {
-      r.details.need_deliveries[needIndex]['quantity'] = q;
-    } else {
-      r.details.need_deliveries.push({ need_type_id: needTypeId, quantity: q });
-    }
-    this.toggleEditInline(r);
-    this.savePlanRequests();
-  }
-
-  onEditRequest(r, i) {
+  onEditRequest($event, r, i) {
+    $event.stopPropagation();
     const dialogRef = this.dialog.open(EditRequestComponent, {
       data: { id: r.id, tab: 'needs' },
       height: '90%',
@@ -158,15 +132,32 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.dataService.getRequest(r.id).subscribe(sr => {
+        this.prepareOne(sr['data']);
         Object.assign(r, sr['data']);
       });
+    });
+    this.updatePlanSummary();
+  }
+
+  onEditRequestDelivery($event, r, i) {
+    $event.stopPropagation();
+    const dialogRef = this.dialog.open(EditDeliveryQuantitiesComponent, {
+      data: r,
+      width: '600px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        Object.assign(r.delivery, result);
+        this.updatePlanSummary();
+        this.setPlanRequests();
+      }
     });
   }
 
   getRequestDeliveryQuantity(r, needTypeId) {
     let q = this.getRequestNeedQuantity(r, needTypeId);
-    if (r.details?.need_deliveries) {
-      r.details.need_deliveries.forEach(nd => {
+    if (r.delivery?.needs) {
+      r.delivery.needs.forEach(nd => {
         if (nd.need_type_id === needTypeId) {
           q = nd.quantity;
         }
@@ -185,53 +176,70 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     return q;
   }
 
-  updatePlanRequestsTotals(): void {
+  updatePlanSummary(onlySelected = false): void {
     const t = {
-      'count': this.planRequestsList.length,
-      'needs': new Map
+      'count': 0,
+      'needs': new Map<number, {quantity: 0, delivery_quantity: 0}>()
     };
-    this.planRequestsList.forEach(r => {
-      if (r?.current_needs) {
-        r.current_needs.forEach(n => {
-          const needTypeId = n?.need_type?.id || n?.need_type_id;
-          if (!t.needs.has(needTypeId)) {
-            t.needs.set(needTypeId, 0);
-          }
-          t.needs.set(needTypeId, t.needs.get(needTypeId) + n.quantity);
-        });
+
+    // const list = onlySelected ? _.at(this.planRequestsList, this.planList.selections) : this.planRequestsList;
+    const summary = onlySelected ? this.planSummarySelected : this.planSummary;
+
+    this.planRequestsList.forEach((r, i) => {
+      if (!onlySelected || this.planList.isSelected(i)) {
+        t.count++;
+        if (r?.delivery.needs) {
+          r.delivery.needs.forEach(n => {
+            const needTypeId = n.need_type_id;
+            if (!t.needs.has(needTypeId)) {
+              t.needs.set(needTypeId, { quantity: 0, delivery_quantity: 0 });
+            }
+            t.needs.set(needTypeId, {
+              quantity: t.needs.get(needTypeId).quantity + n.quantity,
+              // tslint:disable-next-line:max-line-length
+              delivery_quantity: t.needs.get(needTypeId).delivery_quantity + (n.delivery_quantity === 'max' ? n.quantity : parseInt(n.delivery_quantity, 10))
+            });
+          });
+        }
       }
     });
-    this.planSummary.count = t.count;
-    this.planSummary.needs = [];
+    summary.count = t.count;
+    summary.needs = [];
     t.needs.forEach((n, k) => {
-      this.planSummary.needs.push({ need_type_id: k, quantity: n });
+      summary.needs.push({ need_type_id: k, quantity: n.quantity, delivery_quantity: n.delivery_quantity });
     });
   }
 
   public setPlanDetails(key, value) {
     this.editForm.get('details').value[key] = value;
+    this.markPlanDirty();
   }
-
-  public savePlanDetails(key, value) {
-    this.setPlanDetails(key, value);
-    this.onSave();
-  }
-
-  public savePlanRequests() {
+  public setPlanRequests() {
     this.editForm.get('requests').setValue(this.planRequestsList.map((r, p) => {
       return { id: r.id, priority_group: r?.priority || 0, position: p, details: r?.details || {} };
     }));
-    this.onSave();
+    this.markPlanDirty();
+  }
+  public setPlanTitle(title) {
+    this.editForm.get('title').setValue(title);
+    this.markPlanDirty();
   }
 
   public onSave() {
-    
+
+    this.planIsSaving = true;
     this.dataService.updateDeliveryPlan(this.sessionData.currentDeliveryPlanId, this.editForm.value)
       .subscribe(serverResponse => {
+        this.planIsSaving = false;
         if (serverResponse['success']) {
-
+          this.markPlanClean();
           this.sessionData.currentDeliveryPlan = serverResponse['data']['item'];
           this.deliveryNeeds$.next(this.getDeliveryNeeds());
+          this.componentsReady$.subscribe(() => {
+            if (this.deliveryNeedsEditor) {
+              this.deliveryNeedsEditor.setNeeds(this.deliveryNeeds$.value);
+            }
+          });
 
           this.snackBar.openFromComponent(SnackbarComponent, {
             data: { message: 'Planul a fost salvat' },
@@ -246,6 +254,8 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
           });
         }
       }, error => {
+
+        this.planIsSaving = false;
         this.snackBar.openFromComponent(SnackbarComponent, {
           data: { message: error['message'] },
           panelClass: 'snackbar-error',
@@ -258,39 +268,52 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
 
   // triggered by NeedsEditorComponent
   deliveryNeedsUpdated(needs) {
-    this.requestsFilterService.setFilter('needs', needs, true);
-    this.savePlanDetails('needs', needs);
+    this.deliveryNeeds$.next(needs);
   }
 
-  onAddToPlan() {
+  onRemoveFromPlan() {
+    _.pullAt(this.planRequestsList, this.planList.selections);
+    this.updatePlanSummary();
+    this.setPlanRequests();
+  }
 
+  onAddToPlan(list) {
     const toAdd = [];
-    this.searchRequestsList.forEach((sr, i) => {
-      if (this.searchList.isSelected(i) && !this.planRequestsList.find(pr => pr.id === sr.id)) {
+    list.forEach((sr, i) => {
+      if (this.planRequestsList.find(pr => pr.id === sr.id) === undefined) {
         toAdd.push(sr);
       }
     });
-    this.prepareForSorting(toAdd);
+    this.prepareList(toAdd);
     Array.prototype.push.apply(this.planRequestsList, toAdd);
-    this.updatePlanRequestsTotals();
-    this.savePlanRequests();
+    this.planList.render();
+    this.updatePlanSummary();
+    this.setPlanRequests();
   }
 
   itemsRemoved(ev, list) {
-    this.savePlanRequests();
+    this.setPlanRequests();
   }
 
   itemsAdded(ev, list) {
-    this.savePlanRequests();
+    this.setPlanRequests();
   }
 
   itemsUpdated(ev, list) {
-    console.log('itemsupdated');
-    this.savePlanRequests();
+    this.setPlanRequests();
   }
 
   selectionChanged(ev, list) {
+    this.updatePlanSummary(true);
+  }
 
+  selectAll($event) {
+    $event.stopPropagation();
+    this.planList.selectAll();
+  }
+  selectNone($event) {
+    $event.stopPropagation();
+    this.planList.clearSelection();
   }
 
   // tslint:disable-next-line:member-ordering
@@ -326,31 +349,68 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /* 
+  /*
    * TODO
-   * create need_deliveries based on DeliveryNeeds$.value for each request
+   * create delivery.needs based on DeliveryNeeds$.value for each request
    * edit delivery data/needs in popup
    * fix sorting by need quantity
    */
 
-  prepareForSorting(list) {
-    list.forEach(r => {
-      r.priority_group = r?.priority_group || 100;
-      r.county_size = r?.county_size || this.dataService.getCountyById(r.county_id)?.sort_order;
-      r.medical_unit_type_size = r?.medical_unit_type_size || this.dataService.getMedicalUnitTypeById(r.medical_unit_type_id)?.sort_order;
-      r.current_needs.forEach(n => {
-        r['sort_need_' + n.need_type_id] = n.quantity;
-      });
-      if (!('details' in r) || !('need_deliveries' in r?.details)) {
-        r.details = {
-          'need_deliveries': []
-        };
+  prepareOne(r) {
+    r.priority_group = r?.priority_group || 100;
+    r.county_size = r?.county_size || this.dataService.getCountyById(r.county_id)?.sort_order;
+    r.medical_unit_type_size = r?.medical_unit_type_size || this.dataService.getMedicalUnitTypeById(r.medical_unit_type_id)?.sort_order;
+    r.current_needs.forEach(n => {
+      r['sort_need_' + n.need_type_id] = n.quantity;
+    });
+
+    if (!('delivery' in r) || !r?.delivery) {
+      r.delivery = {};
+    }
+
+    if (!('contact_name' in r.delivery)) {
+      r.delivery.contact_name = r.name;
+      r.delivery.contact_phone_number = r.phone_number;
+      r.delivery.county_id = r.county_id;
+      r.delivery.main_sponsor = {id: 1, name: '--Main sponsor--'}; // get default sponsor
+      r.delivery.delivery_sponsor = { id: 2, name: '--Main delivery--'}; // get delivery sponsor
+      r.delivery.address = r?.medical_unit?.address || null;
+      r.delivery.medical_unit = r?.medical_unit || null;
+    }
+
+    if (!('needs' in r?.delivery)) {
+      r.delivery.needs = [];
+    }
+
+    this.deliveryNeeds$.value.forEach(dn => {
+      const deliveryNeedIndex = _.findIndex(r.delivery.needs, n => n['need_type_id'] === dn['need_type_id']);
+      const currentNeed = _.find(r.current_needs, n => n['need_type_id'] === dn['need_type_id']);
+      if (deliveryNeedIndex === -1) {
+        // tslint:disable-next-line:max-line-length
+        r.delivery.needs.push({ need_type_id: dn['need_type_id'], quantity: currentNeed?.quantity || 0, delivery_quantity: 'max' });
+      } else {
+        if (currentNeed !== undefined) {
+          r.delivery.needs[deliveryNeedIndex].quantity = currentNeed.quantity;
+        }
       }
+    });
+
+  }
+
+  prepareList(list) {
+    list.forEach(r => {
+      this.prepareOne(r);
     });
   }
 
+  markPlanDirty() {
+    this.planDirty = true;
+  }
+  markPlanClean() {
+    this.planDirty = false;
+  }
+
   sortPlan($event) {
-    console.log($event);
     const iteratees = [];
     const orders = [];
     this.sortBy.forEach(so => {
@@ -362,6 +422,7 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
       so.position = 0;
     });
     this.sortControl.setValue([]);
+    this.markPlanDirty();
   }
 
   onSortChange($event) {
@@ -393,6 +454,7 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         r.priority_group = group;
       }
     });
+    this.setPlanRequests();
   }
 
   getRelevantNeedTypes(needs) {
@@ -413,22 +475,26 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     return this.dataService.getMetadataLabel(type, id);
   }
 
-  ngOnInit(): void {
+  onOpenSearchDialog($event) {
+
+    const dialogRef = this.dialog.open(RequestsSearchAndSelectComponent, {
+      data: {
+        'per_page': 10000,
+        'filters': {'needs': this.deliveryNeeds$.value, 'status': ['approved', 'processed']}
+      },
+      height: '90%',
+      width: '99%',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Selected requests: ', result);
+      if (result) {
+        this.onAddToPlan(result);
+      }
+    });
   }
 
-  onTabChange($event) {
-    switch ($event.index) {
-      case 0:
-        this.currentTab = 'search';
-        this.componentsReady$.subscribe(() => {
-          // this.filterForm.setFilter('needs', this.deliveryNeeds);
-        });
-        break;
-      case 1:
-        this.currentTab = 'plan';
-
-        break;
-    }
+  ngOnInit(): void {
   }
 
 }

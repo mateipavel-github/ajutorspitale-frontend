@@ -1,3 +1,4 @@
+import { EditDeliveriesComponent } from './offers/delivery-planning/edit-deliveries/edit-deliveries.component';
 import { EditOfferComponent } from './offers/edit-offer/edit-offer.component';
 import { ListOffersComponent } from './offers/list-offers/list-offers.component';
 import { WidgetModule } from './../_shared/widget/widget.module';
@@ -23,6 +24,8 @@ import { EditOfferDataComponent } from './offers/edit-offer/edit-offer-data/edit
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ReportsComponent } from './reports/reports.component';
 import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-planning.component';
+import { EditDeliveryQuantitiesComponent } from './offers/delivery-planning/edit-delivery-quantities/edit-delivery-quantities.component';
+import { RequestsSearchAndSelectComponent } from './requests/requests-search-and-select/requests-search-and-select.component';
 
 
 
@@ -46,7 +49,10 @@ import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-p
     OffersFilterFormComponent,
     ListUsersComponent,
     ReportsComponent,
-    DeliveryPlanningComponent
+    DeliveryPlanningComponent,
+    EditDeliveryQuantitiesComponent,
+    RequestsSearchAndSelectComponent,
+    EditDeliveriesComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +63,9 @@ import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-p
     AdminRoutingModule
   ],
   entryComponents: [
-    EditRequestComponent
+    EditRequestComponent,
+    EditDeliveryQuantitiesComponent,
+    RequestsSearchAndSelectComponent
   ]
 })
 export class AdminModule { }

@@ -18,7 +18,6 @@ export class RequestSentDialogComponent implements OnInit {
     public dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-        console.log(data);
         this.title = data?.title;
         this.p1 = data?.p1;
         this.p2 = data?.p2;
@@ -26,7 +25,6 @@ export class RequestSentDialogComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    console.log(this.data);
   }
 
   public onClose() {

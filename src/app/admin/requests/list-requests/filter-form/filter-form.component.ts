@@ -48,7 +48,8 @@ export class RequestsFilterFormComponent implements OnInit, AfterViewInit {
 
     this.filterService.filtersObservable$.subscribe(filters => {
       Object.keys(this.filterForm.controls).forEach(key => {
-        this.filterForm.get(key).setValue(filters[key], { onlySelf: false, emitEvent: false });
+        console.log('RequestsFilterForm: ', 'set filter', key, filters[key]);
+        this.setFilter(key, filters[key]);
       });
     });
 

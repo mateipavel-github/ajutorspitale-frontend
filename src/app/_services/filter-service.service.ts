@@ -1,4 +1,4 @@
-import { Observable, Subject, BehaviorSubject, empty } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, empty, ReplaySubject } from 'rxjs';
 import { AuthService } from './auth.service';
 import { DataService } from 'src/app/_services/data.service';
 import { Injectable } from '@angular/core';
@@ -18,8 +18,12 @@ export class FilterService {
   filtersObservable$;
 
   constructor(protected dataService: DataService, protected authService: AuthService) {
-    this.filtersObservable$ = new BehaviorSubject(this.defaultFilters);
+    this.filtersObservable$ = new ReplaySubject();
     this.items$ = new Subject();
+  }
+
+  public setItemsPerPage(pp: number) {
+    this.paging.per_page = pp;
   }
 
   public setFilter(filter, value, sendUpdates = false) {

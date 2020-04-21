@@ -34,7 +34,6 @@ export class ListRequestsComponent implements OnInit {
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);
-
       this.paging = { current: 1, last: 1, total: 0, per_page: 100 };
       return this.loadRequests(filters);
     })).subscribe(this.onRequestsLoaded.bind(this), this.onRequestsError.bind(this));

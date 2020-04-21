@@ -1,0 +1,71 @@
+<div style="height: 100%;" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="0px">
+
+  <div fxFlex style="overflow: scroll">
+    <div fxLayout="row" fxLayoutAlign="start stretch">
+      <div class="vertical-section" fxFlex="400px" style="padding: 20px; position: relative;">
+        <div class="horizontal-section" style="position: absolute; top: 0; ">
+          <h2>Filtre</h2>
+          <app-requests-filter-form #filterForm layout="vertical"
+            [show]="['needs', 'status', 'county', 'medical_unit_type_id', 'keyword']">
+          </app-requests-filter-form>
+        </div>
+      </div>
+      <div fxFlex class="vertical-section" style="padding: 20px;">
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+          <div fxFlex>
+            <h1 class="with-subtitle">Rezultate căutare ({{ searchRequestsList.length }})</h1>
+            <h2 class="subtitle"></h2>
+          </div>
+          <div>
+            <div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row header" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+          <div class="column-id">ID</div>
+          <div class="column-needs">Nevoi</div>
+          <div class="column-medical-unit">Unitate medicală</div>
+          <div class="column-county">Județ</div>
+          <div class="column-name">Solicitant</div>
+        </div>
+
+        <app-loading-status *ngIf="!searchResultsLoaded" [loaded]="searchResultsLoaded"></app-loading-status>
+
+        <ng-container *ngIf="searchResultsLoaded">
+          <app-multi-drag-drop [disableDragDrop]="true" style="width: 100%;" #searchList [items]="searchRequestsList"
+            (itemsRemoved)="itemsRemoved($event, 1)" (itemsAdded)="itemsAdded($event, 1)"
+            (itemsUpdated)="itemsUpdated($event, 1)" (selectionChanged)="selectionChanged($event, 1)">
+            <ng-template let-item>
+              <div class="row priority-{{ item.priority_group || 0 }}" fxLayout="row" fxLayoutAlign="start stretch"
+                fxLayoutGap="10px">
+                <div class="column-id">{{ item.id }}</div>
+                <div class="column-needs">
+                  <app-needs-shortlist [needs]="item.current_needs" [showOnlyTypes]="relevantNeedTypes">
+                  </app-needs-shortlist>
+                </div>
+                <div class="column-medical-unit">
+                  <div class="primary-row">{{ item.medical_unit?.name || item.medical_unit_name }}</div>
+                  <div class="secondary-row">{{ getLabel('medical_unit_types', item.medical_unit_type_id) }}
+                  </div>
+                </div>
+                <div class="column-county">{{ getLabel('counties', item.county_id) }}</div>
+                <div class="column-name">
+                  <div class="primary-row">{{ item.name }}</div>
+                  <div class="secondary-row">{{ item.phone_number }}</div>
+                </div>
+              </div>
+            </ng-template>
+          </app-multi-drag-drop>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div fxFlex="50px">
+    <button mat-flat-button color="primary" (click)="onDismiss(true)" cdkFocusInitial>{{ save_label }}</button>
+    <button mat-flat-button (click)="onDismiss(false)">{{ cancel_label }}</button>
+  </div>
+
+</div>

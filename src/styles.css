@@ -96,3 +96,70 @@ h1.with-subtitle {
 .error {
   color: #f44336;
 }
+
+.horizontal-section {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.horizontal-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+
+.needs-item {
+  width: 100%;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  line-height: 18px;
+  margin-bottom: 5px;
+}
+
+.needs-item:hover {
+  color: #673ab7;
+}
+
+.needs-item>div.fixed {
+  text-align: right;
+  width: 100px;
+  flex-grow: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  height: 18px;
+}
+.needs-item>.label>div {
+  height: 18px;
+  padding: 0px 5px 0px 0px;
+}
+.needs-item>div.fixed>div.number {
+  padding: 0px 5px;
+  height: 18px;
+}
+.needs-item>div.fixed:last-child>div.number {
+  padding-right: 0px;
+}
+
+.needs-item>div.spacer {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
+  flex-grow: 1;
+  height: 14px;
+}
+.needs-item>div.fixed>div.spacer {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
+  flex-grow: 1;
+  height: 14px;
+}
+.needs-item>div.fixed>div.number>mat-icon {
+  height: 18px;
+  line-height: 18px;
+  width: 18px;
+  font-size: 18px;
+}
