@@ -25,15 +25,19 @@ export class EditDeliveryQuantitiesComponent implements OnInit {
     this.editForm = new FormGroup({
       'id': new FormControl(data.delivery?.id || null),
       'medical_unit': new FormControl(data.delivery?.medical_unit),
-      'name': new FormControl(data.delivery?.contact_name, [Validators.required]),
+      'destination_contact_name': new FormControl(data.delivery?.destination_contact_name, [Validators.required]),
       // tslint:disable-next-line:max-line-length
-      'phone_number': new FormControl(data.delivery?.contact_phone_number, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
-      'address': new FormControl(data.delivery?.destination_address, [Validators.required]),
+      'destination_phone_number': new FormControl(data.delivery?.destination_phone_number, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
+      'destination_address': new FormControl(data.delivery?.destination_address, [Validators.required]),
       'description': new FormControl(data.delivery?.description),
-      'county_id': new FormControl(data.delivery?.county_id, [Validators.required]),
-      'needs': new FormArray([]),
-      'main_sponsor': new FormControl(data.delivery?.main_sponsor),
-      'delivery_sponsor': new FormControl(data.delivery?.delivery_sponsor)
+      'destination_county_id': new FormControl(data.delivery?.destination_county_id, [Validators.required]),
+      'destination_city_name': new FormControl(data.delivery?.destination_city_name, [Validators.required]),
+      'packages': new FormControl(data.delivery?.packages),
+      'size': new FormControl(data.delivery?.size),
+      'weight': new FormControl(data.delivery?.weight),
+      'needs': new FormArray([])
+      // 'main_sponsor': new FormControl(data.delivery?.main_sponsor),
+      // 'delivery_sponsor': new FormControl(data.delivery?.delivery_sponsor)
     }, deliveryValidators.NewDeliveryValidator);
 
     this.data.delivery.needs.forEach( n => {
@@ -46,6 +50,10 @@ export class EditDeliveryQuantitiesComponent implements OnInit {
       this.getAsFormArray('needs').push(f);
     });
 
+  }
+
+  onMedicalUnitSelect(value) {
+    this.editForm.get('destination_address').setValue(value.address);
   }
 
   getLabel(id) {

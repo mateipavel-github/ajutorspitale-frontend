@@ -9,11 +9,11 @@
       <div class="number">{{ n.quantity || 0 | number : '1.0-0'}}</div>
     </div>
     <ng-container *ngIf="showDeliveryQuantities">
-      <div *ngIf="n.delivery_quantity==='max'" class="fixed">
+      <div *ngIf="n?.delivery_quantity==='max'" class="fixed">
         <div class="spacer"></div>
         <div class="number">{{ n.quantity || 0 | number : '1.0-0'}}</div>
       </div>
-      <div *ngIf="n.delivery_quantity!=='max'" class="fixed">
+      <div *ngIf="n?.delivery_quantity!=='max'" class="fixed">
         <div class="spacer"></div>
         <div class="number">{{ n.delivery_quantity | number : '1.0-0'}}</div>
       </div>

@@ -56,11 +56,11 @@ export class MedicalUnitInputSearchComponent implements OnInit {
   }
 
   onSelectionChange($event) {
-    this.emitChange($event.newOption);
+    this.emitChange($event.option.value);
   }
 
-  emitChange(newOption) {
-    this.selected.emit(newOption);
+  emitChange(value) {
+    this.selected.emit(value);
   }
 
   clearValue() {

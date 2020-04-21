@@ -1,0 +1,62 @@
+<div mat-dialog-content>
+  <form [formGroup]="editForm">
+    <div class="horizontal-section">
+      <h2>Sponsori</h2>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <app-sponsor-autocomplete (selected)="setMainSponsor($event)" label="Sponsor produse"
+          [inputControl]="editForm.get('main_sponsor')">
+        </app-sponsor-autocomplete>
+        <app-sponsor-autocomplete (selected)="setDeliverySponsor($event)" label="Sponsor livrare"
+          [inputControl]="editForm.get('delivery_sponsor')">
+        </app-sponsor-autocomplete>
+      </div>
+    </div>
+    <div class="horizontal-section" [formGroup]="editForm.get('sender')">
+      <h2>Expeditor</h2>
+
+      <div>
+        <mat-form-field fxFlex="100%" appearance="outline">
+          <mat-label>Denumire companie</mat-label>
+          <input required matInput formControlName="sender_name" type="text" />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field fxFlex="100%" appearance="outline">
+          <mat-label>Adresă</mat-label>
+          <input required matInput formControlName="sender_address" type="text" />
+        </mat-form-field>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <mat-form-field style="width: 50%;" appearance="outline">
+          <mat-label>Județ</mat-label>
+          <mat-select required placeholder="Alege" formControlName="sender_county_id">
+            <mat-option *ngFor="let t of counties" [value]="t.id">{{ t.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field style="width: 50%;" appearance="outline">
+          <mat-label>Oraș</mat-label>
+          <input required matInput formControlName="sender_city_name" type="text" />
+        </mat-form-field>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <mat-form-field fxFlex="50%" appearance="outline">
+          <mat-label>Telefon persoană contact</mat-label>
+          <input required matInput formControlName="sender_phone_number" type="text" />
+          <mat-error *ngIf="editForm.get('sender.sender_phone_number').errors">{{ AppConstants.phone_number_error }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="50%" appearance="outline">
+          <mat-label>Nume persoană contact</mat-label>
+          <input required matInput formControlName="sender_contact_name" type="text" />
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button (click)="onDismiss()">Anulează</button>
+  <button mat-flat-button color="primary" (click)="onSave()" cdkFocusInitial>Salvează</button>
+</div>

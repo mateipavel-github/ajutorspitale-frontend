@@ -1,4 +1,3 @@
-import { EditDeliveriesComponent } from './offers/delivery-planning/edit-deliveries/edit-deliveries.component';
 import { EditOfferComponent } from './offers/edit-offer/edit-offer.component';
 import { ListOffersComponent } from './offers/list-offers/list-offers.component';
 import { WidgetModule } from './../_shared/widget/widget.module';
@@ -26,6 +25,7 @@ import { ReportsComponent } from './reports/reports.component';
 import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-planning.component';
 import { EditDeliveryQuantitiesComponent } from './offers/delivery-planning/edit-delivery-quantities/edit-delivery-quantities.component';
 import { RequestsSearchAndSelectComponent } from './requests/requests-search-and-select/requests-search-and-select.component';
+import { EditDetailsComponent } from './offers/delivery-planning/edit-details/edit-details.component';
 
 
 
@@ -52,7 +52,7 @@ import { RequestsSearchAndSelectComponent } from './requests/requests-search-and
     DeliveryPlanningComponent,
     EditDeliveryQuantitiesComponent,
     RequestsSearchAndSelectComponent,
-    EditDeliveriesComponent
+    EditDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +65,8 @@ import { RequestsSearchAndSelectComponent } from './requests/requests-search-and
   entryComponents: [
     EditRequestComponent,
     EditDeliveryQuantitiesComponent,
-    RequestsSearchAndSelectComponent
+    RequestsSearchAndSelectComponent,
+    EditDetailsComponent
   ]
 })
 export class AdminModule { }

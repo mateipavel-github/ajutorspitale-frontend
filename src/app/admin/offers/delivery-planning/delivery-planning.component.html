@@ -7,16 +7,24 @@
   <div fxLayout="row" fxLayoutAlign="start stretch">
     <div class="vertical-section" fxFlex="400px" style="padding: 20px;">
       <div class="horizontal-section">
-        <div class="horizontal-section">
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0px">
           <h2>Detalii plan</h2>
-          <app-sponsor-autocomplete (selected)="setMainSponsor($event)" label="Sponsor produse"
-            [inputControl]="editForm.get('main_sponsor')">
-          </app-sponsor-autocomplete>
-          <app-sponsor-autocomplete (selected)="setMainSponsor($event)" label="Sponsor livrare"
-            [inputControl]="editForm.get('delivery_sponsor')">
-          </app-sponsor-autocomplete>
+          <div>
+            <button mat-button (click)="onOpenPlanDetailsDialog()">Editează</button>
+          </div>
         </div>
+        <p><strong>Sponsor produse: </strong> {{ editForm.get('main_sponsor')?.value?.name }} </p>
+        <p><strong>Sponsor livrare: </strong> {{ editForm.get('delivery_sponsor')?.value?.name }} </p>
+        <p>
+          <strong>Expeditor: </strong>{{ editForm.get('sender_name')?.value }}<br />
+          <strong>Persoană contact: </strong>{{ editForm.get('sender_contact_name')?.value }}<br />
+          <strong>Telefon: </strong>{{ editForm.get('sender_phone_number')?.value }}<br />
+          <strong>Adresă: </strong>{{ editForm.get('sender_address')?.value }}<br />
+          <strong>Oraș: </strong>{{ editForm.get('sender_city_name')?.value }}<br />
+          <strong>Județ: </strong>{{ getLabel('counties', editForm.get('sender_county_id')?.value) }}<br />
+        </p>
       </div>
+
       <div class="horizontal-section">
         <!-- <app-needs-shortlist [needs]="deliveryNeeds$.value"></app-needs-shortlist> -->
         <div class="horizontal-section">
@@ -79,7 +87,7 @@
         </div>
 
         <div>
-          Selectează: 
+          Selectează:
           <button mat-button (click)="selectAll($event)">toate</button> |
           <button mat-button (click)="selectNone($event)">nici una</button>
         </div>
@@ -117,7 +125,9 @@
             </div>
             <div class="fixed">
               <div class="spacer"></div>
-              <div class="number"><mat-icon>local_shipping</mat-icon></div>
+              <div class="number">
+                <mat-icon>local_shipping</mat-icon>
+              </div>
             </div>
           </div>
         </div>
@@ -148,8 +158,7 @@
               <div class="secondary-row">{{ item.phone_number }}</div>
             </div>
             <div class="column column-actions">
-              <button matTooltip="Editează cererea" mat-icon-button
-                (click)="onEditRequest($event, item, index)">
+              <button matTooltip="Editează cererea" mat-icon-button (click)="onEditRequest($event, item, index)">
                 <mat-icon>edit</mat-icon>
               </button>
               <button matTooltip="Editează cantitățile de livrarea" mat-icon-button

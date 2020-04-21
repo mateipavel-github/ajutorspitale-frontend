@@ -15,44 +15,72 @@
           </div>
           <div class="fixed">
             <div class="spacer"></div>
-            <div class="number"><input style="width: 70px;" type="text" formControlName="delivery_quantity" /></div>
+            <div class="number">
+              <input style="width: 70px;" type="text" formControlName="delivery_quantity" />
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="horizontal-section">
+      <h2>Colete</h2>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <mat-form-field fxFlex="33%" appearance="outline">
+          <mat-label>Colete</mat-label>
+          <input required matInput formControlName="packages" type="text" />
+        </mat-form-field>
+        <mat-form-field fxFlex="33%" appearance="outline">
+          <mat-label>Dimensiuni</mat-label>
+          <input required matInput formControlName="size" type="text" />
+        </mat-form-field>
+        <mat-form-field fxFlex="33%" appearance="outline">
+          <mat-label>Greutate (kg)</mat-label>
+          <input required matInput formControlName="weight" type="text" />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="horizontal-section">
       <h2>Destinatar</h2>
 
-      <h3>Spital de stat?</h3>
-      <app-medical-unit-input-search [inputControl]="editForm.get('medical_unit')"></app-medical-unit-input-search>
+      <h3 style="padding: 0;">Spital de stat?</h3>
+      <app-medical-unit-input-search [countyId]="editForm.get('destination_county_id').value"
+        (selected)="onMedicalUnitSelect($event)" [inputControl]="editForm.get('medical_unit')">
+      </app-medical-unit-input-search>
 
-      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
-        <mat-form-field fxFlex="80%" appearance="outline">
+      <div>
+        <mat-form-field fxFlex="100%" appearance="outline">
           <mat-label>Adresă</mat-label>
-          <input required matInput formControlName="address" type="text" />
+          <input required matInput formControlName="destination_address" type="text" />
         </mat-form-field>
-        <mat-form-field style="width: 20%;" appearance="outline">
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <mat-form-field style="width: 50%;" appearance="outline">
           <mat-label>Județ</mat-label>
-          <mat-select required placeholder="Alege" formControlName="county_id">
+          <mat-select required placeholder="Alege" formControlName="destination_county_id">
             <mat-option *ngFor="let t of counties" [value]="t.id">{{ t.label }}
             </mat-option>
           </mat-select>
+        </mat-form-field>
+        <mat-form-field style="width: 50%;" appearance="outline">
+          <mat-label>Oraș</mat-label>
+          <input required matInput formControlName="destination_city_name" type="text" />
         </mat-form-field>
       </div>
 
       <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
         <mat-form-field fxFlex="50%" appearance="outline">
           <mat-label>Telefon persoană contact</mat-label>
-          <input required matInput formControlName="phone_number" type="text" />
-          <mat-error *ngIf="editForm.get('phone_number').errors">{{ AppConstants.phone_number_error }}</mat-error>
+          <input required matInput formControlName="destination_phone_number" type="text" />
+          <mat-error *ngIf="editForm.get('destination_phone_number').errors">{{ AppConstants.phone_number_error }}
+          </mat-error>
         </mat-form-field>
         <mat-form-field fxFlex="50%" appearance="outline">
           <mat-label>Nume persoană contact</mat-label>
-          <input required matInput formControlName="name" type="text" />
+          <input required matInput formControlName="destination_contact_name" type="text" />
         </mat-form-field>
       </div>
-    </div>
-    <div class="horizontal-section">
+      <!-- <div class="horizontal-section">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
           <app-sponsor-autocomplete (selected)="setMainSponsor($event)" label="Sponsor produse"
             [inputControl]="editForm.get('main_sponsor')">
@@ -61,6 +89,7 @@
             [inputControl]="editForm.get('delivery_sponsor')">
           </app-sponsor-autocomplete>
         </div>
+    </div> -->
     </div>
   </form>
 </div>

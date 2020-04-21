@@ -1,3 +1,4 @@
+import { EditDetailsComponent } from './edit-details/edit-details.component';
 import { RequestsSearchAndSelectComponent } from './../../requests/requests-search-and-select/requests-search-and-select.component';
 // tslint:disable-next-line:max-line-length
 import { EditDeliveryQuantitiesComponent } from './../delivery-planning/edit-delivery-quantities/edit-delivery-quantities.component';
@@ -51,6 +52,16 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     // initialize form
     this.editForm = new FormGroup({
       title: new FormControl(''),
+      main_sponsor: new FormControl(null),
+      delivery_sponsor: new FormControl(null),
+      sender: new FormGroup({
+        sender_name: new FormControl(),
+        sender_contact_name: new FormControl(),
+        sender_phone_number: new FormControl(),
+        sender_county_id: new FormControl(),
+        sender_city_name: new FormControl(),
+        sender_address: new FormControl()
+      }),
       requests: new FormControl([]),
       offers: new FormControl([]),
       details: new FormControl({}) // includes needs
@@ -67,6 +78,7 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         this.relevantNeedTypes = this.getRelevantNeedTypes(needs);
         this.setDeliveryNeedsSorting();
         this.prepareList(this.planRequestsList);
+        this.updatePlanSummary();
       });
 
       // create new delivery plan
@@ -87,6 +99,10 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
 
         // set title
         this.setPlanTitle(this.sessionData.currentDeliveryPlan.title);
+
+        // set sponsors
+        this.setMainSponsor(this.sessionData.currentDeliveryPlan.main_sponsor);
+        this.setDeliverySponsor(this.sessionData.currentDeliveryPlan.delivery_sponsor);
 
         this.deliveryNeeds$.next(this.getDeliveryNeeds());
 
@@ -132,11 +148,11 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.dataService.getRequest(r.id).subscribe(sr => {
-        this.prepareOne(sr['data']);
         Object.assign(r, sr['data']);
+        this.prepareOne(r);
+        this.updatePlanSummary();
       });
     });
-    this.updatePlanSummary();
   }
 
   onEditRequestDelivery($event, r, i) {
@@ -216,12 +232,32 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
   }
   public setPlanRequests() {
     this.editForm.get('requests').setValue(this.planRequestsList.map((r, p) => {
-      return { id: r.id, priority_group: r?.priority || 0, position: p, details: r?.details || {} };
+      const serverData = {
+        id: r.id,
+        priority_group: r?.priority || 0,
+        position: p,
+        details: r?.details || {},
+        delivery: Object.assign({}, r?.delivery) || {}
+      };
+      if (r.delivery?.needs) {
+        serverData.delivery.needs = r.delivery.needs.slice().map(n => {
+          return { need_type_id: n.need_type_id, quantity: n.delivery_quantity === 'max' ? n.quantity : n.delivery_quantity };
+        });
+      }
+      return serverData;
     }));
     this.markPlanDirty();
   }
   public setPlanTitle(title) {
     this.editForm.get('title').setValue(title);
+    this.markPlanDirty();
+  }
+  public setMainSponsor(sponsor) {
+    this.editForm.get('main_sponsor').setValue(sponsor);
+    this.markPlanDirty();
+  }
+  public setDeliverySponsor(sponsor) {
+    this.editForm.get('delivery_sponsor').setValue(sponsor);
     this.markPlanDirty();
   }
 
@@ -268,7 +304,10 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
 
   // triggered by NeedsEditorComponent
   deliveryNeedsUpdated(needs) {
-    this.deliveryNeeds$.next(needs);
+    const newNeeds = needs.map(n => {
+      return { need_type_id: n.need_type.id, quantity: n.quantity };
+    });
+    this.deliveryNeeds$.next(newNeeds);
   }
 
   onRemoveFromPlan() {
@@ -372,8 +411,8 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
       r.delivery.contact_name = r.name;
       r.delivery.contact_phone_number = r.phone_number;
       r.delivery.county_id = r.county_id;
-      r.delivery.main_sponsor = {id: 1, name: '--Main sponsor--'}; // get default sponsor
-      r.delivery.delivery_sponsor = { id: 2, name: '--Main delivery--'}; // get delivery sponsor
+      r.delivery.main_sponsor = this.editForm.get('main_sponsor').value; // get default sponsor
+      r.delivery.delivery_sponsor = this.editForm.get('delivery_sponsor').value; // get delivery sponsor
       r.delivery.address = r?.medical_unit?.address || null;
       r.delivery.medical_unit = r?.medical_unit || null;
     }
@@ -389,12 +428,15 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         // tslint:disable-next-line:max-line-length
         r.delivery.needs.push({ need_type_id: dn['need_type_id'], quantity: currentNeed?.quantity || 0, delivery_quantity: 'max' });
       } else {
+        if (!('delivery_quantity' in r.delivery.needs[deliveryNeedIndex])) {
+          r.delivery.needs[deliveryNeedIndex].delivery_quantity = r.delivery.needs[deliveryNeedIndex].quantity;
+        }
         if (currentNeed !== undefined) {
           r.delivery.needs[deliveryNeedIndex].quantity = currentNeed.quantity;
         }
       }
     });
-
+    return r;
   }
 
   prepareList(list) {
@@ -475,6 +517,20 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     return this.dataService.getMetadataLabel(type, id);
   }
 
+  onOpenPlanDetailsDialog($event) {
+
+    const dialogRef = this.dialog.open(EditDetailsComponent, {
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      (<FormGroup>this.editForm.get('sender')).setValue(result.sender);
+      (<FormGroup>this.editForm.get('main_sponsor')).setValue(result?.main_sponsor);
+      (<FormGroup>this.editForm.get('delivery_sponsor')).setValue(result?.delivery_sponsor);
+    });
+
+  }
+
   onOpenSearchDialog($event) {
 
     const dialogRef = this.dialog.open(RequestsSearchAndSelectComponent, {
@@ -495,6 +551,15 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHandler(event) {
+    if (this.planDirty) {
+      if (!confirm('Ai schimbări nesalvate. Sigur vrei să închizi?')) {
+        event.preventDefault();
+      }
+    }
   }
 
 }

@@ -28,11 +28,11 @@ export class SponsorAutocompleteComponent implements OnInit {
   ngOnInit(): void {
     this.inputControl.valueChanges
       .pipe(
-        debounceTime(300),
         tap(() => {
           this.filteredOptions = [];
           this.isLoading = true;
         }),
+        debounceTime(300),
         switchMap(value => {
           if (typeof (value) === 'string') {
             return this.dataService.getSponsors({ keyword: value })
