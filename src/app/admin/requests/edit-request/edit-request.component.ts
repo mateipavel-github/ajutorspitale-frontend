@@ -2,7 +2,7 @@ import { AuthService } from './../../../_services/auth.service';
 import { SessionDataService } from './../../../_services/session-data.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from './../../../_services/data.service';
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, Input, Inject, Injector } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
@@ -23,13 +23,18 @@ export class EditRequestComponent implements OnInit {
   assignChanging = false;
   showScriptNeeds = false;
 
+  dialogRef;
+  dialogData;
+
   constructor(public dataService: DataService, public sessionData: SessionDataService,
     private route: ActivatedRoute, private snackBar: MatSnackBar, private authService: AuthService,
-    public dialogRef: MatDialogRef<EditRequestComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    private injector: Injector) {
+
+    this.dialogRef = this.injector.get(MatDialogRef, null);
+    this.dialogData = this.injector.get(MAT_DIALOG_DATA, null);
 
     this.route.paramMap.pipe(switchMap((params) => {
-      const requestId = params.get('id') || data?.id;
+      const requestId = params.get('id') || this.dialogData?.id;
       if (requestId) {
         this.sessionData.currentRequestId = requestId;
         return dataService.getRequest(requestId);
@@ -42,7 +47,7 @@ export class EditRequestComponent implements OnInit {
       this.showNeedsText = !(this.sessionData.currentRequest.needs && this.sessionData.currentRequest.needs.length > 0);
     });
 
-    if (this.data && this.data?.id) {
+    if (this.dialogData && this.dialogData?.id) {
       // component opened as popup
 
     }

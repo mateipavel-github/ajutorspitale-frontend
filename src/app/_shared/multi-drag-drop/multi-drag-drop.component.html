@@ -1,5 +1,5 @@
-<div class="drop-list" [cdkDropListDisabled]="disableDragDrop" cdkDropList cdkDropListLockAxis="y" [class.item-dragging]="dragging"
-  (cdkDropListDropped)="droppedIntoList($event)">
+<div class="drop-list" [cdkDropListDisabled]="disableDragDrop" cdkDropList cdkDropListLockAxis="y"
+  [class.item-dragging]="dragging" (cdkDropListDropped)="droppedIntoList($event)">
   <div *ngFor="let item of items; let index = index" class="item" [class.selected]="isSelected(index)" cdkDrag
     (cdkDragStarted)="dragStarted($event, index)" (cdkDragEnded)="dragEnded()" (cdkDragDropped)="dropped($event)"
     (click)="select($event, index)">
@@ -8,8 +8,8 @@
       </ng-container>
       <div *cdkDragPreview>
         <div class="select-item-drag-preview float-left">
-            <span *ngIf="selections.length">Mută {{ selections.length}} elemente.</span>
-            <span *ngIf="selections.length===0">Mută 1 element</span>.
+          <span *ngIf="selections.length">Mută {{ selections.length}} elemente.</span>
+          <span *ngIf="selections.length===0">Mută 1 element</span>.
         </div>
         <!-- <ng-container *ngTemplateOutlet="templateRef; context: { $implicit: item, item: item, index: index }">
         </ng-container> -->
@@ -17,3 +17,4 @@
     </div>
   </div>
 </div>
+

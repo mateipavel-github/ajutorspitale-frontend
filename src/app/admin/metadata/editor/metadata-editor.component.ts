@@ -4,6 +4,7 @@ import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { DataService } from 'src/app/_services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { SnackbarComponent } from 'src/app/_shared/snackbar/snackbar.component';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-metadata-editor',
@@ -34,16 +35,19 @@ export class MetadataEditorComponent implements OnInit {
     });
 
     this.route.paramMap.subscribe(params => {
-      this.selectedMetadata = params.get('type');
-      this.clearPrevious();
-      this.metadata[this.selectedMetadata].forEach(item => {
-        const f = new FormGroup({
-          'id': new FormControl(item.id),
-          'label': new FormControl(item.label),
-          'slug': new FormControl(item.slug)
+      if (params.get('type')) {
+        this.selectedMetadata = params.get('type');
+        this.clearPrevious();
+        this.metadata[this.selectedMetadata].forEach(item => {
+          const f = new FormGroup({
+            'id': new FormControl(item.id),
+            'label': new FormControl(item.label),
+            'slug': new FormControl(item.slug),
+            'sort_order': new FormControl(item.sort_order)
+          });
+          (<FormArray>this.editForm.get('items')).controls.push(f);
         });
-        (<FormArray>this.editForm.get('items')).controls.push(f);
-      });
+      }
     });
   }
 
@@ -54,7 +58,8 @@ export class MetadataEditorComponent implements OnInit {
   ngOnInit(): void { }
 
   onAddItem() {
-    const f = new FormGroup({ 'id': new FormControl(), 'label': new FormControl(), 'slug': new FormControl() });
+    // tslint:disable-next-line:max-line-length
+    const f = new FormGroup({ 'id': new FormControl(), 'label': new FormControl(), 'slug': new FormControl(), 'sort_order': new FormControl() });
     this.getAsFormArray('items').push(f);
   }
 
@@ -89,6 +94,9 @@ export class MetadataEditorComponent implements OnInit {
           if (serverResponse['success']) {
             // remove from UI
             this.getAsFormArray('items').removeAt(this.findIndexById(this.deletable.id));
+            // remove from dataService as well
+            _.remove(this.dataService.metadata[this.selectedMetadata], (v, i, a) => v['id'] === this.deletable.id);
+            this.deletable = null;
           } else {
             alert(serverResponse['error']);
           }

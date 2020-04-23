@@ -12,10 +12,13 @@ export class AuthService {
 
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser$: Observable<any>;
+  private userRolesAccessScopes = {};
 
   constructor(private dataService: DataService, private router: Router) {
     this.currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser$ = this.currentUserSubject.asObservable();
+
+    this.dataService.userRolesAccessScopes$.subscribe(data => this.userRolesAccessScopes = data);
   }
 
   public get currentUserValue() {
@@ -26,7 +29,15 @@ export class AuthService {
     return this.currentUserSubject.value !== null;
   }
 
-  public hasAccess(roles: String | Array<String>) {
+  public hasAccess(...scopes: string[]) {
+    let hasAccess = this.isLoggedIn();
+    scopes.forEach(scope => {
+      hasAccess = hasAccess && this.userRolesAccessScopes[this.currentUserValue.role.slug].indexOf(scope) !== -1;
+    });
+    return hasAccess;
+  }
+
+  public hasRole(roles: String | Array<String>) {
     if (typeof (roles) === 'string') {
       return roles === this.currentUserValue.role.slug;
     } else {

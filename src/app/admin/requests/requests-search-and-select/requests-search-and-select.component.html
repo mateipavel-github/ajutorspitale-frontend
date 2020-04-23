@@ -18,17 +18,21 @@
           </div>
           <div>
             <div>
-
+                Selectează:
+                <button mat-button (click)="selectAll($event)">toate</button> |
+                <button mat-button (click)="selectNone($event)">nici una</button>
             </div>
           </div>
         </div>
 
-        <div class="row header" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
-          <div class="column-id">ID</div>
-          <div class="column-needs">Nevoi</div>
-          <div class="column-medical-unit">Unitate medicală</div>
-          <div class="column-county">Județ</div>
-          <div class="column-name">Solicitant</div>
+        <div class="header">
+          <div class="row" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+            <div class="column column-id">ID</div>
+            <div class="column column-needs">Nevoi</div>
+            <div class="column column-medical-unit">Unitate medicală</div>
+            <div class="column column-county">Județ</div>
+            <div class="column column-name">Solicitant</div>
+          </div>
         </div>
 
         <app-loading-status *ngIf="!searchResultsLoaded" [loaded]="searchResultsLoaded"></app-loading-status>
@@ -40,18 +44,18 @@
             <ng-template let-item>
               <div class="row priority-{{ item.priority_group || 0 }}" fxLayout="row" fxLayoutAlign="start stretch"
                 fxLayoutGap="10px">
-                <div class="column-id">{{ item.id }}</div>
-                <div class="column-needs">
+                <div class="column column-id">{{ item.id }}</div>
+                <div class="column column-needs">
                   <app-needs-shortlist [needs]="item.current_needs" [showOnlyTypes]="relevantNeedTypes">
                   </app-needs-shortlist>
                 </div>
-                <div class="column-medical-unit">
+                <div class="column column-medical-unit">
                   <div class="primary-row">{{ item.medical_unit?.name || item.medical_unit_name }}</div>
                   <div class="secondary-row">{{ getLabel('medical_unit_types', item.medical_unit_type_id) }}
                   </div>
                 </div>
-                <div class="column-county">{{ getLabel('counties', item.county_id) }}</div>
-                <div class="column-name">
+                <div class="column column-county">{{ getLabel('counties', item.county_id) }}</div>
+                <div class="column column-name">
                   <div class="primary-row">{{ item.name }}</div>
                   <div class="secondary-row">{{ item.phone_number }}</div>
                 </div>

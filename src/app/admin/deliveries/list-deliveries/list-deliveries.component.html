@@ -8,7 +8,7 @@
       </h1>
     </div>
     <div class="list-flags">
-      <a mat-stroked-button [routerLink]="['/admin/delivery/new']">Livrare nouă</a>
+      <!-- <a mat-stroked-button [routerLink]="['/admin/delivery/new']">Livrare nouă</a> -->
     </div>
   </div>
 
@@ -40,9 +40,9 @@
               *ngFor="let k of dataService.metadata['delivery_status_types']" mat-menu-item>{{ k.label }}</button>
           </mat-menu>
         </div>
-        <div>
+        <!-- <div>
           <a mat-stroked-button color="primary" [routerLink]="['/', 'admin', 'delivery', item.id]">edit</a>
-        </div>
+        </div> -->
       </mat-card-title>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="45px">
@@ -50,8 +50,8 @@
             <h3>Destinatar</h3>
             <p>
               <strong>Spital: </strong>{{ item.medical_unit?.name }}<br />
-              <strong>Nume: </strong>{{ item.contact_name }}<br />
-              <strong>Telefon: </strong>{{ item.contact_phone_number }}<br />
+              <strong>Nume: </strong>{{ item.destination_contact_name }}<br />
+              <strong>Telefon: </strong>{{ item.destination_phone_number }}<br />
               <strong>Adresă: </strong>{{ item.destination_address }}<br />
             </p>
           </div>

@@ -27,7 +27,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [RequestSentDialogComponent],
@@ -58,6 +58,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatSnackBarModule,
     MatExpansionModule,
     DragDropModule,
+    MatTooltipModule,
 
     ReactiveFormsModule,
     FormsModule
@@ -90,6 +91,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatSnackBarModule,
     MatExpansionModule,
     DragDropModule,
+    MatTooltipModule,
 
     ReactiveFormsModule,
     FormsModule

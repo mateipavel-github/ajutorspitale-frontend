@@ -34,12 +34,13 @@
 }
 
 .row.header {
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  border-left: 1px solid rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.07);
   font-weight: bold;
-  background: rgba(0,0,0,0.04);
+  background: #F1F1F1;
+  position: sticky;
+  top: 0;
 }
+
 .row.header > div > mat-icon {
     height: 16px !important;
     width: 16px !important;
@@ -61,6 +62,12 @@
   padding: 10px;
   border-right: 1px solid rgba(0, 0, 0, 0.07);
 }
+.column:last-child {
+  border-right: 0 !important;
+}
+.column:first-child {
+  border-left: 0 !important;
+}
 
 .column-id {
     text-align: right;
@@ -78,6 +85,10 @@
 .column-name {
     width: 150px;
 }
+.column-dates {
+  width: 100px;
+  font-size: 14px;
+}
 .column-actions {
     width: 100px;
 }
@@ -88,7 +99,7 @@
  }
 
  .actions-inactive {
-     opacity: 0.2;
+     opacity: 0;
  }
 
 :host ::ng-deep .item-dragging.item.selected:not(.cdk-drag-placeholder) .row {
@@ -117,4 +128,20 @@
 .secondary-row {
     color: rgba(0,0,0,0.4);
     font-size: 0.9em;
+}
+
+.plan-details {width: 100%;}
+.plan-details>tr>td,
+.plan-details>tr>th {
+  text-align: left;
+  vertical-align: top;
+}
+.plan-details > tr > th {
+  vertical-align: top;
+  font-weight: bold;
+  width: 120px;
+}
+
+.summary-section {
+  margin-bottom: 15px;
 }

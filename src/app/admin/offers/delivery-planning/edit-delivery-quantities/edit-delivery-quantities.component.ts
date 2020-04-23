@@ -20,7 +20,7 @@ export class EditDeliveryQuantitiesComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any, private deliveryValidators: EditDeliveryValidators) {
 
     this.counties = dataService.metadata['counties'];
-
+    console.log(data);
     this.AppConstants = AppConstants;
     this.editForm = new FormGroup({
       'id': new FormControl(data.delivery?.id || null),

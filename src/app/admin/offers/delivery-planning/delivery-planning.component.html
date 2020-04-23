@@ -10,69 +10,99 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="0px">
           <h2>Detalii plan</h2>
           <div>
-            <button mat-button (click)="onOpenPlanDetailsDialog()">Editează</button>
+            <button *ngIf="canEdit" mat-button color="primary" (click)="onOpenPlanDetailsDialog()">Editează</button>
           </div>
         </div>
-        <p><strong>Sponsor produse: </strong> {{ editForm.get('main_sponsor')?.value?.name }} </p>
-        <p><strong>Sponsor livrare: </strong> {{ editForm.get('delivery_sponsor')?.value?.name }} </p>
-        <p>
-          <strong>Expeditor: </strong>{{ editForm.get('sender_name')?.value }}<br />
-          <strong>Persoană contact: </strong>{{ editForm.get('sender_contact_name')?.value }}<br />
-          <strong>Telefon: </strong>{{ editForm.get('sender_phone_number')?.value }}<br />
-          <strong>Adresă: </strong>{{ editForm.get('sender_address')?.value }}<br />
-          <strong>Oraș: </strong>{{ editForm.get('sender_city_name')?.value }}<br />
-          <strong>Județ: </strong>{{ getLabel('counties', editForm.get('sender_county_id')?.value) }}<br />
-        </p>
+
+        <table class="plan-details">
+          <tr>
+            <th>Sponsor produse: </th>
+            <td>{{ editForm.get('main_sponsor')?.value?.name }}</td>
+          </tr>
+          <tr>
+            <th>Sponsor livrare: </th>
+            <td>{{ editForm.get('delivery_sponsor')?.value?.name }}</td>
+          </tr>
+          <tr>
+            <th>Expeditor: </th>
+            <td>
+              {{ editForm.get('sender.sender_name')?.value }}<br />
+              {{ editForm.get('sender.sender_address')?.value }}<br />
+              {{ editForm.get('sender.sender_city_name')?.value }},
+              {{ getLabel('counties', editForm.get('sender.sender_county_id')?.value) }}
+            </td>
+          </tr>
+          <tr>
+            <th>Persoană de contact: </th>
+            <td>
+              {{ editForm.get('sender.sender_contact_name')?.value }}<br />
+              {{ editForm.get('sender.sender_phone_number')?.value }}
+            </td>
+          </tr>
+        </table>
       </div>
 
-      <div class="horizontal-section">
-        <!-- <app-needs-shortlist [needs]="deliveryNeeds$.value"></app-needs-shortlist> -->
-        <div class="horizontal-section">
-          <h2>Ce livrezi?</h2>
-          <app-loading-status *ngIf="!planLoaded" [loaded]="planLoaded"></app-loading-status>
-          <app-needs-editor *ngIf="planLoaded" #deliveryNeedsEditor [needs]="deliveryNeeds$.value"
-            (needsUpdated)="deliveryNeedsUpdated($event)"></app-needs-editor>
-        </div>
+
+      <div class="horizontal-section" *ngIf="canEdit">
+        <h2>Ce livrezi?</h2>
+        <app-loading-status *ngIf="!planLoaded" [loaded]="planLoaded"></app-loading-status>
+        <app-needs-editor *ngIf="planLoaded" #deliveryNeedsEditor [needs]="deliveryNeeds$.value"
+          (needsUpdated)="deliveryNeedsUpdated($event)"></app-needs-editor>
       </div>
       <div class="horizontal-section">
-        <h2>Total cereri din plan ({{ planSummary?.count || 0 }})</h2>
-        <div class="plan-summary">
+        <div class="summary-section">
+          <strong>Stoc de livrat</strong>
+          <app-needs-shortlist [needs]="deliveryNeeds$.value" [showOnlyTypes]="relevantNeedTypes"></app-needs-shortlist>
+        </div>
+        <div class="summary-section">
+          <strong>Total cereri din plan ({{ planSummary?.count || 0 }})</strong>
           <app-needs-shortlist [showDeliveryQuantities]="true" [needs]="planSummary?.needs || []"
             [showOnlyTypes]="relevantNeedTypes">
           </app-needs-shortlist>
         </div>
-      </div>
-      <div class="horizontal-section">
-        <h2>Total cereri selectate ({{ planSummarySelected?.count || 0 }})</h2>
-        <div class="plan-summary">
+        <div class="summary-section">
+          <strong>Diferență</strong>
+          <app-needs-shortlist [needs]="planSummary?.delta || []" [showOnlyTypes]="relevantNeedTypes">
+          </app-needs-shortlist>
+        </div>
+        <div class="summary-section">
+          <strong>Cereri selectate ({{ planSummarySelected?.count || 0 }})</strong>
           <app-needs-shortlist [showDeliveryQuantities]="true" [needs]="planSummarySelected?.needs || []"
             [showOnlyTypes]="relevantNeedTypes">
           </app-needs-shortlist>
         </div>
-      </div>
-      <div class="horizontal-section">
-        <app-loading-button [btnDisabled]="!planDirty" [loading]=" planIsSaving" label="Salvează planul" btnStyle="flat"
-          color="primary" (btnClick)="onSave()"></app-loading-button>
       </div>
     </div>
 
     <!-- List of requests part of this delivery plan -->
     <div class="vertical-section" fxFlex style="padding: 20px;">
 
-      <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="20px">
-        <h1>Cereri planificate pentru livrare</h1>
-        <div>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <h1>Cereri planificate pentru livrare ({{ planSummary?.count || 0 }})</h1>
+        <div fxFlex fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="40px" *ngIf="canEdit">
           <button mat-stroked-button color="primary" (click)="onOpenSearchDialog()">
             <mat-icon>search</mat-icon>
             Adaugă cereri la plan
           </button>
+          <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+            <div>
+              <app-loading-button [btnDisabled]="!planDirty" [loading]=" planIsSaving" label="Salvează planul"
+                btnStyle="flat" color="primary" (btnClick)="onSave()"></app-loading-button>
+            </div>
+            <div>
+              <button mat-stroked-button color="primary" (click)="onDownloadExcel()">
+                <mat-icon>file_copy</mat-icon>
+                Descarcă excel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="40px" style="margin-bottom: 20px;">
 
         <div>
-          <mat-form-field>
+          <mat-form-field matTooltip="Sortează după coloane multiple">
             <mat-label>Sortează după</mat-label>
             <mat-select multiple [formControl]="sortControl" placeholder="Adaugă sortare"
               (openedChange)="sortPlan($event)" (selectionChange)="onSortChange($event)">
@@ -89,11 +119,16 @@
         <div>
           Selectează:
           <button mat-button (click)="selectAll($event)">toate</button> |
-          <button mat-button (click)="selectNone($event)">nici una</button>
+          <button mat-button (click)="selectNone($event)">nici una</button> |
+          <button mat-button (click)="selectInverse($event)"
+            matTooltip="Selectează ce nu este selectat și deselctează ce este selectat deja">celelalte</button> |
+          <button mat-button (click)="selectMaxDeliverable($event)"
+            matTooltip="Selectează începând cu prima cerere până se depășesc toate cantitățile de livrat">max
+            livrabil</button>
         </div>
 
         <div fxFlex fxLayoutGap="20px" fxLayout="row" fxLayoutAlign="end center"
-          [ngClass]="{ 'actions-inactive': planList.selections.length===0 }">
+          [ngClass]="{ 'actions-inactive': planList.selections.length===0 }" *ngIf="canEdit">
           <div class="action-label">
             <strong>Cereri<br />selectate:</strong> {{ planList.selections.length }}
           </div>
@@ -114,26 +149,14 @@
       <div class="row header" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="0px">
         <div class="column column-id">ID</div>
         <div class="column column-needs">
-          <div class="needs-item">
-            <div class="label">
-              <div>Nevoi</div>
-            </div>
-            <div class="spacer"></div>
-            <div class="fixed">
-              <div class="spacer"></div>
-              <div class="number">cerute</div>
-            </div>
-            <div class="fixed">
-              <div class="spacer"></div>
-              <div class="number">
-                <mat-icon>local_shipping</mat-icon>
-              </div>
-            </div>
-          </div>
+          <app-needs-shortlist [header]="true" [needs]="null" [showDeliveryQuantities]="true"></app-needs-shortlist>
         </div>
         <div class="column column-medical-unit">Unitate medicală</div>
         <div class="column column-county">Județ</div>
         <div class="column column-name">Solicitant</div>
+        <div class="column column-dates">
+          <mat-icon>date_range</mat-icon>
+        </div>
         <div class="column column-actions">Acțiuni</div>
       </div>
       <app-multi-drag-drop style="width: 100%;" #planList [items]="planRequestsList"
@@ -157,11 +180,15 @@
               <div class="primary-row">{{ item.name }}</div>
               <div class="secondary-row">{{ item.phone_number }}</div>
             </div>
+            <div class="column column-dates">
+              <div class="primary-row">{{ item.created_at | date: 'd.MM.\'yy HH:mm' }}</div>
+              <div class="secondary-row">{{ item.updated_at | date: 'd.MM.\'yy HH:mm' }}</div>
+            </div>
             <div class="column column-actions">
               <button matTooltip="Editează cererea" mat-icon-button (click)="onEditRequest($event, item, index)">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button matTooltip="Editează cantitățile de livrarea" mat-icon-button
+              <button *ngIf="canEdit" matTooltip="Editează detaliile de livrare" mat-icon-button
                 (click)="onEditRequestDelivery($event, item, index)">
                 <mat-icon>local_shipping</mat-icon>
               </button>

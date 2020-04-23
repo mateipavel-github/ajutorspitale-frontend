@@ -8,7 +8,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 export class FilterService {
 
   public items$;
-  protected loading = false;
+  public loading$ = new Subject();
   protected paging = { current: 1, last: 1, total: 0, per_page: 100 };
 
   protected dataServiceMethod = 'getRequests';
@@ -76,7 +76,8 @@ export class FilterService {
   loadItems(filters, page?) {
 
     this.items$.next([]);
-    this.loading = true;
+
+    this.loading$.next(true);
 
     filters = this.forServer(filters);
 
@@ -86,7 +87,7 @@ export class FilterService {
   }
 
   onItemsLoaded(serverResponse) {
-    this.loading = false;
+    this.loading$.next(false);
     this.items$.next(serverResponse['data']['items']);
     this.paging.current = serverResponse['data']['current_page'];
     this.paging.last = serverResponse['data']['last_page'];
@@ -94,7 +95,7 @@ export class FilterService {
   }
 
   onLoadError(serverError) {
-    this.loading = false;
+    this.loading$.next(false);
   }
 
 }

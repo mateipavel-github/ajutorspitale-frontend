@@ -3,6 +3,7 @@
   <form [formGroup]="editForm">
     <div class="horizontal-section">
       <h2>Cantități</h2>
+      <app-needs-shortlist [header]="true" [needs]="null" [showDeliveryQuantities]="true"></app-needs-shortlist>
       <div formArrayName="needs">
         <div class="needs-item" *ngFor="let n of getAsFormArray('needs').controls; let i=index" [formGroupName]="i">
           <div class="label">
@@ -24,16 +25,16 @@
     </div>
     <div class="horizontal-section">
       <h2>Colete</h2>
-      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
-        <mat-form-field fxFlex="33%" appearance="outline">
+      <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+        <mat-form-field style="width: 30%;" appearance="outline">
           <mat-label>Colete</mat-label>
           <input required matInput formControlName="packages" type="text" />
         </mat-form-field>
-        <mat-form-field fxFlex="33%" appearance="outline">
+        <mat-form-field style="width: 30%;" appearance="outline">
           <mat-label>Dimensiuni</mat-label>
           <input required matInput formControlName="size" type="text" />
         </mat-form-field>
-        <mat-form-field fxFlex="33%" appearance="outline">
+        <mat-form-field style="width: 30%;" appearance="outline">
           <mat-label>Greutate (kg)</mat-label>
           <input required matInput formControlName="weight" type="text" />
         </mat-form-field>

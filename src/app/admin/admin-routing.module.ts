@@ -12,6 +12,7 @@ import { ListRequestsComponent } from './requests/list-requests/list-requests.co
 import { AdminComponent } from './admin.component';
 import { ReportsComponent } from './reports/reports.component';
 import { DeliveryPlanningComponent } from './offers/delivery-planning/delivery-planning.component';
+import { UnsavedDataGuardGuard } from '../unsaved-data-guard.guard';
 
 
 
@@ -19,25 +20,32 @@ const routes: Routes = [
   {
     path: 'admin', component: AdminComponent, canActivate: [AuthGuardService],
     children: [
-      { path: 'requests', component: ListRequestsComponent, data: {expectedRoles: ['admin', 'volunteer']} },
-      { path: 'requests/:flag', component: ListRequestsComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
-      { path: 'request/:id', component: EditRequestComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'requests', component: ListRequestsComponent, data: {accessScopes: ['requests.list']} },
+      { path: 'requests/:flag', component: ListRequestsComponent, data: { accessScopes: ['requests.list'] } },
+      { path: 'request/:id', component: EditRequestComponent, data: { accessScopes: ['requests.edit'] } },
 
-      { path: 'offers', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
-      { path: 'offers/:flag', component: ListOffersComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
-      { path: 'offer/:id', component: EditOfferComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
-      { path: 'delivery-plan/:plan_id', component: DeliveryPlanningComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
-      { path: 'delivery-plan/:plan_id/:offer_id', component: DeliveryPlanningComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'offers', component: ListOffersComponent, data: { accessScopes: ['offers.list'] } },
+      { path: 'offers/:flag', component: ListOffersComponent, data: { accessScopes: ['offers.list'] } },
+      { path: 'offer/:id', component: EditOfferComponent, data: { accessScopes: ['offers.edit'] } },
+      {
+        path: 'delivery-plan/:plan_id',
+        component: DeliveryPlanningComponent,
+        canDeactivate: [UnsavedDataGuardGuard],
+        data: {
+          accessScopes: ['deliveryplans.list']
+        }
+      },
+      { path: 'delivery-plan/:plan_id/:offer_id', component: DeliveryPlanningComponent, data: { accessScopes: ['deliveryplans.list'] } },
 
-      { path: 'deliveries/:flag', component: ListDeliveriesComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
-      { path: 'delivery/:id', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] }  },
-      { path: 'delivery/new', component: EditDeliveryComponent, data: { expectedRoles: ['admin', 'volunteer', 'delivery_agent'] } },
+      { path: 'deliveries/:flag', component: ListDeliveriesComponent, data: { accessScopes: ['deliveryplans.list'] } },
+      { path: 'delivery/:id', component: EditDeliveryComponent, data: { accessScopes: ['deliveries.edit'] }  },
+      { path: 'delivery/new', component: EditDeliveryComponent, data: { accessScopes: ['deliveries.edit'] } },
 
-      { path: 'metadata', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
-      { path: 'metadata/:type', component: MetadataEditorComponent, data: { expectedRoles: ['admin'] } },
-      { path: 'users', component: ListUsersComponent, data: { expectedRoles: ['admin'] } },
+      { path: 'metadata', component: MetadataEditorComponent, data: { accessScopes: ['metadata.edit'] } },
+      { path: 'metadata/:type', component: MetadataEditorComponent, data: { accessScopes: ['metadata.edit'] } },
+      { path: 'users', component: ListUsersComponent, data: { accessScopes: ['users.list'] } },
 
-      { path: 'reports', component: ReportsComponent, data: { expectedRoles: ['admin', 'volunteer'] } },
+      { path: 'reports', component: ReportsComponent, data: { accessScopes: ['exports'] } },
     ]
   }
 ];

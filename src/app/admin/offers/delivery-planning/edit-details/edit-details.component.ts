@@ -25,19 +25,18 @@ export class EditDetailsComponent implements OnInit {
     this.AppConstants = AppConstants;
     this.editForm = new FormGroup({
       'sender': new FormGroup({
-        'sender_name': new FormControl(data.delivery?.sender_name, [Validators.required]),
-        'sender_contact_name': new FormControl(data.delivery?.sender_contact_name, [Validators.required]),
+        'sender_name': new FormControl(null, [Validators.required]),
+        'sender_contact_name': new FormControl(null, [Validators.required]),
         // tslint:disable-next-line:max-line-length
-        'sender_phone_number': new FormControl(data.delivery?.sender_phone_number, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
-        'sender_address': new FormControl(data.delivery?.sender_address, [Validators.required]),
-        'description': new FormControl(data.delivery?.description),
-        'sender_county_id': new FormControl(data.delivery?.sender_county_id, [Validators.required]),
-        'sender_city_name': new FormControl(data.delivery?.sender_city_name, [Validators.required])
+        'sender_phone_number': new FormControl(null, [Validators.required, Validators.pattern(AppConstants.phone_number_pattern)]),
+        'sender_address': new FormControl(null, [Validators.required]),
+        'sender_county_id': new FormControl(null, [Validators.required]),
+        'sender_city_name': new FormControl(null, [Validators.required])
       }),
-      'main_sponsor': new FormControl(data.delivery?.main_sponsor),
-      'delivery_sponsor': new FormControl(data.delivery?.delivery_sponsor)
+      'main_sponsor': new FormControl(data.main_sponsor),
+      'delivery_sponsor': new FormControl(data.delivery_sponsor)
     });
-
+    this.editForm.get('sender').setValue(data.sender);
   }
 
   onDismiss() {

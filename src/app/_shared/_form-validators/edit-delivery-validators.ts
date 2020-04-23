@@ -12,7 +12,7 @@ export class EditDeliveryValidators {
 
     NewDeliveryValidator: ValidatorFn = (form: FormGroup): ValidationErrors | null => {
         const medical_unit = form.get('medical_unit');
-        const county = form.get('county_id');
+        const county = form.get('destination_county_id');
         const formErrors = {};
 
         county.setErrors(null);

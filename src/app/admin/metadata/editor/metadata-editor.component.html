@@ -31,6 +31,13 @@
                 class="form-control-plaintext" (blur)="onSaveItem(i);">
             </mat-form-field>
           </div>
+          <div fxFlex>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-label>Ordine sortare</mat-label>
+              <input matInput formControlName="sort_order" type="text" class="form-control" placeholder=""
+                class="form-control-plaintext" (blur)="onSaveItem(i);">
+            </mat-form-field>
+          </div>
           <div>
             <button mat-button (click)="onRemoveItem(i)">
               <mat-icon>delete</mat-icon>

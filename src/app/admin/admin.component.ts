@@ -22,8 +22,8 @@ export class AdminComponent implements OnInit {
     this.titleService.setTitle('Administrare@' + this.titleService.getTitle());
   }
 
-  hasAccess(roles) {
-    return this.authService.hasAccess(roles);
+  hasAccess(scopes) {
+    return this.authService.hasAccess(scopes);
   }
 
   ngOnInit(): void {

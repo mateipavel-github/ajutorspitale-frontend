@@ -9,6 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class NeedsShortlistComponent implements OnInit {
 
   @Input() needs;
+  @Input() header = false;
   @Input() showOnlyTypes = [];
   @Input() showDeliveryQuantities = false;
 

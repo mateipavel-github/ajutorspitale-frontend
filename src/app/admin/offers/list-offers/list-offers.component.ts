@@ -27,9 +27,13 @@ export class ListOffersComponent implements OnInit {
   statusChanging = 0;
   assignChanging = 0;
 
+  canEditDeliveryPlans = true;
+
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
     public authService: AuthService, private filterService: OffersFilterService,
     private snackBar: MatSnackBar, private titleService: Title) {
+    
+    this.canEditDeliveryPlans = this.authService.hasAccess('deliveryplans.edit');
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);

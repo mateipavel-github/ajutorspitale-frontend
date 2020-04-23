@@ -23,7 +23,7 @@ export class RequestsSearchAndSelectComponent implements OnInit, AfterViewInit {
   cancel_label = 'Anulează';
 
 
-  searchResultsLoaded = false;
+  searchResultsLoaded = true;
   public searchRequestsList = [];
   public searchSummary = { needs: [] };
 
@@ -40,13 +40,13 @@ export class RequestsSearchAndSelectComponent implements OnInit, AfterViewInit {
     this.requestsFilterService.setItemsPerPage(data?.per_page || 1000);
     this.requestsFilterService.setFilters({
       status: data?.filters?.status || [],
-      needs: data?.filters?.needs || []
+      needs: data?.filters?.needs || [],
+      exclude_ids: data?.filters?.exclude_ids || null
     });
 
-
     this.requestsFilterService.init();
+    this.requestsFilterService.loading$.subscribe(loading => this.searchResultsLoaded = !loading);
     this.requestsFilterService.items$.subscribe(list => {
-      this.searchResultsLoaded = true;
       this.searchRequestsList = list;
     });
 
@@ -56,6 +56,15 @@ export class RequestsSearchAndSelectComponent implements OnInit, AfterViewInit {
       }
     });
 
+  }
+
+  selectAll($event) {
+    $event.stopPropagation();
+    this.searchList.selectAll();
+  }
+  selectNone($event) {
+    $event.stopPropagation();
+    this.searchList.clearSelection();
   }
 
   setRelevantNeedTypes(needs) {

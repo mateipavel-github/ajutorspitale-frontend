@@ -1,22 +1,43 @@
-<ng-container *ngFor="let n of needs">
-  <div class="needs-item" *ngIf="shouldShow(n?.need_type?.id || n?.need_type_id)">
-    <div class="label">
-      <div>{{ getLabel( n?.need_type?.id || n?.need_type_id ) }}</div>
-    </div>
-    <div class="spacer"></div>
-    <div class="fixed">
-      <div class="spacer"></div>
-      <div class="number">{{ n.quantity || 0 | number : '1.0-0'}}</div>
-    </div>
-    <ng-container *ngIf="showDeliveryQuantities">
-      <div *ngIf="n?.delivery_quantity==='max'" class="fixed">
-        <div class="spacer"></div>
-        <div class="number">{{ n.quantity || 0 | number : '1.0-0'}}</div>
-      </div>
-      <div *ngIf="n?.delivery_quantity!=='max'" class="fixed">
-        <div class="spacer"></div>
-        <div class="number">{{ n.delivery_quantity | number : '1.0-0'}}</div>
-      </div>
-    </ng-container>
+<div *ngIf="header" class="needs-item needs-item-header">
+  <div class="label">
+    <div>Nevoi</div>
   </div>
+  <div class="spacer"></div>
+  <div class="fixed">
+    <div class="spacer"></div>
+    <div class="number">cerute</div>
+  </div>
+  <div class="fixed" *ngIf="showDeliveryQuantities">
+    <div class="spacer"></div>
+    <div class="number">
+      <mat-icon>local_shipping</mat-icon>
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="needs">
+  <ng-container *ngFor="let n of needs">
+    <div class="needs-item" *ngIf="shouldShow(n?.need_type?.id || n?.need_type_id)">
+      <div class="label">
+        <div>{{ getLabel( n?.need_type?.id || n?.need_type_id ) }}</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="fixed">
+        <div class="spacer"></div>
+        <div [ngClass]="{'number': true, 'number-negative': n.quantity<0}">
+          {{ n.quantity || 0 | number : '1.0-0'}}</div>
+      </div>
+      <ng-container *ngIf="showDeliveryQuantities">
+        <div *ngIf="n?.delivery_quantity==='max'" class="fixed">
+          <div class="spacer"></div>
+          <div [ngClass]="{'number': true, 'number-negative': n.quantity<0}">{{ n.quantity || 0 | number : '1.0-0'}}</div>
+        </div>
+        <div *ngIf="n?.delivery_quantity!=='max'" class="fixed">
+          <div class="spacer"></div>
+          <div [ngClass]="{'number': true, 'number-negative': n.delivery_quantity<0}">
+            {{ n.delivery_quantity | number : '1.0-0'}}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
 </ng-container>

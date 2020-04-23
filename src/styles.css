@@ -121,6 +121,11 @@ h1.with-subtitle {
   margin-bottom: 5px;
 }
 
+.needs-item-header {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
 .needs-item:hover {
   color: #673ab7;
 }
@@ -145,6 +150,9 @@ h1.with-subtitle {
 }
 .needs-item>div.fixed:last-child>div.number {
   padding-right: 0px;
+}
+.needs-item>div.fixed>div.number.number-negative {
+  color: #f44336;
 }
 
 .needs-item>div.spacer {

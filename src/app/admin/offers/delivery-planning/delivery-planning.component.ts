@@ -1,3 +1,5 @@
+import { AuthService } from './../../../_services/auth.service';
+import { HasUnsavedData } from './../../../_interfaces/has-unsaved-data.interface';
 import { EditDetailsComponent } from './edit-details/edit-details.component';
 import { RequestsSearchAndSelectComponent } from './../../requests/requests-search-and-select/requests-search-and-select.component';
 // tslint:disable-next-line:max-line-length
@@ -26,7 +28,9 @@ import { MatDialog } from '@angular/material/dialog';
   providers: [RequestsFilterService]
 })
 
-export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
+export class DeliveryPlanningComponent implements OnInit, AfterViewInit, HasUnsavedData {
+
+  canEdit = true;
 
   planLoaded = false;
 
@@ -39,15 +43,17 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
   protected relevantNeedTypes = [];
 
   protected planRequestsList = [];
-  protected planSummary = { count: 0, needs: [] };
-  protected planSummarySelected = { count: 0, needs: [] };
+  protected planSummary = { count: 0, needs: [], delta: [] };
+  protected planSummarySelected = { count: 0, needs: [], delta: [] };
 
   protected editForm: FormGroup;
   planDirty = false;
   planIsSaving = false;
 
-  constructor(public dialog: MatDialog, private dataService: DataService,
+  constructor(private authService: AuthService, public dialog: MatDialog, private dataService: DataService,
     private snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router, public sessionData: SessionDataService) {
+
+    this.canEdit = this.authService.hasAccess('deliveryplans.edit');
 
     // initialize form
     this.editForm = new FormGroup({
@@ -79,6 +85,7 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         this.setDeliveryNeedsSorting();
         this.prepareList(this.planRequestsList);
         this.updatePlanSummary();
+        this.setPlanRequests();
       });
 
       // create new delivery plan
@@ -97,39 +104,9 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         this.sessionData.currentDeliveryPlanId = serverResponse['data']['id'];
         this.sessionData.currentDeliveryPlan = serverResponse['data'];
 
-        // set title
-        this.setPlanTitle(this.sessionData.currentDeliveryPlan.title);
+        this.setup();
 
-        // set sponsors
-        this.setMainSponsor(this.sessionData.currentDeliveryPlan.main_sponsor);
-        this.setDeliverySponsor(this.sessionData.currentDeliveryPlan.delivery_sponsor);
-
-        this.deliveryNeeds$.next(this.getDeliveryNeeds());
-
-        this.componentsReady$.subscribe(() => {
-          if (this.deliveryNeedsEditor) {
-            this.deliveryNeedsEditor.setNeeds(this.deliveryNeeds$.value);
-          }
-        });
-
-        // set requests
-        this.planRequestsList = [];
-
-        const sortedList = serverResponse['data']['requests'].sort(function (a, b) {
-          return a.pivot.position - b.pivot.position;
-        });
-
-        sortedList.forEach(r => {
-          r.priority_group = r.pivot.priority_group;
-          r.details = r.pivot.details;
-        });
-
-        this.prepareList(sortedList);
-
-        this.planRequestsList = sortedList;
-        this.updatePlanSummary();
-        this.setPlanRequests();
-
+        this.markPlanClean();
         // set offers @todo
 
       });
@@ -137,6 +114,39 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
       this.componentsReady$.next();
 
     }, 0);
+  }
+
+  setup() {
+    // set title
+    this.setPlanTitle(this.sessionData.currentDeliveryPlan.title);
+
+    // set sponsors
+    this.setMainSponsor(this.sessionData.currentDeliveryPlan.main_sponsor);
+    this.setDeliverySponsor(this.sessionData.currentDeliveryPlan.delivery_sponsor);
+
+    // set sender
+    this.setSender(this.sessionData.currentDeliveryPlan.sender);
+
+    this.deliveryNeeds$.next(this.getDeliveryNeeds());
+
+    this.componentsReady$.subscribe(() => {
+      if (this.deliveryNeedsEditor) {
+        this.deliveryNeedsEditor.setNeeds(this.deliveryNeeds$.value);
+      }
+    });
+
+    // set requests
+    this.planRequestsList = [];
+
+    const sortedList = this.sessionData.currentDeliveryPlan.requests.sort(function (a, b) {
+      return a.position - b.position;
+    });
+
+    this.prepareList(sortedList);
+
+    this.planRequestsList = sortedList;
+    this.updatePlanSummary();
+    this.setPlanRequests();
   }
 
   onEditRequest($event, r, i) {
@@ -195,7 +205,8 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
   updatePlanSummary(onlySelected = false): void {
     const t = {
       'count': 0,
-      'needs': new Map<number, {quantity: 0, delivery_quantity: 0}>()
+      'needs': new Map<number, { quantity: number, delivery_quantity: number }>(),
+      'delta': new Map<number, { quantity: number, delivery_quantity: number }>(),
     };
 
     // const list = onlySelected ? _.at(this.planRequestsList, this.planList.selections) : this.planRequestsList;
@@ -211,9 +222,9 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
               t.needs.set(needTypeId, { quantity: 0, delivery_quantity: 0 });
             }
             t.needs.set(needTypeId, {
-              quantity: t.needs.get(needTypeId).quantity + n.quantity,
+              quantity: t.needs.get(needTypeId).quantity + parseInt(n.quantity, 10),
               // tslint:disable-next-line:max-line-length
-              delivery_quantity: t.needs.get(needTypeId).delivery_quantity + (n.delivery_quantity === 'max' ? n.quantity : parseInt(n.delivery_quantity, 10))
+              delivery_quantity: t.needs.get(needTypeId).delivery_quantity + (n.delivery_quantity === 'max' ? parseInt(n.quantity, 10) : parseInt(n.delivery_quantity, 10))
             });
           });
         }
@@ -221,7 +232,13 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     });
     summary.count = t.count;
     summary.needs = [];
+    summary.delta = [];
     t.needs.forEach((n, k) => {
+      this.deliveryNeeds$.value.forEach(dn => {
+        if (k === dn['need_type_id']) {
+          summary.delta.push({ need_type_id: k, quantity: dn['quantity'] - n.delivery_quantity});
+        }
+      });
       summary.needs.push({ need_type_id: k, quantity: n.quantity, delivery_quantity: n.delivery_quantity });
     });
   }
@@ -236,11 +253,13 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
         id: r.id,
         priority_group: r?.priority || 0,
         position: p,
-        details: r?.details || {},
         delivery: Object.assign({}, r?.delivery) || {}
       };
       if (r.delivery?.needs) {
-        serverData.delivery.needs = r.delivery.needs.slice().map(n => {
+        serverData.delivery.needs = r.delivery.needs
+          .slice()
+          .filter(n => this.relevantNeedTypes.indexOf(n.need_type_id) > -1)
+          .map(n => {
           return { need_type_id: n.need_type_id, quantity: n.delivery_quantity === 'max' ? n.quantity : n.delivery_quantity };
         });
       }
@@ -260,6 +279,10 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     this.editForm.get('delivery_sponsor').setValue(sponsor);
     this.markPlanDirty();
   }
+  public setSender(sender) {
+    this.editForm.get('sender').setValue(sender);
+    this.markPlanDirty();
+  }
 
   public onSave() {
 
@@ -268,15 +291,9 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
       .subscribe(serverResponse => {
         this.planIsSaving = false;
         if (serverResponse['success']) {
-          this.markPlanClean();
           this.sessionData.currentDeliveryPlan = serverResponse['data']['item'];
-          this.deliveryNeeds$.next(this.getDeliveryNeeds());
-          this.componentsReady$.subscribe(() => {
-            if (this.deliveryNeedsEditor) {
-              this.deliveryNeedsEditor.setNeeds(this.deliveryNeeds$.value);
-            }
-          });
-
+          this.setup();
+          this.markPlanClean();
           this.snackBar.openFromComponent(SnackbarComponent, {
             data: { message: 'Planul a fost salvat' },
             panelClass: 'snackbar-success',
@@ -354,6 +371,51 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     $event.stopPropagation();
     this.planList.clearSelection();
   }
+  selectInverse($event) {
+    $event.stopPropagation();
+    this.planList.selectInverse();
+  }
+
+  selectMaxDeliverable($event) {
+
+    $event.stopPropagation();
+    const maxDelivery = new Map;
+    this.deliveryNeeds$.value.forEach(dn => {
+      maxDelivery.set(dn['need_type_id'], parseInt(dn['quantity'], 10));
+    });
+    
+    let maxIndex = 0;
+    for (let i = 0; i < this.planRequestsList.length; i++) {
+      const r = this.planRequestsList[i];
+      if (r?.delivery.needs) {
+        r.delivery.needs.forEach(n => {
+          const needTypeId = n.need_type_id;
+          const quantity = n.delivery_quantity === 'max' ? parseInt(n.quantity, 10) : parseInt(n.delivery_quantity, 10);
+          if (maxDelivery.has(needTypeId)) {
+            maxDelivery.set(needTypeId, maxDelivery.get(needTypeId) - quantity);
+          }
+        });
+      }
+      let keepGoing = false;
+      maxDelivery.forEach((q, n, m) => {
+        if (q >= 0) {
+          keepGoing = true;
+        }
+      });
+
+      if (!keepGoing) {
+        maxIndex = i - 1;
+        break;
+      } else {
+        maxIndex++;
+      }
+    }
+    console.log(maxIndex);
+    this.planList.clearSelection();
+    this.planList.selectSpecific(_.range(0,maxIndex + 1));
+
+  }
+
 
   // tslint:disable-next-line:member-ordering
   sortControl: FormControl = new FormControl([]);
@@ -371,6 +433,10 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     { position: 0, key: 'medical_unit_type_size', direction: 'desc', label: 'Dimensiune unitate medicală', f: o => o?.medical_unit_type_size || 0 },
     { position: 0, key: 'id', direction: 'asc', label: 'ID', f: o => o.id },
     { position: 0, key: 'id', direction: 'desc', label: 'ID', f: o => o.id },
+    { position: 0, key: 'created_at', direction: 'asc', label: 'Data solicitării', f: o => o.created_at },
+    { position: 0, key: 'created_at', direction: 'desc', label: 'Data solicitării', f: o => o.created_at },
+    { position: 0, key: 'updated_at', direction: 'asc', label: 'Data ultimului update', f: o => o.updated_at },
+    { position: 0, key: 'updated_at', direction: 'desc', label: 'Data ultimului update', f: o => o.updated_at }
   ];
   // tslint:disable-next-line:member-ordering
   sortBy = [];
@@ -382,9 +448,9 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     this.relevantNeedTypes.forEach(needTypeId => {
       const sortKey = 'sort_need_' + needTypeId;
       // tslint:disable-next-line:max-line-length
-      this.sortOptions.push({ position: 0, key: sortKey, direction: 'asc', label: this.dataService.getMetadataLabel('need_types', needTypeId), f: o => o[sortKey] || 0 });
+      this.sortOptions.push({ position: 0, key: sortKey, direction: 'asc', label: 'Necesar ' + this.dataService.getMetadataLabel('need_types', needTypeId), f: o => o[sortKey] || 0 });
       // tslint:disable-next-line:max-line-length
-      this.sortOptions.push({ position: 0, key: sortKey, direction: 'desc', label: this.dataService.getMetadataLabel('need_types', needTypeId), f: o => o[sortKey] || 0 });
+      this.sortOptions.push({ position: 0, key: sortKey, direction: 'desc', label: 'Necesar ' + this.dataService.getMetadataLabel('need_types', needTypeId), f: o => o[sortKey] || 0 });
     });
   }
 
@@ -400,20 +466,23 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
     r.county_size = r?.county_size || this.dataService.getCountyById(r.county_id)?.sort_order;
     r.medical_unit_type_size = r?.medical_unit_type_size || this.dataService.getMedicalUnitTypeById(r.medical_unit_type_id)?.sort_order;
     r.current_needs.forEach(n => {
-      r['sort_need_' + n.need_type_id] = n.quantity;
+      r['sort_need_' + n.need_type_id] = parseInt(n.quantity, 10);
     });
 
     if (!('delivery' in r) || !r?.delivery) {
       r.delivery = {};
     }
 
-    if (!('contact_name' in r.delivery)) {
-      r.delivery.contact_name = r.name;
-      r.delivery.contact_phone_number = r.phone_number;
-      r.delivery.county_id = r.county_id;
+    if (!('destination_contact_name' in r.delivery)) {
+      r.delivery.destination_contact_name = r.name;
+      r.delivery.destination_phone_number = r.phone_number;
+      r.delivery.destination_county_id = r.county_id;
       r.delivery.main_sponsor = this.editForm.get('main_sponsor').value; // get default sponsor
       r.delivery.delivery_sponsor = this.editForm.get('delivery_sponsor').value; // get delivery sponsor
-      r.delivery.address = r?.medical_unit?.address || null;
+    }
+    if (!r.delivery.destination_address) {
+      r.delivery.destination_address = r?.medical_unit?.address || null;
+      r.delivery.destination_medical_unit_id = r?.medical_unit_id || null;
       r.delivery.medical_unit = r?.medical_unit || null;
     }
 
@@ -451,20 +520,25 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
   markPlanClean() {
     this.planDirty = false;
   }
+  hasUnsavedData() {
+    return this.planDirty;
+  }
 
   sortPlan($event) {
     const iteratees = [];
     const orders = [];
-    this.sortBy.forEach(so => {
-      iteratees.push(so.f);
-      orders.push(so.direction);
-    });
-    this.planRequestsList = _.orderBy(this.planRequestsList, iteratees, orders);
-    this.sortOptions.forEach(so => {
-      so.position = 0;
-    });
-    this.sortControl.setValue([]);
-    this.markPlanDirty();
+    if (this.sortBy.length > 0) {
+      this.sortBy.forEach(so => {
+        iteratees.push(so.f);
+        orders.push(so.direction);
+      });
+      this.planRequestsList = _.orderBy(this.planRequestsList, iteratees, orders);
+      this.sortOptions.forEach(so => {
+        so.position = 0;
+      });
+      this.sortControl.setValue([]);
+      this.markPlanDirty();
+    }
   }
 
   onSortChange($event) {
@@ -520,23 +594,30 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
   onOpenPlanDetailsDialog($event) {
 
     const dialogRef = this.dialog.open(EditDetailsComponent, {
-      data: {}
+      data: this.editForm.value
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      (<FormGroup>this.editForm.get('sender')).setValue(result.sender);
-      (<FormGroup>this.editForm.get('main_sponsor')).setValue(result?.main_sponsor);
-      (<FormGroup>this.editForm.get('delivery_sponsor')).setValue(result?.delivery_sponsor);
+      if (result) {
+        this.setSender(result.sender);
+        this.setMainSponsor(result?.main_sponsor);
+        this.setDeliverySponsor(result?.delivery_sponsor);
+      }
     });
 
   }
 
   onOpenSearchDialog($event) {
 
+    const excludeIds = [];
+    this.planRequestsList.forEach(r => {
+      excludeIds.push(r.id);
+    });
+
     const dialogRef = this.dialog.open(RequestsSearchAndSelectComponent, {
       data: {
         'per_page': 10000,
-        'filters': {'needs': this.deliveryNeeds$.value, 'status': ['approved', 'processed']}
+        'filters': {'needs': this.deliveryNeeds$.value, 'status': ['approved', 'processed'], 'exclude_ids': excludeIds}
       },
       height: '90%',
       width: '99%',
@@ -547,6 +628,30 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit {
       if (result) {
         this.onAddToPlan(result);
       }
+    });
+  }
+
+  onDownloadExcel($event) {
+    const report = {
+      loading: false,
+      name: 'Plan ' + this.sessionData.currentDeliveryPlanId,
+      description: 'Excel pentru Fan Courier',
+      url: '/delivery-plans/' + this.sessionData.currentDeliveryPlanId + '/download'
+    };
+    report.loading = true;
+    this.dataService.downloadXLS(report.url).subscribe((data: any) => {
+      report.loading = false;
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
+      const d = new Date();
+      const element = document.createElement('a');
+      element.href = URL.createObjectURL(blob);
+      element.download = report.name + ' ' + d.getDay() + '-' + d.getMonth() + '-'
+        + d.getFullYear() + '-' + d.getHours() + '-' + d.getMinutes() + '.xlsx';
+      document.body.appendChild(element);
+      element.click();
+    }, error => {
+      report.loading = false;
+      alert(error);
     });
   }
 

@@ -76,7 +76,18 @@
           <a mat-stroked-button color="primary" [routerLink]="['/', 'admin', 'offer', offer.id]">edit</a>
         </div>
         <div>
-          <a mat-stroked-button color="primary" [routerLink]="['/', 'admin', 'delivery-plan', 'new', offer.id]">planifică livrări</a>
+          <a *ngIf="offer.delivery_plans?.length===0 && canEditDeliveryPlans" mat-stroked-button color="primary"
+            [routerLink]="['/', 'admin', 'delivery-plan', 'new', offer.id]">planifică livrări</a>
+          
+          <ng-container *ngIf="offer.delivery_plans?.length>0">
+            <button mat-stroked-button color="primary"
+              [matMenuTriggerFor]="deliveryPlans">Planuri de livrare ({{ offer.delivery_plans?.length }})</button>
+            <mat-menu #deliveryPlans="matMenu" xPosition="before">
+              <a mat-menu-item [routerLink]="['/', 'admin', 'delivery-plan', dp.id]" *ngFor="let dp of offer.delivery_plans">Plan #{{ dp.id }} din {{ dp.created_at | date:'short'}} </a>
+              <a *ngIf="canEditDeliveryPlans" mat-menu-item [routerLink]="['/', 'admin', 'delivery-plan', 'new', offer.id]">Creează un plan nou</a>
+            </mat-menu>
+          </ng-container>
+          
         </div>
       </mat-card-title>
       <mat-card-content>

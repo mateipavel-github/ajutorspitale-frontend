@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ export class DataService {
 
   metadata;
   authError = false;
+  userRolesAccessScopes$: BehaviorSubject<any> = new BehaviorSubject({});
 
   constructor(private api: HttpClient) {
   }
@@ -24,6 +25,15 @@ export class DataService {
     };
     return this.api.get(environment.api.url + url, httpOptions);
   }
+  public downloadXLS(url) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }),
+      responseType: 'arraybuffer' as 'json'
+    };
+    return this.api.get(environment.api.url + url, httpOptions);
+  }
 
   public bootstrap() {
 
@@ -31,6 +41,11 @@ export class DataService {
 
     forkJoin([this.getMetadata()]).subscribe(serverResponses => {
       this.metadata = serverResponses[0];
+      const aux = {};
+      this.metadata['user_role_types'].forEach(role => {
+        aux[role['slug']] = role.scopes ? role.scopes.split(',') : [];
+      });
+      this.userRolesAccessScopes$.next(aux);
       done.next(true);
     });
 

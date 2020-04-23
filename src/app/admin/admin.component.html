@@ -3,12 +3,12 @@
     <span class="title">AjutorSpitale</span>
     <span fxFlex></span>
     <span class="links">
-        <a mat-button routerLink="/admin/requests/all">Cereri</a>
-        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/offers/all">Oferte</a>
-        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/deliveries/all">Livrări</a>
-        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/metadata">Metadata</a>
-        <a *ngIf="hasAccess('admin')" mat-button routerLink="/admin/users">Utilizatori</a>
-        <a *ngIf="hasAccess('volunteer') || hasAccess('admin')" mat-button routerLink="/admin/reports">Exports</a>
+        <a *ngIf="hasAccess('requests.list')" mat-button routerLink="/admin/requests/all">Cereri</a>
+        <a *ngIf="hasAccess('offers.list')" mat-button routerLink="/admin/offers/all">Oferte</a>
+        <a *ngIf="hasAccess('deliveries.list')" mat-button routerLink="/admin/deliveries/all">Livrări</a>
+        <a *ngIf="hasAccess('metadata.edit')" mat-button routerLink="/admin/metadata">Metadata</a>
+        <a *ngIf="hasAccess('users.list')" mat-button routerLink="/admin/users">Utilizatori</a>
+        <a *ngIf="hasAccess('exports')" mat-button routerLink="/admin/reports">Exports</a>
         <a mat-button target="_blank" routerLink="/new-request">Adaugă cerere</a>
         <a mat-button target="_blank" routerLink="/new-offer">Adaugă ofertă</a>
 

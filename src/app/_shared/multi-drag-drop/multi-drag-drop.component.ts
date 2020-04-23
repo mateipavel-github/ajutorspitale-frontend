@@ -9,6 +9,7 @@ import {
   Output,
   TemplateRef
 } from '@angular/core';
+
 import * as _ from 'lodash';
 import { CdkDragStart, CdkDragDrop, DragRef } from '@angular/cdk/drag-drop';
 
@@ -183,9 +184,24 @@ export class MultiDragDropComponent {
       this.currentSelectionSpan = [];
       this.lastSingleSelection = null;
       this.selectionChanged.emit(this.items);
-      console.log(this.selections);
       this.cdRef.detectChanges();
     }
+  }
+
+  selectInverse() {
+    this.selections = _.difference(_.range(this.items.length), this.selections);
+    this.currentSelectionSpan = [];
+    this.lastSingleSelection = null;
+    this.selectionChanged.emit(this.items);
+    this.cdRef.detectChanges();
+  }
+
+  selectSpecific(indexes) {
+    this.selections = indexes;
+    this.currentSelectionSpan = [];
+    this.lastSingleSelection = null;
+    this.selectionChanged.emit(this.items);
+    this.cdRef.detectChanges();
   }
 
   // handles "ctrl/command + a" to select all
