@@ -251,7 +251,7 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit, HasUnsa
     this.editForm.get('requests').setValue(this.planRequestsList.map((r, p) => {
       const serverData = {
         id: r.id,
-        priority_group: r?.priority || 0,
+        priority_group: r?.priority_group || 0,
         position: p,
         delivery: Object.assign({}, r?.delivery) || {}
       };
@@ -537,6 +537,7 @@ export class DeliveryPlanningComponent implements OnInit, AfterViewInit, HasUnsa
         so.position = 0;
       });
       this.sortControl.setValue([]);
+      this.sortBy = [];
       this.markPlanDirty();
     }
   }

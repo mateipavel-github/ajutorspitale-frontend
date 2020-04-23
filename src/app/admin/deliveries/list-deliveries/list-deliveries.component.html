@@ -30,7 +30,7 @@
             <strong *ngIf="item.owner">{{ item.owner.name }}</strong> @ {{ item.created_at | date : 'short' }}
           </span>
         </div>
-        <div>
+        <div *ngIf="canEdit">
           <app-loading-button labelPrefix="Status: " btnStyle="stroked" [loading]="statusChanging===item.id"
             [matMenuTriggerFor]="statusChange"
             [label]="dataService.getMetadataLabel('delivery_status_types', item.status)">

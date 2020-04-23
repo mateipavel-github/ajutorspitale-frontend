@@ -17,7 +17,7 @@
 <ng-container *ngIf="needs">
   <ng-container *ngFor="let n of needs">
     <div class="needs-item" *ngIf="shouldShow(n?.need_type?.id || n?.need_type_id)">
-      <div class="label">
+      <div class="label" [title]="getLabel( n?.need_type?.id || n?.need_type_id )">
         <div>{{ getLabel( n?.need_type?.id || n?.need_type_id ) }}</div>
       </div>
       <div class="spacer"></div>

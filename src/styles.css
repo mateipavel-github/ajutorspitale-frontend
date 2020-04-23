@@ -143,6 +143,7 @@ h1.with-subtitle {
 .needs-item>.label>div {
   height: 18px;
   padding: 0px 5px 0px 0px;
+  overflow: hidden;
 }
 .needs-item>div.fixed>div.number {
   padding: 0px 5px;

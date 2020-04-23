@@ -21,6 +21,7 @@ export class ListDeliveriesComponent implements OnInit {
   items = [];
   flag = 'all';
   paging = { current: 1, last: 1, total: 0, per_page: 100 };
+  canEdit = false;
 
   // used for button loading states
   statusChanging = 0;
@@ -28,6 +29,8 @@ export class ListDeliveriesComponent implements OnInit {
   constructor(private dataService: DataService, private route: ActivatedRoute, private router: Router,
     public authService: AuthService, public filterService: DeliveriesFilterService,
     private snackBar: MatSnackBar, private titleService: Title) {
+
+    this.canEdit = this.authService.hasAccess('deliveries.edit');
 
     this.filterService.filtersObservable$.pipe(switchMap(filters => {
       this.titleService.setTitle(filters['pageTitle'] + ' | Administrare@' + environment.appName);

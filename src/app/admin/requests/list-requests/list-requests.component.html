@@ -35,11 +35,16 @@
     </div>
   </div>
 
-  <div style="margin-bottom: 30px;" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
-    <app-requests-filter-form></app-requests-filter-form>
-    <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)" [length]="paging.total"
-      [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
-    </mat-paginator>
+  <div style="margin-bottom: 30px;" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+    <div>
+      <app-requests-filter-form [show]="['status', 'county', 'medical_unit_type_id', 'keyword']">
+      </app-requests-filter-form>
+    </div>
+    <div>
+      <mat-paginator [showFirstLastButtons]="true" [hidePageSize]="true" (page)="onPageChange($event)"
+        [length]="paging.total" [pageSize]="paging.per_page" [pageIndex]="paging.current-1">
+      </mat-paginator>
+    </div>
   </div>
 
 
@@ -100,7 +105,7 @@
             <p><strong>Procesate: </strong>{{ request.current_needs?.length || 0 }}</p>
             <ng-container *ngIf="request?.other_needs?.length>0">
               <p>
-              <strong>Alte nevoi: </strong>: {{ request?.other_needs }}
+                <strong>Alte nevoi: </strong>: {{ request?.other_needs }}
               </p>
             </ng-container>
           </div>
