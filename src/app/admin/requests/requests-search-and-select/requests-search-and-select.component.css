@@ -2,9 +2,20 @@
   border: 1px solid rgba(0, 0, 0, 0.07);
 }
 
-.header {
+.row.header {
   border: 1px solid rgba(0, 0, 0, 0.07);
   font-weight: bold;
+  background: #F1F1F1;
+  position: sticky;
+  top: 0;
+}
+
+.row.header>div>mat-icon {
+  height: 16px !important;
+  width: 16px !important;
+  font-size: 16px !important;
+  line-height: 16px !important;
+  vertical-align: middle;
 }
 
 :host ::ng-deep .item {
@@ -17,28 +28,41 @@
 
 .row>div {
   overflow: hidden;
-  padding: 5px;
+  padding: 10px;
   border-right: 1px solid rgba(0, 0, 0, 0.07);
 }
+
 .column:last-child {
-  border-right: 0;
+  border-right: 0 !important;
+}
+
+.column:first-child {
+  border-left: 0 !important;
 }
 
 .column-id {
   text-align: right;
   width: 30px;
+  max-width: 30px;
+  min-width: 30px;
 }
 
 .column-medical-unit {
   width: 200px;
+  max-width: 200px;
+  min-width: 200px;
 }
 
 .column-medical-unit-type {
   width: 200px;
+max-width: 200px;
+min-width: 200px;
 }
 
 .column-county {
   width: 100px;
+max-width: 100px;
+min-width: 100px;
 }
 
 .column-needs {
@@ -47,10 +71,14 @@
 
 .column-name {
   width: 150px;
+max-width: 150px;
+min-width: 150px;
 }
 
 .column-phone-number {
   width: 100px;
+max-width: 100px;
+min-width: 100px;
 }
 
 .secondary-row {

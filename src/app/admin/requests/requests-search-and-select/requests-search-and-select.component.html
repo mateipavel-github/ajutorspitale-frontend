@@ -25,15 +25,13 @@
           </div>
         </div>
 
-        <div class="header">
-          <div class="row" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+        <div class="row header" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="0px">
             <div class="column column-id">ID</div>
             <div class="column column-needs">Nevoi</div>
             <div class="column column-medical-unit">Unitate medicală</div>
             <div class="column column-county">Județ</div>
             <div class="column column-name">Solicitant</div>
           </div>
-        </div>
 
         <app-loading-status *ngIf="!searchResultsLoaded" [loaded]="searchResultsLoaded"></app-loading-status>
 
@@ -43,7 +41,7 @@
             (itemsUpdated)="itemsUpdated($event, 1)" (selectionChanged)="selectionChanged($event, 1)">
             <ng-template let-item>
               <div class="row priority-{{ item.priority_group || 0 }}" fxLayout="row" fxLayoutAlign="start stretch"
-                fxLayoutGap="10px">
+                fxLayoutGap="0px">
                 <div class="column column-id">{{ item.id }}</div>
                 <div class="column column-needs">
                   <app-needs-shortlist [needs]="item.current_needs" [showOnlyTypes]="relevantNeedTypes">

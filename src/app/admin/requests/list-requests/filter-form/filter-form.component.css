@@ -2,7 +2,10 @@ mat-icon {
   font-size: 16px !important;
 }
 
-.form-vertical > div {
+.form-vertical>div {
+  width: 100%;
+}
+.form-vertical>div>div {
   width: 100%;
 }
 
