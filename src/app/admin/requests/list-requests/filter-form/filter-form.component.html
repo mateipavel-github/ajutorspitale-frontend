@@ -1,5 +1,5 @@
 <form [formGroup]="filterForm" fxLayout="{{ layout==='vertical' ? 'column' : 'row' }}" fxLayoutAlign="start center"
-  fxLayoutGap="25px">
+  fxLayoutGap="25px" class="form-{{layout}}">
 
   <div *ngIf="canShow('needs')">
     <app-needs-editor #filterByNeeds (needsUpdated)="needsEditor_onNeedsUpdated($event)" [canAdd]="false"
@@ -7,7 +7,7 @@
   </div>
 
   <div *ngIf="canShow('medical_unit_type_id')" fxLayout="row" fxLayoutAlign="start center">
-    <div fxFlex>
+    <div class="medical_unit_type">
       <mat-form-field style="width: 100%;">
         <mat-label>Tip unitate medicală</mat-label>
         <mat-select multiple placeholder="Alege tip" formControlName="medical_unit_type_id">
@@ -24,7 +24,7 @@
   </div>
 
   <div *ngIf="canShow('county')" fxLayout="row" fxLayoutAlign="start center">
-    <div fxFlex="125px">
+    <div class="county">
       <mat-form-field style="width: 100%;">
         <mat-label>Județ</mat-label>
         <mat-select multiple placeholder="Alege județ" formControlName="county">
@@ -39,7 +39,7 @@
   </div>
 
   <div *ngIf="canShow('status')" fxLayout="row" fxLayoutAlign="start center">
-    <div fxFlex>
+    <div class="status">
       <mat-form-field style="width: 100%;">
         <mat-label>Status</mat-label>
         <mat-select multiple placeholder="Alege status" formControlName="status">
@@ -54,7 +54,7 @@
   </div>
 
   <div *ngIf="canShow('keyword')" fxLayout="row" fxLayoutAlign="start center">
-    <div fxFlex="125px">
+    <div class="keyword">
       <mat-form-field style="width: 100%;">
         <mat-label>Keyword sau ID</mat-label>
         <input matInput type="text" placeholder="ID, Nume spital, persoană sau telefon" formControlName="keyword" />

@@ -72,25 +72,37 @@
 .column-id {
     text-align: right;
     width: 30px;
+    max-width: 30px;
+    min-width: 30px;
 }
 .column-medical-unit {
   width: 200px;
+  max-width: 200px;
+  min-width: 200px;
 }
 .column-county {
   width: 100px;
+  max-width: 100px;
+  min-width: 100px;
 }
 .column-needs {
   flex-grow: 1;
 }
 .column-name {
     width: 150px;
+    max-width: 150px;
+    min-width: 150px;
 }
 .column-dates {
   width: 100px;
+  max-width: 100px;
+  min-width: 100px;
   font-size: 14px;
 }
 .column-actions {
     width: 100px;
+    max-width: 100px;
+    min-width: 100px;
 }
 
  .action-label {
