@@ -46,7 +46,7 @@
       <div class="horizontal-section" *ngIf="canEdit">
         <h2>Ce livrezi?</h2>
         <app-loading-status *ngIf="!planLoaded" [loaded]="planLoaded"></app-loading-status>
-        <app-needs-editor *ngIf="planLoaded" #deliveryNeedsEditor [needs]="deliveryNeeds$.value"
+        <app-needs-editor *ngIf="planLoaded" [canAdd]="true" #deliveryNeedsEditor [needs]="deliveryNeeds$.value"
           (needsUpdated)="deliveryNeedsUpdated($event)"></app-needs-editor>
       </div>
       <div class="horizontal-section">

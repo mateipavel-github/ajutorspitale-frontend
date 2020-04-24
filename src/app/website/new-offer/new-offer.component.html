@@ -76,7 +76,7 @@
     <mat-card>
       <mat-card-title>Cu ce poți ajuta?</mat-card-title>
       <mat-card-content>
-        <app-needs-editor #needsEditor (needsUpdated)="onNeedsUpdated($event)"></app-needs-editor>
+        <app-needs-editor #needsEditor (needsUpdated)="onNeedsUpdated($event)" [canAdd]="false" [canSuggest]="true"></app-needs-editor>
       </mat-card-content>
     </mat-card> 
 

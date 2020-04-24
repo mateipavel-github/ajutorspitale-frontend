@@ -21,6 +21,11 @@ export class NeedsEditorComponent implements OnInit {
   currentNeedIndex = 0;
 
   @Input() canAdd = false;
+  /* 
+   * canSuggest this is supposed to have an effect on validators, nothing else. 
+   * If set to true, user would be able to write anything in the needs editor without saving but also without an error
+   */
+
   @Input() canSuggest = false;
   @Input() needs = [];
   @Input() fakeValue = 0;

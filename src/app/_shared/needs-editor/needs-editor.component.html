@@ -3,7 +3,7 @@
   <ng-container *ngFor="let needType of filteredNeedTypes | async">
     <mat-option *ngIf="needType.id!==0" [value]="needType" title="{{ needType.label }}">{{ needType.label }}
     </mat-option>
-    <mat-option *ngIf="needType.id===0" [value]="needType">Adaugă <strong>{{ needType.label }}</strong></mat-option>
+    <mat-option *ngIf="needType.id===0 && canAdd" [value]="needType">Adaugă <strong>{{ needType.label }}</strong></mat-option>
   </ng-container>
 </mat-autocomplete>
 
